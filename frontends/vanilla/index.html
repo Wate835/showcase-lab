@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Showcase Lab — Vanilla</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./src/motion.css" />
+  </head>
+  <body data-framework="vanilla">
+    <div class="shell is-motion">
+      <header class="topbar">
+        <a class="logo" href="#about">Showcase Lab</a>
+        <nav class="nav" id="nav"></nav>
+        <a class="switch" href="/?choose=1">Сменить стек</a>
+      </header>
+      <main id="app" class="content"></main>
+      <footer class="footer">
+        <span class="badge">Vanilla JS · amber</span>
+        <span>API: FastAPI + SQLAlchemy</span>
+      </footer>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

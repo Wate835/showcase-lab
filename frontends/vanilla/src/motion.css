@@ -1,0 +1,97 @@
+/* Vanilla: motion only on shell chrome + page swap (не на .chip/.card). */
+
+.shell.is-motion {
+  animation: shell-in 0.45s ease both;
+}
+
+.shell.is-motion .logo {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.shell.is-motion .logo:hover {
+  color: var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+.shell.is-motion .nav a {
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.shell.is-motion .nav a:hover {
+  transform: translateY(-1px);
+}
+
+.shell.is-motion .nav a.active {
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.shell.is-motion .switch {
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.shell.is-motion .switch:hover {
+  color: var(--accent-soft);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+#app.page {
+  animation: page-in 0.34s ease both;
+}
+
+#app.page.is-leaving {
+  animation: page-out 0.18s ease both;
+}
+
+@keyframes shell-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes page-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell.is-motion,
+  #app.page,
+  #app.page.is-leaving {
+    animation: none !important;
+  }
+
+  .shell.is-motion .logo,
+  .shell.is-motion .nav a,
+  .shell.is-motion .switch {
+    transition: none !important;
+  }
+
+  .shell.is-motion .logo:hover,
+  .shell.is-motion .nav a:hover,
+  .shell.is-motion .switch:hover {
+    transform: none !important;
+  }
+}

@@ -1,0 +1,63 @@
+.shell {
+  animation: shellIn 0.45s ease both;
+}
+
+.logo {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.logo:hover {
+  color: var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+.nav a {
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav a:hover {
+  transform: translateY(-1px);
+}
+
+.nav a.active {
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.switch {
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.switch:hover {
+  color: var(--accent-soft);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+@keyframes shellIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell {
+    animation: none !important;
+  }
+
+  .logo,
+  .nav a,
+  .switch {
+    transition: none !important;
+  }
+
+  .logo:hover,
+  .nav a:hover,
+  .switch:hover {
+    transform: none !important;
+  }
+}
