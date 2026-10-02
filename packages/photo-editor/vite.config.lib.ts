@@ -4,10 +4,14 @@ import { resolve } from "node:path";
 
 export default defineConfig({
   plugins: [vue()],
+  define: {
+    "process.env.NODE_ENV": JSON.stringify("production"),
+  },
   build: {
     outDir: resolve(__dirname, "../../backend/static/photo-editor"),
     emptyOutDir: true,
     cssCodeSplit: false,
+    minify: "esbuild",
     lib: {
       entry: resolve(__dirname, "src/mount.ts"),
       formats: ["es"],
