@@ -85,8 +85,9 @@ def health() -> dict[str, str]:
 
 
 def _mount_dir(url_path: str, directory: Path, name: str) -> None:
-    if directory.exists():
-        app.mount(url_path, StaticFiles(directory=directory, html=True), name=name)
+    """Mount static dir; create path so reload still serves files added later."""
+    directory.mkdir(parents=True, exist_ok=True)
+    app.mount(url_path, StaticFiles(directory=directory, html=True), name=name)
 
 
 # Prefer source vanilla; built copies also work from static/
