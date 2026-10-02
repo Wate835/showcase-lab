@@ -1,5 +1,6 @@
 import { FRAMEWORK } from "../../../constants/framework";
 import { formatTime } from "../../../utils/formatTime";
+import { useI18n } from "../../../utils/usePrefs";
 import { useBugHunt } from "../useBugHunt";
 
 export function BugHuntPage() {
@@ -23,35 +24,36 @@ export function BugHuntPage() {
     onFix,
     save,
   } = useBugHunt();
+  const { t } = useI18n();
 
   if (error) return <p className="error">{error}</p>;
-  if (!challenges.length) return <p className="muted">Загрузка челленджей…</p>;
+  if (!challenges.length) return <p className="muted">{t("bugs.loading")}</p>;
 
   return (
     <section>
-      <h1>Bug Hunt</h1>
-      <p className="lead">
-        Найди и исправь {challenges.length} классических багов React. Кликни по ошибочной строке, затем
-        выбери фикс.
-      </p>
+      <h1>{t("bugs.title")}</h1>
+      <p className="lead">{t("bugs.lead", { count: challenges.length, framework: "React" })}</p>
       <div className="hunt-toolbar">
         <button className="btn" onClick={start} disabled={playing && !finished}>
-          {finished || !playing ? "Старт" : "В процессе…"}
+          {finished || !playing ? t("bugs.start") : t("bugs.inProgress")}
         </button>
         <span className="timer">{formatTime(playing || finished ? elapsed : 0)}</span>
         <span className="muted">
           {playing || finished
-            ? `Баг ${Math.min(index + 1, challenges.length)} / ${challenges.length}`
-            : "Готов?"}
+            ? t("bugs.bugProgress", {
+                current: Math.min(index + 1, challenges.length),
+                total: challenges.length,
+              })
+            : t("bugs.ready")}
         </span>
       </div>
       {ch && (playing || finished) ? (
         <p className="hunt-hint">
-          <strong>Наблюдение:</strong> {ch.hint || ch.title}
+          <strong>{t("bugs.observation")}</strong> {ch.hint || ch.title}
         </p>
       ) : (
         <p className="hunt-hint">
-          <strong>Как играть:</strong> короткий симптом — без спойлера. Найди строку и выбери фикс.
+          <strong>{t("bugs.howToPlay")}</strong> {t("bugs.howToPlayBody")}
         </p>
       )}
 
@@ -84,7 +86,7 @@ export function BugHuntPage() {
             <div className="vscode-editor">
               {!playing && !finished ? (
                 <p className="muted" style={{ padding: "1rem" }}>
-                  Нажми «Старт»
+                  {t("bugs.pressStart")}
                 </p>
               ) : (
                 ch?.lines.map((line, i) => {
@@ -110,7 +112,7 @@ export function BugHuntPage() {
             </div>
             {playing && foundLine && ch && foundBugLine != null && (
               <div className="fix-panel">
-                <h3>Баг на строке {foundBugLine}. Выбери исправление:</h3>
+                <h3>{t("bugs.fixPrompt", { line: foundBugLine })}</h3>
                 <div className="fix-options">
                   {ch.fixes.map((f) => (
                     <button key={f.id} type="button" disabled={checking} onClick={() => onFix(f.id)}>
@@ -135,13 +137,13 @@ export function BugHuntPage() {
 
       {finished && (
         <div className="card" style={{ marginTop: "1rem" }}>
-          <h2>Все баги закрыты!</h2>
+          <h2>{t("bugs.allFixed")}</h2>
           <p className="lead">
-            Время: <strong>{formatTime(elapsed)}</strong>
+            {t("bugs.time")} <strong>{formatTime(elapsed)}</strong>
           </p>
           <div className="form" style={{ marginTop: ".75rem" }}>
             <label>
-              Ник
+              {t("bugs.nick")}
               <input
                 value={player}
                 maxLength={40}
@@ -150,20 +152,20 @@ export function BugHuntPage() {
               />
             </label>
             <button className="btn" type="button" onClick={save}>
-              Сохранить результат
+              {t("bugs.saveScore")}
             </button>
           </div>
         </div>
       )}
 
-      <h2 style={{ marginTop: "1.5rem" }}>Результаты (быстрее = лучше)</h2>
+      <h2 style={{ marginTop: "1.5rem" }}>{t("bugs.results")}</h2>
       <div className="card">
         <table className="table">
           <thead>
             <tr>
               <th>#</th>
-              <th>Игрок</th>
-              <th>Время</th>
+              <th>{t("bugs.colPlayer")}</th>
+              <th>{t("bugs.colTime")}</th>
               <th>FW</th>
             </tr>
           </thead>

@@ -15,6 +15,7 @@ import { GuestbookPage } from "./pages/Guestbook";
 import { IncidentsPage } from "./pages/Incidents";
 import { PhotoEditorPage } from "./pages/PhotoEditor";
 import { ProjectsPage } from "./pages/Projects";
+import { useI18n, useTheme } from "./utils/usePrefs";
 
 const PAGES: Record<RouteName, ComponentType> = {
   about: AboutPage,
@@ -27,6 +28,8 @@ const PAGES: Record<RouteName, ComponentType> = {
 
 function AppShell() {
   const location = useLocation();
+  const { t, locale, toggleLocale } = useI18n();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className={`shell ${styles.shell}`}>
@@ -42,13 +45,31 @@ function AppShell() {
               end={r.path === "/"}
               className={({ isActive }) => (isActive ? "active" : undefined)}
             >
-              {r.label}
+              {t(`nav.${r.name}`)}
             </NavLink>
           ))}
         </nav>
-        <a className={`switch ${styles.switch}`} href="/?choose=1">
-          Сменить стек
-        </a>
+        <div className="topbar-controls">
+          <button
+            type="button"
+            className={`switch ${styles.switch}`}
+            aria-label={t("shell.themeAria")}
+            onClick={toggleTheme}
+          >
+            {theme === "dark" ? t("shell.themeToLight") : t("shell.themeToDark")}
+          </button>
+          <button
+            type="button"
+            className={`switch ${styles.switch}`}
+            aria-label={t("shell.localeAria")}
+            onClick={toggleLocale}
+          >
+            {locale === "ru" ? t("shell.localeToEn") : t("shell.localeToRu")}
+          </button>
+          <a className={`switch ${styles.switch}`} href="/?choose=1">
+            {t("shell.switchStack")}
+          </a>
+        </div>
       </header>
       <main className="content">
         <div key={location.pathname} className="page">
@@ -62,7 +83,7 @@ function AppShell() {
       </main>
       <footer className="footer">
         <span className="badge">React · cyan</span>
-        <span>API: FastAPI + SQLAlchemy</span>
+        <span>{t("shell.footerApi")}</span>
       </footer>
     </div>
   );

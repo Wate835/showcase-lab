@@ -1,3 +1,4 @@
+import { t } from "/app/shared/i18n.js";
 import { incidentsWsUrl, resolveIncident } from "../api/index.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
 
@@ -24,7 +25,7 @@ function renderIncidentCards(items) {
                   <p class="muted">${escapeHtml(item.service)}</p>
                   <p class="msg">${escapeHtml(item.description)}</p>
                 </div>
-                <button class="btn" data-resolve="${item.id}">Resolve</button>
+                <button class="btn" data-resolve="${item.id}">${escapeHtml(t("incidents.resolve"))}</button>
               </div>
             </article>`
     )
@@ -79,10 +80,12 @@ export async function renderIncidents(appEl, currentRoute) {
   stopIncidentsLive();
   appEl.innerHTML = `
       <section>
-        <h1>Incident Board</h1>
-        <p class="lead">Фейковый DevOps-монитор. Открыто: <strong id="incidentOpen">…</strong>.
-          Live: <strong id="incidentMode">подключение…</strong> · <span id="incidentUpdated">—</span></p>
-        <div class="stack" id="incidentList"><p class="muted">Ждём WebSocket…</p></div>
+        <h1>${escapeHtml(t("incidents.title"))}</h1>
+        <p class="lead">${escapeHtml(t("incidents.intro"))} ${escapeHtml(t("incidents.open"))}
+          <strong id="incidentOpen">…</strong>.
+          ${escapeHtml(t("incidents.live"))} <strong id="incidentMode">${escapeHtml(t("incidents.connecting"))}</strong>
+          · <span id="incidentUpdated">—</span></p>
+        <div class="stack" id="incidentList"><p class="muted">${escapeHtml(t("incidents.waiting"))}</p></div>
       </section>`;
 
   const socket = new WebSocket(incidentsWsUrl());
@@ -102,13 +105,13 @@ export async function renderIncidents(appEl, currentRoute) {
   socket.onclose = () => {
     if (currentRoute() !== "incidents") return;
     const modeEl = document.getElementById("incidentMode");
-    if (modeEl) modeEl.textContent = "переподключение…";
+    if (modeEl) modeEl.textContent = t("incidents.reconnecting");
     setTimeout(() => {
       if (currentRoute() === "incidents") renderIncidents(appEl, currentRoute);
     }, 1500);
   };
   socket.onerror = () => {
     const modeEl = document.getElementById("incidentMode");
-    if (modeEl) modeEl.textContent = "ошибка WS";
+    if (modeEl) modeEl.textContent = t("incidents.wsError");
   };
 }

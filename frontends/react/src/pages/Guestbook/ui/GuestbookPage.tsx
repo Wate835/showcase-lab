@@ -1,19 +1,21 @@
 import { useGuestbook } from "../useGuestbook";
+import { useI18n } from "../../../utils/usePrefs";
 
 export function GuestbookPage() {
   const { entries, author, setAuthor, message, setMessage, onSubmit } = useGuestbook();
+  const { t, locale } = useI18n();
 
   return (
     <section>
-      <h1>Guestbook</h1>
-      <p className="lead">Оставь след. Сообщение пишется в SQLite.</p>
+      <h1>{t("guestbook.title")}</h1>
+      <p className="lead">{t("guestbook.lead")}</p>
       <form className="form card" onSubmit={onSubmit}>
         <label>
-          Имя
+          {t("guestbook.name")}
           <input value={author} maxLength={40} required onChange={(e) => setAuthor(e.target.value)} />
         </label>
         <label>
-          Сообщение
+          {t("guestbook.message")}
           <textarea
             value={message}
             rows={3}
@@ -23,7 +25,7 @@ export function GuestbookPage() {
           />
         </label>
         <button className="btn" type="submit">
-          Отправить
+          {t("guestbook.submit")}
         </button>
       </form>
       <div className="stack" style={{ marginTop: "1rem" }}>
@@ -32,7 +34,8 @@ export function GuestbookPage() {
             <strong>{e.author}</strong>
             <span className="muted">
               {" "}
-              · {e.framework} · {new Date(e.created_at).toLocaleString()}
+              · {e.framework} ·{" "}
+              {new Date(e.created_at).toLocaleString(locale === "en" ? "en-US" : "ru-RU")}
             </span>
             <p className="msg">{e.message}</p>
           </article>

@@ -1,3 +1,5 @@
+import { t } from "/app/shared/i18n.js";
+
 const PHOTO_EDITOR_BASE = "/app/photo-editor";
 
 let photoEditorUnmount = null;
@@ -11,8 +13,8 @@ export async function renderPhotoEditor(appEl) {
   stopPhotoEditor();
   appEl.innerHTML = `
     <section>
-      <h1>Photo Editor</h1>
-      <p class="lead">Кадрирование, поворот и цветокоррекция прямо в браузере.</p>
+      <h1>${t("photoEditor.title")}</h1>
+      <p class="lead">${t("photoEditor.lead")}</p>
       <div id="photo-editor-host"></div>
     </section>
   `;

@@ -91,6 +91,7 @@ def _mount_dir(url_path: str, directory: Path, name: str) -> None:
 
 
 # Prefer source vanilla; built copies also work from static/
+_mount_dir("/app/shared", FRONTENDS_DIR / "shared", "app-shared")
 _mount_dir("/app/vanilla", FRONTENDS_DIR / "vanilla", "app-vanilla")
 _mount_dir("/app/react", STATIC_DIR / "react", "app-react")
 _mount_dir("/app/vue", STATIC_DIR / "vue", "app-vue")

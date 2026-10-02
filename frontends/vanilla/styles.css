@@ -1,4 +1,6 @@
-:root {
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
   --bg: #14120f;
   --bg-elevated: #1e1b16;
   --bg-soft: #29241c;
@@ -11,8 +13,28 @@
   --danger: #e85d4c;
   --ok: #7cb87c;
   --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  --glow-a: rgba(245, 166, 35, 0.16);
+  --glow-b: rgba(255, 209, 102, 0.08);
   --radius: 14px;
   --font: "Segoe UI", "Trebuchet MS", sans-serif;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #faf7f1;
+  --bg-elevated: #ffffff;
+  --bg-soft: #f0e8da;
+  --accent: #e09212;
+  --accent-soft: #b86b12;
+  --on-accent: #1a140a;
+  --text: #1a140a;
+  --muted: #6e6254;
+  --border: rgba(176, 120, 30, 0.3);
+  --danger: #c2410c;
+  --ok: #3f7d3f;
+  --shadow: 0 16px 40px rgba(26, 20, 10, 0.1);
+  --glow-a: rgba(245, 166, 35, 0.16);
+  --glow-b: rgba(255, 209, 102, 0.12);
 }
 
 * {
@@ -34,8 +56,8 @@ body {
   font-family: var(--font);
   color: var(--text);
   background:
-    radial-gradient(ellipse 70% 50% at 0% 0%, rgba(245, 166, 35, 0.16), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 100% 20%, rgba(255, 209, 102, 0.08), transparent 50%),
+    radial-gradient(ellipse 70% 50% at 0% 0%, var(--glow-a), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 20%, var(--glow-b), transparent 50%),
     var(--bg);
 }
 
@@ -87,8 +109,16 @@ a {
 
 .nav a.active,
 .nav a:hover {
-  color: var(--bg);
+  color: var(--on-accent);
   background: var(--accent);
+}
+
+.topbar-controls {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin-left: auto;
 }
 
 .switch {
@@ -102,6 +132,9 @@ a {
   border: 1px solid var(--border);
   padding: 0.4rem 0.75rem;
   border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .switch:hover {
@@ -190,7 +223,7 @@ h2 {
   border: none;
   cursor: pointer;
   background: var(--accent);
-  color: #1a140a;
+  color: var(--on-accent);
   font-weight: 700;
   border-radius: 10px;
   padding: 0.55rem 0.95rem;

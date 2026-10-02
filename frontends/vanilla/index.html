@@ -1,9 +1,25 @@
 ﻿<!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Showcase Lab — Vanilla</title>
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("showcase-theme");
+          if (theme !== "light" && theme !== "dark") theme = "dark";
+          document.documentElement.setAttribute("data-theme", theme);
+          document.documentElement.style.colorScheme = theme;
+          var locale = localStorage.getItem("showcase-locale");
+          if (locale !== "en" && locale !== "ru") locale = "ru";
+          document.documentElement.setAttribute("lang", locale);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+          document.documentElement.setAttribute("lang", "ru");
+        }
+      })();
+    </script>
     <link rel="stylesheet" href="./styles.css" />
     <link rel="stylesheet" href="./src/motion.css" />
   </head>
@@ -12,12 +28,16 @@
       <header class="topbar">
         <a class="logo" href="#about">Showcase Lab</a>
         <nav class="nav" id="nav"></nav>
-        <a class="switch" href="/?choose=1">Сменить стек</a>
+        <div class="topbar-controls">
+          <button type="button" class="switch" id="themeToggle" aria-label="Toggle theme">Dark</button>
+          <button type="button" class="switch" id="localeToggle" aria-label="Toggle language">EN</button>
+          <a class="switch" id="switchStack" href="/?choose=1">Сменить стек</a>
+        </div>
       </header>
       <main id="app" class="content"></main>
       <footer class="footer">
         <span class="badge">Vanilla JS · amber</span>
-        <span>API: FastAPI + SQLAlchemy</span>
+        <span id="footerApi">API: FastAPI + SQLAlchemy</span>
       </footer>
     </div>
     <script type="module" src="./src/main.js"></script>

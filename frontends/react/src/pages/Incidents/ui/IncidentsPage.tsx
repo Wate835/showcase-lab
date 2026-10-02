@@ -1,13 +1,15 @@
 import { useIncidents } from "../useIncidents";
+import { useI18n } from "../../../utils/usePrefs";
 
 export function IncidentsPage() {
   const { visible, openCount, liveMode, updatedAt, leavingIds, resolveItem } = useIncidents();
+  const { t } = useI18n();
 
   return (
     <section>
-      <h1>Incident Board</h1>
+      <h1>{t("incidents.title")}</h1>
       <p className="lead">
-        Фейковый DevOps-монитор. Открыто: <strong>{openCount}</strong>. Live:{" "}
+        {t("incidents.intro")} {t("incidents.open")} <strong>{openCount}</strong>. {t("incidents.live")}{" "}
         <strong>{liveMode}</strong>
         {updatedAt ? <> · {updatedAt}</> : null}
       </p>
@@ -29,7 +31,7 @@ export function IncidentsPage() {
                 disabled={leavingIds.includes(item.id)}
                 onClick={() => resolveItem(item.id)}
               >
-                Resolve
+                {t("incidents.resolve")}
               </button>
             </div>
           </article>

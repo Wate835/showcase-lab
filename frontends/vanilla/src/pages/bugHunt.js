@@ -1,3 +1,4 @@
+import { t } from "/app/shared/i18n.js";
 import { checkChallengeFix, checkChallengeLine, fetchChallenges, fetchScores, postScore } from "../api/index.js";
 import { FRAMEWORK } from "../constants.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
@@ -5,7 +6,7 @@ import { formatTime } from "../utils/formatTime.js";
 import { showToast } from "../utils/toast.js";
 
 export async function renderBugHunt(appEl) {
-  appEl.innerHTML = `<p class="muted">Загрузка челленджей…</p>`;
+  appEl.innerHTML = `<p class="muted">${escapeHtml(t("bugs.loading"))}</p>`;
   let challenges = [];
   let scores = [];
   try {
@@ -43,7 +44,7 @@ export async function renderBugHunt(appEl) {
     if (!box) return;
     box.innerHTML = `
       <table class="table">
-        <thead><tr><th>#</th><th>Игрок</th><th>Время</th><th>FW</th></tr></thead>
+        <thead><tr><th>#</th><th>${escapeHtml(t("bugs.colPlayer"))}</th><th>${escapeHtml(t("bugs.colTime"))}</th><th>FW</th></tr></thead>
         <tbody>
           ${scores
             .map(
@@ -76,7 +77,7 @@ export async function renderBugHunt(appEl) {
     if (playing && foundLine && ch && foundBugLine != null) {
       fixPanel = `
         <div class="fix-panel">
-          <h3>Баг на строке ${foundBugLine}. Выбери исправление:</h3>
+          <h3>${escapeHtml(t("bugs.fixPrompt", { line: foundBugLine }))}</h3>
           <div class="fix-options">
             ${ch.fixes
               .map(
@@ -92,11 +93,11 @@ export async function renderBugHunt(appEl) {
     if (finished) {
       finishPanel = `
         <div class="card" style="margin-top:1rem">
-          <h2>Все баги закрыты!</h2>
-          <p class="lead">Время: <strong>${formatTime(elapsed)}</strong></p>
+          <h2>${escapeHtml(t("bugs.allFixed"))}</h2>
+          <p class="lead">${escapeHtml(t("bugs.time"))} <strong>${formatTime(elapsed)}</strong></p>
           <div class="form" style="margin-top:.75rem">
-            <label>Ник <input id="huntPlayer" maxlength="40" placeholder="anonymous" value="${escapeHtml(player)}" /></label>
-            <button class="btn" id="huntSave" type="button">Сохранить результат</button>
+            <label>${escapeHtml(t("bugs.nick"))} <input id="huntPlayer" maxlength="40" placeholder="anonymous" value="${escapeHtml(player)}" /></label>
+            <button class="btn" id="huntSave" type="button">${escapeHtml(t("bugs.saveScore"))}</button>
           </div>
         </div>`;
     }
@@ -119,19 +120,28 @@ export async function renderBugHunt(appEl) {
             .join("")
         : "";
 
+    const progress = playing || finished
+      ? escapeHtml(
+          t("bugs.bugProgress", {
+            current: Math.min(index + 1, challenges.length),
+            total: challenges.length,
+          })
+        )
+      : escapeHtml(t("bugs.ready"));
+
     appEl.innerHTML = `
       <section>
-        <h1>Bug Hunt</h1>
-        <p class="lead">Найди и исправь ${challenges.length} классических багов ${FRAMEWORK}. Кликни по ошибочной строке, затем выбери фикс.</p>
+        <h1>${escapeHtml(t("bugs.title"))}</h1>
+        <p class="lead">${escapeHtml(t("bugs.lead", { count: challenges.length, framework: FRAMEWORK }))}</p>
         <div class="hunt-toolbar">
-          <button class="btn" id="huntStart" ${playing && !finished ? "disabled" : ""}>${finished || !playing ? "Старт" : "В процессе…"}</button>
+          <button class="btn" id="huntStart" ${playing && !finished ? "disabled" : ""}>${escapeHtml(finished || !playing ? t("bugs.start") : t("bugs.inProgress"))}</button>
           <span class="timer" id="huntTimer">${formatTime(elapsed)}</span>
-          <span class="muted">${playing || finished ? `Баг ${Math.min(index + 1, challenges.length)} / ${challenges.length}` : "Готов?"}</span>
+          <span class="muted">${progress}</span>
         </div>
         ${
           ch && (playing || finished)
-            ? `<p class="hunt-hint"><strong>Наблюдение:</strong> ${escapeHtml(ch.hint || ch.title)}</p>`
-            : `<p class="hunt-hint"><strong>Как играть:</strong> короткий симптом — без спойлера. Найди строку и выбери фикс.</p>`
+            ? `<p class="hunt-hint"><strong>${escapeHtml(t("bugs.observation"))}</strong> ${escapeHtml(ch.hint || ch.title)}</p>`
+            : `<p class="hunt-hint"><strong>${escapeHtml(t("bugs.howToPlay"))}</strong> ${escapeHtml(t("bugs.howToPlayBody"))}</p>`
         }
         <div class="vscode">
           <div class="vscode-titlebar">
@@ -145,7 +155,7 @@ export async function renderBugHunt(appEl) {
             </aside>
             <div class="vscode-main">
               <div class="vscode-tabs"><div class="vscode-tab">${(playing || finished) && ch ? escapeHtml(ch.file) : "ready"}</div></div>
-              <div class="vscode-editor" id="huntEditor">${linesHtml || '<p class="muted" style="padding:1rem">Нажми «Старт»</p>'}</div>
+              <div class="vscode-editor" id="huntEditor">${linesHtml || `<p class="muted" style="padding:1rem">${escapeHtml(t("bugs.pressStart"))}</p>`}</div>
               ${fixPanel}
             </div>
           </div>
@@ -155,7 +165,7 @@ export async function renderBugHunt(appEl) {
           </div>
         </div>
         ${finishPanel}
-        <h2 style="margin-top:1.5rem">Результаты (быстрее = лучше)</h2>
+        <h2 style="margin-top:1.5rem">${escapeHtml(t("bugs.results"))}</h2>
         <div id="huntScores" class="card"></div>
       </section>`;
 

@@ -1,0 +1,192 @@
+const STORAGE_KEY = "showcase-locale";
+const listeners = new Set();
+
+export const LOCALES = /** @type {const} */ (["ru", "en"]);
+
+/** @type {Record<"ru" | "en", Record<string, string>>} */
+export const messages = {
+  ru: {
+    "shell.switchStack": "Сменить стек",
+    "shell.themeToLight": "Светлая",
+    "shell.themeToDark": "Тёмная",
+    "shell.localeToEn": "EN",
+    "shell.localeToRu": "RU",
+    "shell.footerApi": "API: FastAPI + SQLAlchemy",
+    "shell.themeAria": "Переключить тему",
+    "shell.localeAria": "Переключить язык",
+
+    "nav.about": "About",
+    "nav.projects": "Projects",
+    "nav.photoEditor": "Photo Editor",
+    "nav.bugs": "Bug Hunt",
+    "nav.incidents": "Incidents",
+    "nav.guestbook": "Guestbook",
+
+    "projects.title": "Projects",
+    "projects.lead": "Проекты и кейсы из опыта.",
+    "projects.openDemo": "Открыть демо",
+    "projects.loading": "Загрузка проектов…",
+    "projects.loadingError": "Ошибка загрузки",
+
+    "photoEditor.title": "Photo Editor",
+    "photoEditor.lead": "Кадрирование, поворот и цветокоррекция прямо в браузере.",
+
+    "guestbook.title": "Guestbook",
+    "guestbook.lead": "Оставь след. Сообщение пишется в SQLite.",
+    "guestbook.name": "Имя",
+    "guestbook.message": "Сообщение",
+    "guestbook.submit": "Отправить",
+    "guestbook.loading": "Загрузка guestbook…",
+
+    "incidents.title": "Incident Board",
+    "incidents.intro": "Фейковый DevOps-монитор.",
+    "incidents.open": "Открыто:",
+    "incidents.live": "Live:",
+    "incidents.resolve": "Resolve",
+    "incidents.waiting": "Ждём WebSocket…",
+    "incidents.connecting": "подключение…",
+    "incidents.reconnecting": "переподключение…",
+    "incidents.wsError": "ошибка WS",
+
+    "bugs.title": "Bug Hunt",
+    "bugs.lead":
+      "Найди и исправь {count} классических багов {framework}. Кликни по ошибочной строке, затем выбери фикс.",
+    "bugs.start": "Старт",
+    "bugs.inProgress": "В процессе…",
+    "bugs.ready": "Готов?",
+    "bugs.bugProgress": "Баг {current} / {total}",
+    "bugs.observation": "Наблюдение:",
+    "bugs.howToPlay": "Как играть:",
+    "bugs.howToPlayBody": "короткий симптом — без спойлера. Найди строку и выбери фикс.",
+    "bugs.pressStart": "Нажми «Старт»",
+    "bugs.fixPrompt": "Баг на строке {line}. Выбери исправление:",
+    "bugs.allFixed": "Все баги закрыты!",
+    "bugs.time": "Время:",
+    "bugs.nick": "Ник",
+    "bugs.saveScore": "Сохранить результат",
+    "bugs.results": "Результаты (быстрее = лучше)",
+    "bugs.colPlayer": "Игрок",
+    "bugs.colTime": "Время",
+    "bugs.loading": "Загрузка челленджей…",
+
+    "common.error": "Ошибка:",
+  },
+  en: {
+    "shell.switchStack": "Switch stack",
+    "shell.themeToLight": "Light",
+    "shell.themeToDark": "Dark",
+    "shell.localeToEn": "EN",
+    "shell.localeToRu": "RU",
+    "shell.footerApi": "API: FastAPI + SQLAlchemy",
+    "shell.themeAria": "Toggle theme",
+    "shell.localeAria": "Toggle language",
+
+    "nav.about": "About",
+    "nav.projects": "Projects",
+    "nav.photoEditor": "Photo Editor",
+    "nav.bugs": "Bug Hunt",
+    "nav.incidents": "Incidents",
+    "nav.guestbook": "Guestbook",
+
+    "projects.title": "Projects",
+    "projects.lead": "Projects and case studies from experience.",
+    "projects.openDemo": "Open demo",
+    "projects.loading": "Loading projects…",
+    "projects.loadingError": "Failed to load",
+
+    "photoEditor.title": "Photo Editor",
+    "photoEditor.lead": "Crop, rotate, and color-correct right in the browser.",
+
+    "guestbook.title": "Guestbook",
+    "guestbook.lead": "Leave a note. Messages are stored in SQLite.",
+    "guestbook.name": "Name",
+    "guestbook.message": "Message",
+    "guestbook.submit": "Send",
+    "guestbook.loading": "Loading guestbook…",
+
+    "incidents.title": "Incident Board",
+    "incidents.intro": "A fake DevOps monitor.",
+    "incidents.open": "Open:",
+    "incidents.live": "Live:",
+    "incidents.resolve": "Resolve",
+    "incidents.waiting": "Waiting for WebSocket…",
+    "incidents.connecting": "connecting…",
+    "incidents.reconnecting": "reconnecting…",
+    "incidents.wsError": "WS error",
+
+    "bugs.title": "Bug Hunt",
+    "bugs.lead":
+      "Find and fix {count} classic {framework} bugs. Click the faulty line, then pick a fix.",
+    "bugs.start": "Start",
+    "bugs.inProgress": "In progress…",
+    "bugs.ready": "Ready?",
+    "bugs.bugProgress": "Bug {current} / {total}",
+    "bugs.observation": "Observation:",
+    "bugs.howToPlay": "How to play:",
+    "bugs.howToPlayBody": "a short symptom — no spoilers. Find the line and pick a fix.",
+    "bugs.pressStart": "Press “Start”",
+    "bugs.fixPrompt": "Bug on line {line}. Choose a fix:",
+    "bugs.allFixed": "All bugs closed!",
+    "bugs.time": "Time:",
+    "bugs.nick": "Nickname",
+    "bugs.saveScore": "Save score",
+    "bugs.results": "Leaderboard (faster is better)",
+    "bugs.colPlayer": "Player",
+    "bugs.colTime": "Time",
+    "bugs.loading": "Loading challenges…",
+
+    "common.error": "Error:",
+  },
+};
+
+/** @returns {"ru" | "en"} */
+export function getLocale() {
+  const lang = document.documentElement.getAttribute("lang");
+  if (lang === "ru" || lang === "en") return lang;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "ru" || stored === "en") return stored;
+  } catch {
+    /* ignore */
+  }
+  return "ru";
+}
+
+/** @param {"ru" | "en"} locale */
+export function setLocale(locale) {
+  const next = locale === "en" ? "en" : "ru";
+  document.documentElement.setAttribute("lang", next);
+  try {
+    localStorage.setItem(STORAGE_KEY, next);
+  } catch {
+    /* ignore */
+  }
+  listeners.forEach((fn) => fn());
+}
+
+export function toggleLocale() {
+  setLocale(getLocale() === "ru" ? "en" : "ru");
+}
+
+export function initLocale() {
+  setLocale(getLocale());
+}
+
+/**
+ * @param {string} key
+ * @param {Record<string, string | number>} [vars]
+ */
+export function t(key, vars = {}) {
+  const locale = getLocale();
+  const dict = messages[locale] || messages.ru;
+  let str = dict[key] ?? messages.ru[key] ?? messages.en[key] ?? key;
+  return str.replace(/\{(\w+)\}/g, (_, name) =>
+    vars[name] !== undefined && vars[name] !== null ? String(vars[name]) : `{${name}}`
+  );
+}
+
+/** @param {() => void} cb */
+export function subscribeLocale(cb) {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
+}

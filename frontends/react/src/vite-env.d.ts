@@ -8,3 +8,5 @@ declare module "@showcase-lab/photo-editor/mount" {
 }
 
 declare module "@showcase-lab/photo-editor/style.css";
+
+declare module "@shared/*";

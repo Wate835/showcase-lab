@@ -1,9 +1,25 @@
 ﻿<!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Showcase Lab — Vue 3</title>
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("showcase-theme");
+          if (theme !== "light" && theme !== "dark") theme = "dark";
+          document.documentElement.setAttribute("data-theme", theme);
+          document.documentElement.style.colorScheme = theme;
+          var locale = localStorage.getItem("showcase-locale");
+          if (locale !== "en" && locale !== "ru") locale = "ru";
+          document.documentElement.setAttribute("lang", locale);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+          document.documentElement.setAttribute("lang", "ru");
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>
