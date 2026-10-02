@@ -1,0 +1,292 @@
+.loader {
+  position: absolute;
+  color: white;
+  display: flex;
+  width: 22px;
+  height: 22px;
+}
+
+.button {
+  position: relative;
+  height: 44px;
+  vertical-align: middle;
+  display: inline-block;
+  cursor: pointer;
+  color: white;
+}
+
+.button__content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 14px;
+  font-weight: 500;
+  font-size: 14px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border: none;
+  gap: 10px;
+  background-color: #86cfbe;
+  border-radius: 8px;
+  transition: all 0.3s;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &_full {
+    width: 100%;
+  }
+
+  &_circle {
+    border-radius: 31px;
+    width: 42px;
+  }
+
+  &_icon {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+  }
+
+  &_primary {
+    background-color: #3B82F6;
+
+    &:hover {
+      background-color: #1D4ED8;
+      opacity: 1;
+    }
+  }
+
+  &_primary-outline {
+    background-color: transparent;
+    border: #3B82F6 solid 1px;
+    color: #3B82F6;
+
+    &:hover {
+      background-color: #ECF5FF;
+      opacity: 1;
+    }
+
+    &:active {
+      background-color: #ECF5FF;
+      color: #1D4ED8;
+      opacity: 1;
+    }
+  }
+
+  &_secondary {
+    background-color: #D7D9DC;
+  }
+
+  &_secondary-outline {
+    background-color: transparent;
+    border: #D7D9DC solid 1px;
+    color: #7b7e87
+  }
+
+  &_success {
+    background-color: #2a9528;
+  }
+
+  &_success-outline {
+    background-color: transparent;
+    border: #2a9528 solid 1px;
+    color: #2a9528;
+  }
+
+  &_danger {
+    background-color: #e2061a;
+  }
+
+  &_danger-outline {
+    background-color: transparent;
+    border: #e2061a solid 1px;
+    color: #e2061a;
+  }
+
+  &_warning {
+    background-color: #fac81a;
+  }
+
+  &_warning-outline {
+    background-color: transparent;
+    border: #fac81a solid 1px;
+    color: #fac81a;
+  }
+
+  &_info {
+    background-color: #02a8ea;
+  }
+
+  &_gray {
+    background-color:rgba(215, 215, 215, 0.5);
+  }
+
+  &_light {
+    background-color: white;
+    color: #282b2e;
+
+    &:hover {
+      background-color: #bfe9f9;
+    }
+
+    .loader {
+      color: #282b2e;
+    }
+  }
+  &_tran-outline {
+    background-color: white;
+    color: #282b2e;
+    border: 1px solid #D7D9DC;
+
+    //&:hover {
+    //  background-color: #bfe9f9;
+    //}
+
+    .loader {
+      color: #282b2e;
+    }
+  }
+  &_light-outline {
+    background-color: white;
+    color: #3B82F6;
+    border: 1px solid #3B82F6;
+
+    &:hover {
+      background-color: #ECF5FF;
+    }
+
+    .loader {
+      color: #282b2e;
+    }
+  }
+
+  &_light-gray {
+    background-color: #f1f3f7;
+    color: #3B82F6;
+
+    .loader {
+      color: #282b2e;
+    }
+
+    &:hover {
+      background-color: #EAEDF1;
+      opacity: 1;
+    }
+
+    &:active {
+      color: #1D4ED8;
+    }
+  }
+  &_gray {
+    background-color: #D7D9DC;
+    color: white;
+
+    .loader {
+      color: white;
+    }
+  }
+
+  &_dark {
+    background-color: #282b2e;
+    color: white;
+  }
+
+  &_dark-grey {
+    background-color: white-gray;
+    color: #282b2e;
+
+    &:hover {
+      background-color: #eaedf1 !important;
+      opacity: 1 !important;
+    }
+  }
+
+  &_transparent {
+    padding: 0;
+    height: fit-content;
+    background-color: transparent;
+    border: none;
+    width: fit-content;
+    color: #3b82f6;
+
+    &:hover {
+      color: #1D4ED8;
+    }
+  }
+
+  &_light-blue {
+    background-color: #ECF5FF;
+    color: #3B82F6;
+    border: none;
+
+    &:hover {
+      background-color: #BFDBFE;
+    }
+  }
+
+  &_light-blue-outline {
+    background-color: #ECF5FF;
+    color: #3B82F6;
+    border: 1px solid #3B82F6;
+
+    &:hover {
+      background-color: #BFDBFE;
+    }
+  }
+
+}
+
+@media (hover: hover) {
+  .button__content_tran-outline:hover {
+    background-color: #bfe9f9;
+  }
+}
+
+@media (max-width: 560px) {
+  .button__content {
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+
+// Loader
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+}
+
+.lds-dual-ring:after {
+  content: '';
+  display: block;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  border: 3px solid currentColor;
+  border-color: currentColor transparent currentColor transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}

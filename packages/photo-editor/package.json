@@ -1,0 +1,35 @@
+{
+  "name": "@showcase-lab/photo-editor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./mount": {
+      "types": "./mount.d.ts",
+      "default": "./src/mount.ts"
+    },
+    "./style.css": "./src/style.css"
+  },
+  "scripts": {
+    "build:lib": "vite build -c vite.config.lib.ts"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "@vueuse/core": "^11.3.0",
+    "konva": "^9.3.16",
+    "vue-konva": "^3.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "sass-embedded": "^1.83.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.3",
+    "vue": "^3.5.13"
+  }
+}

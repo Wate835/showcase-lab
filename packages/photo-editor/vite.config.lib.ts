@@ -1,0 +1,22 @@
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+import { resolve } from "node:path";
+
+export default defineConfig({
+  plugins: [vue()],
+  build: {
+    outDir: resolve(__dirname, "../../backend/static/photo-editor"),
+    emptyOutDir: true,
+    cssCodeSplit: false,
+    lib: {
+      entry: resolve(__dirname, "src/mount.ts"),
+      formats: ["es"],
+      fileName: () => "mount.js",
+    },
+    rollupOptions: {
+      output: {
+        assetFileNames: "style.css",
+      },
+    },
+  },
+});
