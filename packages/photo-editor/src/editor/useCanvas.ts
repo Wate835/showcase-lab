@@ -1,4 +1,4 @@
-import { ref, type Ref } from "vue";
+import { nextTick, ref, type Ref } from "vue";
 import Konva from "konva";
 
 import { loadImageElement } from "../utils/loadImageElement";
@@ -7,7 +7,7 @@ import { loadImageElement } from "../utils/loadImageElement";
 export const STAGE_PAD = 28;
 
 export function useCanvas() {
-  const isLoading = ref(false);
+  const isLoading = ref(true);
   const imageObj = ref<HTMLImageElement | null>(null);
   const stageRef = ref();
   const layerRef = ref();
@@ -27,7 +27,23 @@ export function useCanvas() {
     rotation: 0,
     offsetX: 0,
     offsetY: 0,
+    scaleX: 1,
+    scaleY: 1,
   });
+
+  function fitScale(baseW: number, baseH: number, rotation = 0) {
+    if (!stageWrapper.value) return 1;
+    const availW = Math.max(1, stageWrapper.value.clientWidth - STAGE_PAD * 2);
+    const availH = Math.max(1, stageWrapper.value.clientHeight - STAGE_PAD * 2);
+    const rot = ((rotation % 360) + 360) % 360;
+    const swapped = rot === 90 || rot === 270;
+    const fitW = swapped ? baseH : baseW;
+    const fitH = swapped ? baseW : baseH;
+    if (fitW > availW || fitH > availH) {
+      return Math.min(availW / fitW, availH / fitH);
+    }
+    return 1;
+  }
 
   function setParams(opts: { resetRotation?: boolean } = {}) {
     if (!imageObj.value || !stageWrapper.value) return;
@@ -49,6 +65,17 @@ export function useCanvas() {
     if (opts.resetRotation) {
       imageConfig.value.rotation = 0;
     }
+
+    const s = fitScale(w, h, imageConfig.value.rotation);
+    if (opts.resetRotation) {
+      imageConfig.value.scaleX = s;
+      imageConfig.value.scaleY = s;
+    } else {
+      const signX = Math.sign(imageConfig.value.scaleX || 1) || 1;
+      const signY = Math.sign(imageConfig.value.scaleY || 1) || 1;
+      imageConfig.value.scaleX = s * signX;
+      imageConfig.value.scaleY = s * signY;
+    }
   }
 
   function layout() {
@@ -61,7 +88,6 @@ export function useCanvas() {
   function scale() {
     if (!imageObj.value || !stageWrapper.value || !imageNode.value) return;
 
-    const wrapper = stageWrapper.value;
     const img = imageObj.value;
     const node = imageNode.value.getNode() as Konva.Image;
     const baseW = img.naturalWidth || img.width;
@@ -75,25 +101,19 @@ export function useCanvas() {
     node.x(configStage.value.width / 2);
     node.y(configStage.value.height / 2);
 
-    const signX = Math.sign(node.scaleX() || 1) || 1;
-    const signY = Math.sign(node.scaleY() || 1) || 1;
+    const signX =
+      Math.sign(imageConfig.value.scaleX || node.scaleX() || 1) || 1;
+    const signY =
+      Math.sign(imageConfig.value.scaleY || node.scaleY() || 1) || 1;
 
-    const availW = Math.max(1, wrapper.clientWidth - STAGE_PAD * 2);
-    const availH = Math.max(1, wrapper.clientHeight - STAGE_PAD * 2);
+    const s = fitScale(baseW, baseH, Number(imageConfig.value.rotation) || 0);
+    const sx = s * signX;
+    const sy = s * signY;
 
-    // 90°/270°: on-screen AABB swaps axes — fit against swapped size
-    const rot = ((Number(imageConfig.value.rotation) % 360) + 360) % 360;
-    const swapped = rot === 90 || rot === 270;
-    const fitW = swapped ? baseH : baseW;
-    const fitH = swapped ? baseW : baseH;
-
-    let s = 1;
-    if (fitW > availW || fitH > availH) {
-      s = Math.min(availW / fitW, availH / fitH);
-    }
-
-    node.scaleX(s * signX);
-    node.scaleY(s * signY);
+    imageConfig.value.scaleX = sx;
+    imageConfig.value.scaleY = sy;
+    node.scaleX(sx);
+    node.scaleY(sy);
     node.clearCache();
   }
 
@@ -116,9 +136,15 @@ export function useCanvas() {
       const image = await loadImageElement(src);
       imageObj.value = image;
       imageConfig.value.image = image;
+      // Fit scale into reactive config BEFORE the stage becomes visible
       setParams({ resetRotation: true });
+      await nextTick();
+      scale();
     } finally {
       isLoading.value = false;
+      // Quiet pass after reveal; scale already correct → no visible jump
+      await nextTick();
+      requestAnimationFrame(() => layout());
     }
   }
 

@@ -174,12 +174,11 @@ export function useEditor(
     await canvas.loadImage(props.defImg);
     history.addHistory("Оригинал", canvas.imageObj.value?.src as string);
     history.title.value = "Цвет";
-    // Wait for layout so stageWrapper has real size
-    requestAnimationFrame(() => canvas.layout());
   });
 
   onMounted(() => {
     const resizeObserver = new ResizeObserver(() => {
+      if (canvas.isLoading.value) return;
       canvas.layout();
     });
 
