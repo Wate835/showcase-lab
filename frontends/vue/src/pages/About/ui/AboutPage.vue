@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { useAbout } from "../useAbout";
+import { useI18n } from "../../../utils/usePrefs";
 
 const { profile, error } = useAbout();
+const { t } = useI18n();
 </script>
 
 <template>
   <p v-if="error" class="error">{{ error }}</p>
-  <p v-else-if="!profile" class="muted">Загрузка профиля…</p>
+  <p v-else-if="!profile" class="muted">{{ t("about.loading") }}</p>
   <section v-else>
     <h1>{{ profile.name }}</h1>
     <p class="lead">{{ profile.title }} · {{ profile.city }}</p>
@@ -15,7 +17,7 @@ const { profile, error } = useAbout();
       <span v-for="s in profile.skills" :key="s" class="chip">{{ s }}</span>
     </div>
     <div class="card">
-      <h2>Обо мне</h2>
+      <h2>{{ t("about.me") }}</h2>
       <p class="msg">{{ profile.about }}</p>
       <p class="muted" style="margin-top: 1rem">
         <a :href="profile.telegram" target="_blank" rel="noreferrer">Telegram</a> ·

@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Showcase Lab — выбери стек</title>
+    <script>
+      (function () {
+        try {
+          var locale = localStorage.getItem("showcase-locale");
+          if (locale !== "en" && locale !== "ru") {
+            var nav = String(navigator.language || (navigator.languages && navigator.languages[0]) || "").toLowerCase();
+            locale = nav.indexOf("en") === 0 ? "en" : "ru";
+            localStorage.setItem("showcase-locale", locale);
+          }
+          document.documentElement.setAttribute("lang", locale);
+        } catch (e) {
+          document.documentElement.setAttribute("lang", "ru");
+        }
+      })();
+    </script>
     <style>
       :root {
         --bg: #101014;
@@ -15,6 +30,7 @@
       }
       * { box-sizing: border-box; }
       body {
+        position: relative;
         margin: 0;
         min-height: 100vh;
         font-family: "Segoe UI", "Trebuchet MS", sans-serif;
@@ -98,6 +114,18 @@
         font-size: 0.9rem;
         animation: rise-in 0.5s ease 0.36s both;
       }
+      .lang {
+        position: absolute;
+        top: 1.2rem;
+        right: 1.2rem;
+        color: var(--muted);
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 999px;
+        padding: 0.4rem 0.75rem;
+        cursor: pointer;
+        font: inherit;
+      }
       @keyframes rise-in {
         from { opacity: 0; transform: translateY(14px); }
         to { opacity: 1; transform: none; }
@@ -110,9 +138,10 @@
     </style>
   </head>
   <body>
+    <button type="button" class="lang" id="langToggle" aria-label="Language">EN</button>
     <main>
       <h1 class="brand">Showcase Lab</h1>
-      <p class="lead">
+      <p class="lead" id="landingLead">
         Портфолио Антона Кудрявцева. Один FastAPI-бэкенд — три фронта.
         Выбери стек: у каждого своя цветовая гамма и тот же набор экранов.
       </p>
@@ -120,20 +149,20 @@
         <a class="card vanilla" href="/app/vanilla/" data-fw="vanilla">
           <div class="swatch"></div>
           <h2>Vanilla JS</h2>
-          <p>Нативный JS. Тёплая amber-палитра.</p>
+          <p id="cardVanilla">Нативный JS. Тёплая amber-палитра.</p>
         </a>
         <a class="card react" href="/app/react/" data-fw="react">
           <div class="swatch"></div>
           <h2>React</h2>
-          <p>Vite + TypeScript. Cool cyan.</p>
+          <p id="cardReact">Vite + TypeScript. Cool cyan.</p>
         </a>
         <a class="card vue" href="/app/vue/" data-fw="vue">
           <div class="swatch"></div>
           <h2>Vue 3</h2>
-          <p>Vite + TypeScript. Emerald.</p>
+          <p id="cardVue">Vite + TypeScript. Emerald.</p>
         </a>
       </div>
-      <p class="hint">Выбор запоминается в cookie на 30 дней. Можно сменить через «Сменить стек».</p>
+      <p class="hint" id="landingHint">Выбор запоминается в cookie на 30 дней. Можно сменить через «Сменить стек».</p>
     </main>
     <script>
       document.querySelectorAll("[data-fw]").forEach((el) => {
@@ -142,6 +171,31 @@
           document.cookie = "fw=" + fw + "; path=/; max-age=" + (60 * 60 * 24 * 30) + "; SameSite=Lax";
         });
       });
+    </script>
+    <script type="module">
+      import { initLocale, t, getLocale, toggleLocale, subscribeLocale } from "/app/shared/i18n.js";
+      initLocale();
+      function paint() {
+        document.title = t("landing.title");
+        const lead = document.getElementById("landingLead");
+        const vanilla = document.getElementById("cardVanilla");
+        const react = document.getElementById("cardReact");
+        const vue = document.getElementById("cardVue");
+        const hint = document.getElementById("landingHint");
+        const btn = document.getElementById("langToggle");
+        if (lead) lead.textContent = t("landing.lead");
+        if (vanilla) vanilla.textContent = t("landing.vanilla");
+        if (react) react.textContent = t("landing.react");
+        if (vue) vue.textContent = t("landing.vue");
+        if (hint) hint.textContent = t("landing.hint");
+        if (btn) {
+          btn.textContent = getLocale() === "en" ? t("shell.localeToEn") : t("shell.localeToRu");
+          btn.setAttribute("aria-label", t("landing.langAria"));
+        }
+      }
+      document.getElementById("langToggle")?.addEventListener("click", () => toggleLocale());
+      subscribeLocale(paint);
+      paint();
     </script>
   </body>
 </html>

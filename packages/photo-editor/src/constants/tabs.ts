@@ -8,10 +8,10 @@ export type EditorTab = {
 
 /** Tools in the left rail (History is a permanent right panel). */
 export const EDITOR_TABS: EditorTab[] = [
-  { id: 0, label: "Цвет", icon: "sliders" },
-  { id: 1, label: "Поворот", icon: "reload" },
-  { id: 2, label: "Кадр", icon: "minimize" },
-  { id: 3, label: "Отражение", icon: "flip" },
+  { id: 0, label: "pe.tab.color", icon: "sliders" },
+  { id: 1, label: "pe.tab.rotate", icon: "reload" },
+  { id: 2, label: "pe.tab.crop", icon: "minimize" },
+  { id: 3, label: "pe.tab.flip", icon: "flip" },
 ];
 
 export const TAB = {

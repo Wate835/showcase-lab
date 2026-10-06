@@ -51,7 +51,8 @@
 
   .logo,
   .nav a,
-  .switch {
+  .switch,
+  .topbar-controls .switch {
     transition: none !important;
   }
 

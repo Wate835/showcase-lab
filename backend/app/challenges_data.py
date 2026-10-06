@@ -866,53 +866,237 @@ CHALLENGES: dict[str, list[dict[str, Any]]] = {
     ],
 }
 
-HINTS: dict[str, str] = {
-    'v01': 'На некоторых массивах сумма получается странной.',
-    'v02': 'В админку иногда попадают лишние пользователи.',
-    'v03': 'Клики по разным кнопкам ведут себя одинаково.',
-    'v04': 'Функция падает при разборе ответа сервера.',
-    'v05': 'На части входных строк приложение падает.',
-    'v06': 'Числа после сортировки идут не по возрастанию.',
-    'v07': 'Имя пользователя может сломать разметку страницы.',
-    'v08': 'После отправки формы страница внезапно перезагружается.',
-    'v09': 'Проверка почти равных чисел работает непредсказуемо.',
-    'v10': 'Счётчик таймера не растёт, хотя интервал запущен.',
-    'v11': 'Ошибки API выглядят как обычные данные.',
-    'v12': 'Исходный объект пользователя меняется сам по себе.',
-    'v13': 'Падает, если у пользователя нет части полей.',
-    'v14': 'При быстром вводе обработчик срабатывает слишком часто.',
-    'v15': 'Проверка сломанного числа всегда даёт один ответ.',
-    'r01': 'React ругается на список в консоли.',
-    'r02': 'После добавления элемента UI не всегда обновляется.',
-    'r03': 'Лишние запросы уходят снова и снова.',
-    'r04': 'После ухода со страницы что-то продолжает тикать.',
-    'r05': 'React ругается на порядок вызова хуков.',
-    'r06': 'В поле ввода нельзя напечатать текст.',
-    'r07': 'Счётчик после серии кликов показывает не то значение.',
-    'r08': 'После фильтрации у элементов переезжает состояние.',
-    'r09': 'Компонент уходит в бесконечные обновления.',
-    'r10': 'Рендер падает на данных пользователя.',
-    'r11': 'Одно и то же считается двумя способами.',
-    'r12': 'После быстрого ухода со страницы — warning в консоли.',
-    'r13': 'Заголовок карточки пустой, хотя данные передали.',
-    'r14': 'Дочерний компонент перерисовывается без нужды.',
-    'r15': 'Клик срабатывает шире, чем ожидаешь.',
-    'q01': 'Vue предупреждает про список в шаблоне.',
-    'q02': 'Меняется то, что снаружи считалось неизменным входом.',
-    'q03': 'Присвоение значения не обновляет интерфейс.',
-    'q04': 'Vue ругается на директивы на одном элементе.',
-    'q05': 'Изменение вложенного поля не запускает обновление.',
-    'q06': 'Лишние побочные действия при каждом пересчёте.',
-    'q07': 'Родитель не получает ожидаемое событие.',
-    'q08': 'Обращение к DOM падает при старте.',
-    'q09': 'Состояние корзины меняют в обход правил стора.',
-    'q10': 'Вложенное поле меняется, а экран молчит.',
-    'q11': 'Vue ругается на слишком много обновлений подряд.',
-    'q12': 'Данные грузятся раньше, чем открылась нужная страница.',
-    'q13': 'Переключатель не переключается.',
-    'q14': 'Размер элемента сразу после показа — ноль.',
-    'q15': 'Инстансы неожиданно делят одни и те же данные.',
+HINTS: dict[str, dict[str, str]] = {
+    "v01": {
+        "ru": "На некоторых массивах сумма получается странной.",
+        "en": "On some arrays the sum comes out weird.",
+    },
+    "v02": {
+        "ru": "В админку иногда попадают лишние пользователи.",
+        "en": "Extra users sometimes get into admin.",
+    },
+    "v03": {
+        "ru": "Клики по разным кнопкам ведут себя одинаково.",
+        "en": "Clicks on different buttons behave the same.",
+    },
+    "v04": {
+        "ru": "Функция падает при разборе ответа сервера.",
+        "en": "The function crashes while parsing the server response.",
+    },
+    "v05": {
+        "ru": "На части входных строк приложение падает.",
+        "en": "The app crashes on some input strings.",
+    },
+    "v06": {
+        "ru": "Числа после сортировки идут не по возрастанию.",
+        "en": "Numbers are not in ascending order after sort.",
+    },
+    "v07": {
+        "ru": "Имя пользователя может сломать разметку страницы.",
+        "en": "A user name can break the page markup.",
+    },
+    "v08": {
+        "ru": "После отправки формы страница внезапно перезагружается.",
+        "en": "The page reloads unexpectedly after submit.",
+    },
+    "v09": {
+        "ru": "Проверка почти равных чисел работает непредсказуемо.",
+        "en": "Comparing nearly equal numbers is unpredictable.",
+    },
+    "v10": {
+        "ru": "Счётчик таймера не растёт, хотя интервал запущен.",
+        "en": "The timer counter does not grow even though the interval is running.",
+    },
+    "v11": {
+        "ru": "Ошибки API выглядят как обычные данные.",
+        "en": "API errors look like regular data.",
+    },
+    "v12": {
+        "ru": "Исходный объект пользователя меняется сам по себе.",
+        "en": "The original user object mutates on its own.",
+    },
+    "v13": {
+        "ru": "Падает, если у пользователя нет части полей.",
+        "en": "Crashes if the user is missing some fields.",
+    },
+    "v14": {
+        "ru": "При быстром вводе обработчик срабатывает слишком часто.",
+        "en": "On fast typing the handler fires too often.",
+    },
+    "v15": {
+        "ru": "Проверка сломанного числа всегда даёт один ответ.",
+        "en": "Checking a broken number always returns the same answer.",
+    },
+    "r01": {
+        "ru": "React ругается на список в консоли.",
+        "en": "React warns about a list in the console.",
+    },
+    "r02": {
+        "ru": "После добавления элемента UI не всегда обновляется.",
+        "en": "The UI does not always update after adding an item.",
+    },
+    "r03": {
+        "ru": "Лишние запросы уходят снова и снова.",
+        "en": "Extra requests keep going out again and again.",
+    },
+    "r04": {
+        "ru": "После ухода со страницы что-то продолжает тикать.",
+        "en": "Something keeps ticking after you leave the page.",
+    },
+    "r05": {
+        "ru": "React ругается на порядок вызова хуков.",
+        "en": "React complains about hook call order.",
+    },
+    "r06": {
+        "ru": "В поле ввода нельзя напечатать текст.",
+        "en": "You cannot type into the input.",
+    },
+    "r07": {
+        "ru": "Счётчик после серии кликов показывает не то значение.",
+        "en": "After a series of clicks the counter shows the wrong value.",
+    },
+    "r08": {
+        "ru": "После фильтрации у элементов переезжает состояние.",
+        "en": "After filtering, item state jumps to the wrong rows.",
+    },
+    "r09": {
+        "ru": "Компонент уходит в бесконечные обновления.",
+        "en": "The component falls into endless updates.",
+    },
+    "r10": {
+        "ru": "Рендер падает на данных пользователя.",
+        "en": "Render crashes on user data.",
+    },
+    "r11": {
+        "ru": "Одно и то же считается двумя способами.",
+        "en": "The same thing is computed in two ways.",
+    },
+    "r12": {
+        "ru": "После быстрого ухода со страницы — warning в консоли.",
+        "en": "A warning appears after leaving the page quickly.",
+    },
+    "r13": {
+        "ru": "Заголовок карточки пустой, хотя данные передали.",
+        "en": "The card title is empty even though data was passed.",
+    },
+    "r14": {
+        "ru": "Дочерний компонент перерисовывается без нужды.",
+        "en": "The child re-renders without need.",
+    },
+    "r15": {
+        "ru": "Клик срабатывает шире, чем ожидаешь.",
+        "en": "The click fires more broadly than expected.",
+    },
+    "q01": {
+        "ru": "Vue предупреждает про список в шаблоне.",
+        "en": "Vue warns about a list in the template.",
+    },
+    "q02": {
+        "ru": "Меняется то, что снаружи считалось неизменным входом.",
+        "en": "Something treated as an immutable input is being mutated.",
+    },
+    "q03": {
+        "ru": "Присвоение значения не обновляет интерфейс.",
+        "en": "Assigning a value does not update the UI.",
+    },
+    "q04": {
+        "ru": "Vue ругается на директивы на одном элементе.",
+        "en": "Vue complains about directives on the same element.",
+    },
+    "q05": {
+        "ru": "Изменение вложенного поля не запускает обновление.",
+        "en": "Changing a nested field does not trigger an update.",
+    },
+    "q06": {
+        "ru": "Лишние побочные действия при каждом пересчёте.",
+        "en": "Extra side effects run on every recompute.",
+    },
+    "q07": {
+        "ru": "Родитель не получает ожидаемое событие.",
+        "en": "The parent does not receive the expected event.",
+    },
+    "q08": {
+        "ru": "Обращение к DOM падает при старте.",
+        "en": "DOM access crashes on startup.",
+    },
+    "q09": {
+        "ru": "Состояние корзины меняют в обход правил стора.",
+        "en": "Cart state is changed bypassing store rules.",
+    },
+    "q10": {
+        "ru": "Вложенное поле меняется, а экран молчит.",
+        "en": "A nested field changes, but the screen stays still.",
+    },
+    "q11": {
+        "ru": "Vue ругается на слишком много обновлений подряд.",
+        "en": "Vue complains about too many updates in a row.",
+    },
+    "q12": {
+        "ru": "Данные грузятся раньше, чем открылась нужная страница.",
+        "en": "Data loads before the target page is open.",
+    },
+    "q13": {
+        "ru": "Переключатель не переключается.",
+        "en": "The toggle does not toggle.",
+    },
+    "q14": {
+        "ru": "Размер элемента сразу после показа — ноль.",
+        "en": "The element size is zero right after it appears.",
+    },
+    "q15": {
+        "ru": "Инстансы неожиданно делят одни и те же данные.",
+        "en": "Instances unexpectedly share the same data.",
+    },
 }
+
+TITLES: dict[str, dict[str, str]] = {
+    "v01": {"ru": "Off-by-one → NaN", "en": "Off-by-one → NaN"},
+    "v02": {"ru": "== vs ===", "en": "== vs ==="},
+    "v03": {"ru": "var + closure в цикле", "en": "var + closure in a loop"},
+    "v04": {"ru": "забыли await", "en": "forgot await"},
+    "v05": {"ru": "JSON.parse без try", "en": "JSON.parse without try"},
+    "v06": {"ru": "Array.sort без компаратора", "en": "Array.sort without a comparator"},
+    "v07": {"ru": "XSS через innerHTML", "en": "XSS via innerHTML"},
+    "v08": {"ru": "нет preventDefault", "en": "missing preventDefault"},
+    "v09": {"ru": "сравнение float", "en": "float comparison"},
+    "v10": {"ru": "потеря this", "en": "lost this"},
+    "v11": {"ru": "не проверили res.ok", "en": "did not check res.ok"},
+    "v12": {"ru": "мутация аргумента", "en": "mutating an argument"},
+    "v13": {"ru": "нет optional chaining", "en": "missing optional chaining"},
+    "v14": {"ru": "setTimeout без clear", "en": "setTimeout without clear"},
+    "v15": {"ru": "проверка NaN", "en": "NaN check"},
+    "r01": {"ru": "нет key", "en": "missing key"},
+    "r02": {"ru": "мутация state", "en": "mutating state"},
+    "r03": {"ru": "useEffect без deps", "en": "useEffect without deps"},
+    "r04": {"ru": "нет cleanup interval", "en": "missing interval cleanup"},
+    "r05": {"ru": "условный hook", "en": "conditional hook"},
+    "r06": {"ru": "controlled без onChange", "en": "controlled without onChange"},
+    "r07": {"ru": "stale closure", "en": "stale closure"},
+    "r08": {"ru": "key={index} при фильтрации", "en": "key={index} while filtering"},
+    "r09": {"ru": "бесконечный useEffect", "en": "infinite useEffect"},
+    "r10": {"ru": "рендер объекта", "en": "rendering an object"},
+    "r11": {"ru": "derived state лишний", "en": "redundant derived state"},
+    "r12": {"ru": "setState после unmount", "en": "setState after unmount"},
+    "r13": {"ru": "неверный prop", "en": "wrong prop"},
+    "r14": {"ru": "новый объект каждый рендер", "en": "new object every render"},
+    "r15": {"ru": "событие на неправильном элементе", "en": "event on the wrong element"},
+    "q01": {"ru": "v-for без :key", "en": "v-for without :key"},
+    "q02": {"ru": "мутация prop", "en": "mutating a prop"},
+    "q03": {"ru": "потеря реактивности", "en": "lost reactivity"},
+    "q04": {"ru": "v-if + v-for на одном узле", "en": "v-if + v-for on the same node"},
+    "q05": {"ru": "watch без deep", "en": "watch without deep"},
+    "q06": {"ru": "side effect в computed", "en": "side effect in computed"},
+    "q07": {"ru": "неверное имя emit", "en": "wrong emit name"},
+    "q08": {"ru": "template ref на mount", "en": "template ref on mount"},
+    "q09": {"ru": "мутация store снаружи", "en": "mutating the store from outside"},
+    "q10": {"ru": "shallowRef и вложенность", "en": "shallowRef and nesting"},
+    "q11": {"ru": "бесконечный watchEffect", "en": "infinite watchEffect"},
+    "q12": {"ru": "навигация без await", "en": "navigation without await"},
+    "q13": {"ru": "ref в script без .value", "en": "ref in script without .value"},
+    "q14": {"ru": "DOM до обновления", "en": "DOM before update"},
+    "q15": {"ru": "mutable default prop", "en": "mutable default prop"},
+}
+
 
 def get_challenge(framework: str, challenge_id: str) -> dict[str, Any] | None:
     for ch in CHALLENGES.get(framework, []):
@@ -921,13 +1105,17 @@ def get_challenge(framework: str, challenge_id: str) -> dict[str, Any] | None:
     return None
 
 
-def public_challenge(ch: dict[str, Any]) -> dict[str, Any]:
+def public_challenge(ch: dict[str, Any], lang: str = "ru") -> dict[str, Any]:
     """Public payload without spoilers (no bug_line / correct flags)."""
+    from app.locale import loc
+
+    hint = HINTS.get(ch["id"], ch.get("hint", ""))
+    title = TITLES.get(ch["id"], ch.get("title", ""))
     return {
         "id": ch["id"],
         "file": ch["file"],
-        "title": ch["title"],
-        "hint": HINTS.get(ch["id"], ch.get("hint", "")),
+        "title": loc(title, lang),  # type: ignore[arg-type]
+        "hint": loc(hint, lang),  # type: ignore[arg-type]
         "lines": ch["lines"],
         "fixes": [{"id": f["id"], "code": f["code"]} for f in ch["fixes"]],
     }

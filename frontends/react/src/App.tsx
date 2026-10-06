@@ -15,6 +15,7 @@ import { GuestbookPage } from "./pages/Guestbook";
 import { IncidentsPage } from "./pages/Incidents";
 import { PhotoEditorPage } from "./pages/PhotoEditor";
 import { ProjectsPage } from "./pages/Projects";
+import { useI18n, useTheme } from "./utils/usePrefs";
 
 const PAGES: Record<RouteName, ComponentType> = {
   about: AboutPage,
@@ -27,6 +28,8 @@ const PAGES: Record<RouteName, ComponentType> = {
 
 function AppShell() {
   const location = useLocation();
+  const { t, locale, toggleLocale } = useI18n();
+  const { toggleTheme } = useTheme();
 
   return (
     <div className={`shell ${styles.shell}`}>
@@ -42,13 +45,46 @@ function AppShell() {
               end={r.path === "/"}
               className={({ isActive }) => (isActive ? "active" : undefined)}
             >
-              {r.label}
+              {t(`nav.${r.name}`)}
             </NavLink>
           ))}
         </nav>
-        <a className={`switch ${styles.switch}`} href="/?choose=1">
-          Сменить стек
-        </a>
+        <div className="topbar-controls">
+          <button
+            type="button"
+            className={`switch switch--icon ${styles.switch}`}
+            aria-label={t("shell.themeAria")}
+            data-tip={t("shell.themeAria")}
+            onClick={toggleTheme}
+          >
+            <svg className="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            </svg>
+            <svg className="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className={`switch ${styles.switch}`}
+            aria-label={t("shell.localeAria")}
+            onClick={toggleLocale}
+          >
+            {locale === "en" ? t("shell.localeToEn") : t("shell.localeToRu")}
+          </button>
+          <a
+            className={`switch switch--icon ${styles.switch}`}
+            href="/?choose=1"
+            aria-label={t("shell.switchStack")}
+            data-tip={t("shell.switchStack")}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 2 3 7l9 5 9-5-9-5z" />
+              <path d="M3 12l9 5 9-5M3 17l9 5 9-5" />
+            </svg>
+          </a>
+        </div>
       </header>
       <main className="content">
         <div key={location.pathname} className="page">
@@ -62,7 +98,7 @@ function AppShell() {
       </main>
       <footer className="footer">
         <span className="badge">React · cyan</span>
-        <span>API: FastAPI + SQLAlchemy</span>
+        <span>{t("shell.footerApi")}</span>
       </footer>
     </div>
   );

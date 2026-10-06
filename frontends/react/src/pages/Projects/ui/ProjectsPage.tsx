@@ -1,14 +1,16 @@
 import { useProjects } from "../useProjects";
+import { useI18n } from "../../../utils/usePrefs";
 
 export function ProjectsPage() {
   const { projects, error } = useProjects();
+  const { t } = useI18n();
 
   if (error) return <p className="error">{error}</p>;
 
   return (
     <section>
-      <h1>Projects</h1>
-      <p className="lead">Проекты и кейсы из опыта.</p>
+      <h1>{t("projects.title")}</h1>
+      <p className="lead">{t("projects.lead")}</p>
       <div className="stack">
         {projects.map((item) => (
           <article className="card" key={item.id}>
@@ -18,14 +20,14 @@ export function ProjectsPage() {
             {item.url ? (
               <p className="muted" style={{ marginTop: "0.75rem" }}>
                 <a href={item.url} target="_blank" rel="noreferrer">
-                  Открыть демо
+                  {t("projects.openDemo")}
                 </a>
               </p>
             ) : null}
             <div className="chip-row">
-              {item.tags.map((t) => (
-                <span className="chip" key={t}>
-                  {t}
+              {item.tags.map((tag) => (
+                <span className="chip" key={tag}>
+                  {tag}
                 </span>
               ))}
             </div>

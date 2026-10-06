@@ -1,3 +1,4 @@
+import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 
@@ -5,6 +6,9 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     dedupe: ["vue"],
+    alias: {
+      "@shared": fileURLToPath(new URL("../shared", import.meta.url)),
+    },
   },
   base: "/app/vue/",
   server: {

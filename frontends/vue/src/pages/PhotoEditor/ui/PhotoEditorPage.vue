@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { PhotoEditorShell } from "@showcase-lab/photo-editor";
 import "@showcase-lab/photo-editor/style.css";
+import { useI18n } from "../../../utils/usePrefs";
+
+const { t, locale } = useI18n();
 </script>
 
 <template>
   <section>
-    <h1>Photo Editor</h1>
-    <p class="lead">Кадрирование, поворот и цветокоррекция прямо в браузере.</p>
-    <PhotoEditorShell />
+    <h1>{{ t("photoEditor.title") }}</h1>
+    <p class="lead">{{ t("photoEditor.lead") }}</p>
+    <PhotoEditorShell :locale="locale" />
   </section>
 </template>

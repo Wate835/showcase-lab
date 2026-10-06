@@ -1,9 +1,32 @@
 ﻿<!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Showcase Lab — React</title>
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("showcase-theme");
+          if (theme !== "light" && theme !== "dark") {
+            theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+            localStorage.setItem("showcase-theme", theme);
+          }
+          document.documentElement.setAttribute("data-theme", theme);
+          document.documentElement.style.colorScheme = theme;
+          var locale = localStorage.getItem("showcase-locale");
+          if (locale !== "en" && locale !== "ru") {
+            var nav = String(navigator.language || (navigator.languages && navigator.languages[0]) || "").toLowerCase();
+            locale = nav.indexOf("en") === 0 ? "en" : "ru";
+            localStorage.setItem("showcase-locale", locale);
+          }
+          document.documentElement.setAttribute("lang", locale);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+          document.documentElement.setAttribute("lang", "ru");
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

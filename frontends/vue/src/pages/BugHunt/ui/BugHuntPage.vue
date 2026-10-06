@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { FRAMEWORK } from "../../../constants/framework";
 import { formatTime } from "../../../utils/formatTime";
+import { useI18n } from "../../../utils/usePrefs";
 import { useBugHunt } from "../useBugHunt";
 
 const {
@@ -22,36 +23,40 @@ const {
   onFix,
   save,
 } = useBugHunt();
+
+const { t } = useI18n();
 </script>
 
 <template>
   <section>
     <p v-if="error" class="error">{{ error }}</p>
-    <p v-else-if="!challenges.length" class="muted">Загрузка челленджей…</p>
+    <p v-else-if="!challenges.length" class="muted">{{ t("bugs.loading") }}</p>
     <template v-else>
-      <h1>Bug Hunt</h1>
+      <h1>{{ t("bugs.title") }}</h1>
       <p class="lead">
-        Найди и исправь {{ challenges.length }} классических багов Vue. Кликни по ошибочной строке,
-        затем выбери фикс.
+        {{ t("bugs.lead", { count: challenges.length, framework: "Vue" }) }}
       </p>
       <div class="hunt-toolbar">
         <button class="btn" :disabled="playing && !finished" @click="start">
-          {{ finished || !playing ? "Старт" : "В процессе…" }}
+          {{ finished || !playing ? t("bugs.start") : t("bugs.inProgress") }}
         </button>
         <span class="timer">{{ formatTime(playing || finished ? elapsed : 0) }}</span>
         <span class="muted">
           {{
             playing || finished
-              ? `Баг ${Math.min(index + 1, challenges.length)} / ${challenges.length}`
-              : "Готов?"
+              ? t("bugs.bugProgress", {
+                  current: Math.min(index + 1, challenges.length),
+                  total: challenges.length,
+                })
+              : t("bugs.ready")
           }}
         </span>
       </div>
       <p v-if="ch && (playing || finished)" class="hunt-hint">
-        <strong>Наблюдение:</strong> {{ ch.hint || ch.title }}
+        <strong>{{ t("bugs.observation") }}</strong> {{ ch.hint || ch.title }}
       </p>
       <p v-else class="hunt-hint">
-        <strong>Как играть:</strong> короткий симптом — без спойлера. Найди строку и выбери фикс.
+        <strong>{{ t("bugs.howToPlay") }}</strong> {{ t("bugs.howToPlayBody") }}
       </p>
 
       <div class="vscode">
@@ -80,7 +85,9 @@ const {
               <div class="vscode-tab">{{ (playing || finished) && ch ? ch.file : "ready" }}</div>
             </div>
             <div class="vscode-editor">
-              <p v-if="!playing && !finished" class="muted" style="padding: 1rem">Нажми «Старт»</p>
+              <p v-if="!playing && !finished" class="muted" style="padding: 1rem">
+                {{ t("bugs.pressStart") }}
+              </p>
               <div
                 v-for="(line, i) in ch?.lines || []"
                 v-else
@@ -98,7 +105,7 @@ const {
               </div>
             </div>
             <div v-if="playing && foundLine && ch && foundBugLine != null" class="fix-panel">
-              <h3>Баг на строке {{ foundBugLine }}. Выбери исправление:</h3>
+              <h3>{{ t("bugs.fixPrompt", { line: foundBugLine }) }}</h3>
               <div class="fix-options">
                 <button
                   v-for="f in ch.fixes"
@@ -127,26 +134,26 @@ const {
       </div>
 
       <div v-if="finished" class="card" style="margin-top: 1rem">
-        <h2>Все баги закрыты!</h2>
-        <p class="lead">Время: <strong>{{ formatTime(elapsed) }}</strong></p>
+        <h2>{{ t("bugs.allFixed") }}</h2>
+        <p class="lead">{{ t("bugs.time") }} <strong>{{ formatTime(elapsed) }}</strong></p>
         <div class="form" style="margin-top: 0.75rem">
           <label>
-            Ник
-            <input v-model="player" maxlength="40" placeholder="anonymous" />
+            {{ t("bugs.nick") }}
+            <input v-model="player" maxlength="40" :placeholder="t('bugs.nickPlaceholder')" />
           </label>
-          <button class="btn" type="button" @click="save">Сохранить результат</button>
+          <button class="btn" type="button" @click="save">{{ t("bugs.saveScore") }}</button>
         </div>
       </div>
 
-      <h2 style="margin-top: 1.5rem">Результаты (быстрее = лучше)</h2>
+      <h2 style="margin-top: 1.5rem">{{ t("bugs.results") }}</h2>
       <div class="card">
         <table class="table">
           <thead>
             <tr>
               <th>#</th>
-              <th>Игрок</th>
-              <th>Время</th>
-              <th>FW</th>
+              <th>{{ t("bugs.colPlayer") }}</th>
+              <th>{{ t("bugs.colTime") }}</th>
+              <th>{{ t("bugs.colFw") }}</th>
             </tr>
           </thead>
           <tbody>

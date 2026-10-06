@@ -5,7 +5,7 @@ import type { HistoryEntry } from "../types";
 export function useHistory() {
   const historyImage = ref<HistoryEntry[]>([]);
   const historyIndex = ref<number | null>(0);
-  const title = ref("Настройки цвета");
+  const title = ref("pe.tab.color");
 
   function addHistory(entryTitle: string, src: string) {
     historyImage.value.push({

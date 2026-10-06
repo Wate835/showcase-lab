@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { useIncidents } from "../useIncidents";
+import { useI18n } from "../../../utils/usePrefs";
 
 const { visible, openCount, liveMode, updatedAt, leavingIds, resolveItem } = useIncidents();
+const { t } = useI18n();
 </script>
 
 <template>
   <section>
-    <h1>Incident Board</h1>
+    <h1>{{ t("incidents.title") }}</h1>
     <p class="lead">
-      Фейковый DevOps-монитор. Открыто: <strong>{{ openCount }}</strong>. Live:
-      <strong>{{ liveMode }}</strong> · {{ updatedAt }}
+      {{ t("incidents.intro") }} {{ t("incidents.open") }} <strong>{{ openCount }}</strong>.
+      {{ t("incidents.live") }}
+      <strong>{{ t(liveMode) }}</strong> · {{ updatedAt }}
     </p>
     <div class="stack">
       <article
@@ -26,7 +29,7 @@ const { visible, openCount, liveMode, updatedAt, leavingIds, resolveItem } = use
             <p class="msg">{{ item.description }}</p>
           </div>
           <button class="btn" :disabled="leavingIds.includes(item.id)" @click="resolveItem(item.id)">
-            Resolve
+            {{ t("incidents.resolve") }}
           </button>
         </div>
       </article>

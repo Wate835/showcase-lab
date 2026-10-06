@@ -1,4 +1,5 @@
 import { api } from "./client.js";
+import { getLocale } from "/app/shared/i18n.js";
 import { FRAMEWORK } from "../constants.js";
 
 export { api };
@@ -51,5 +52,5 @@ export function resolveIncident(id) {
 
 export function incidentsWsUrl() {
   const proto = location.protocol === "https:" ? "wss:" : "ws:";
-  return `${proto}//${location.host}/api/ws/incidents`;
+  return `${proto}//${location.host}/api/ws/incidents?lang=${getLocale()}`;
 }

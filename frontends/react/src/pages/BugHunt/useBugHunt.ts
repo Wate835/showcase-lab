@@ -9,6 +9,7 @@ import {
 import { FRAMEWORK } from "../../constants/framework";
 import type { Challenge, Score } from "../../types";
 import { showToast } from "../../utils/toast";
+import { useI18n } from "../../utils/usePrefs";
 
 export function useBugHunt() {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
@@ -24,6 +25,7 @@ export function useBugHunt() {
   const [player, setPlayer] = useState("");
   const [error, setError] = useState("");
   const startedAt = useRef(0);
+  const { locale, t } = useI18n();
 
   const loadScores = useCallback(() => {
     fetchScores(FRAMEWORK).then(setScores).catch(() => undefined);
@@ -34,7 +36,7 @@ export function useBugHunt() {
       .then((d) => setChallenges(d.items))
       .catch((e: Error) => setError(e.message));
     loadScores();
-  }, [loadScores]);
+  }, [loadScores, locale]);
 
   useEffect(() => {
     if (!playing || finished) return;
@@ -69,11 +71,11 @@ export function useBugHunt() {
         setWrongLine(null);
       } else {
         setWrongLine(n);
-        showToast("Не та строка");
+        showToast(t("bugs.wrongLine"));
         window.setTimeout(() => setWrongLine(null), 400);
       }
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Ошибка проверки");
+      showToast(e instanceof Error ? e.message : t("bugs.checkError"));
     } finally {
       setChecking(false);
     }
@@ -85,7 +87,7 @@ export function useBugHunt() {
     try {
       const { ok } = await checkChallengeFix(ch.id, FRAMEWORK, id);
       if (!ok) {
-        showToast("Это не исправляет баг");
+        showToast(t("bugs.wrongFix"));
         return;
       }
       if (index >= challenges.length - 1) {
@@ -100,7 +102,7 @@ export function useBugHunt() {
       setFoundBugLine(null);
       setWrongLine(null);
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Ошибка проверки");
+      showToast(e instanceof Error ? e.message : t("bugs.checkError"));
     } finally {
       setChecking(false);
     }
@@ -110,10 +112,10 @@ export function useBugHunt() {
     const name = player.trim() || "anonymous";
     try {
       await postScore({ player_name: name, time_ms: elapsed, framework: FRAMEWORK });
-      showToast("Результат сохранён");
+      showToast(t("bugs.saved"));
       loadScores();
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Ошибка сохранения");
+      showToast(e instanceof Error ? e.message : t("bugs.saveError"));
     }
   }
 

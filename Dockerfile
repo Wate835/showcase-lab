@@ -6,6 +6,7 @@ COPY frontends/react/package.json frontends/react/package-lock.json* ./frontends
 COPY frontends/vue/package.json frontends/vue/package-lock.json* ./frontends/vue/
 COPY packages/photo-editor ./packages/photo-editor
 RUN cd packages/photo-editor && npm install && npm run build:lib
+COPY frontends/shared ./frontends/shared
 COPY frontends/react ./frontends/react
 COPY frontends/vue ./frontends/vue
 RUN cd frontends/react && npm install
@@ -22,6 +23,7 @@ COPY backend/requirements.txt ./backend/requirements.txt
 RUN pip install --no-cache-dir -r backend/requirements.txt
 COPY backend ./backend
 COPY frontends/landing ./frontends/landing
+COPY frontends/shared ./frontends/shared
 COPY frontends/vanilla ./frontends/vanilla
 COPY --from=frontend /repo/backend/static/react ./backend/static/react
 COPY --from=frontend /repo/backend/static/vue ./backend/static/vue

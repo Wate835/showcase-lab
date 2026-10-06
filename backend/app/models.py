@@ -11,8 +11,8 @@ class Profile(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(120))
-    title: Mapped[str] = mapped_column(String(120))
-    city: Mapped[str] = mapped_column(String(120))
+    title: Mapped[str] = mapped_column(Text)
+    city: Mapped[str] = mapped_column(String(200))
     summary: Mapped[str] = mapped_column(Text)
     about: Mapped[str] = mapped_column(Text)
     email: Mapped[str] = mapped_column(String(120))
@@ -26,10 +26,10 @@ class Project(Base):
     __tablename__ = "projects"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String(200))
+    title: Mapped[str] = mapped_column(Text)
     description: Mapped[str] = mapped_column(Text)
     tags_json: Mapped[str] = mapped_column(Text)
-    year: Mapped[str] = mapped_column(String(40))
+    year: Mapped[str] = mapped_column(String(80))
     url: Mapped[str | None] = mapped_column(String(255), nullable=True, default=None)
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
 
@@ -48,7 +48,7 @@ class Incident(Base):
     __tablename__ = "incidents"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(String(200))
+    title: Mapped[str] = mapped_column(Text)
     severity: Mapped[str] = mapped_column(String(20))
     service: Mapped[str] = mapped_column(String(80))
     description: Mapped[str] = mapped_column(Text)
@@ -61,6 +61,6 @@ class GuestbookEntry(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     author: Mapped[str] = mapped_column(String(40))
-    message: Mapped[str] = mapped_column(String(500))
+    message: Mapped[str] = mapped_column(Text)
     framework: Mapped[str] = mapped_column(String(20), default="vanilla")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
