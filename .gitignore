@@ -3,10 +3,12 @@ venv/
 __pycache__/
 *.py[cod]
 *.db
+.ruff_cache/
+.pytest_cache/
 .env
 node_modules/
 dist/
-backend/static/react/
-backend/static/vue/
+static/react/
+static/vue/
 .DS_Store
 *.log

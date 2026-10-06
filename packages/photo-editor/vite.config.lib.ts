@@ -8,7 +8,7 @@ export default defineConfig({
     "process.env.NODE_ENV": JSON.stringify("production"),
   },
   build: {
-    outDir: resolve(__dirname, "../../backend/static/photo-editor"),
+    outDir: resolve(__dirname, "../../static/photo-editor"),
     emptyOutDir: true,
     cssCodeSplit: false,
     minify: "esbuild",

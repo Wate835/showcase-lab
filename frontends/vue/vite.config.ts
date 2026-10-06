@@ -21,7 +21,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "../../backend/static/vue",
+    outDir: "../../static/vue",
     emptyOutDir: true,
   },
 });

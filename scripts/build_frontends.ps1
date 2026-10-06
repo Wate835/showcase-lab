@@ -17,4 +17,5 @@ Set-Location "$root\frontends\vue"
 if (-not (Test-Path node_modules)) { npm install }
 npm run build
 
-Write-Host "Done. Artifacts in backend/static/{react,vue}"
+Write-Host "Done. Artifacts in static/{react,vue}"
+Set-Location $root

@@ -14,21 +14,30 @@
 
 ## Локальный запуск
 
-Нужен **Node.js 18+** (лучше 20). Если стоит nvm: `nvm use 20`.
+Нужны **Node.js 18+** (лучше 20) и [uv](https://docs.astral.sh/uv/). Если стоит nvm: `nvm use 20`.
 
-
-### Backend
+Собрать фронты и поднять бэк одной командой (из корня репозитория):
 
 ```powershell
-cd backend
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-uvicorn app.main:app --reload --app-dir . --host 127.0.0.1 --reload-exclude "*.db"
+.\scripts\dev.ps1
 ```
 
-Открой http://127.0.0.1:8000/ — лендинг с выбором стека.
-Vanilla работает сразу. React/Vue нужно собрать (см. ниже) или запустить в dev-режиме.
+Открой http://127.0.0.1:8000/ — лендинг с выбором стека. React/Vue и бандл фоторедактора уже лежат в `static/`.
+
+Повторно, если статика уже собрана:
+
+```powershell
+.\scripts\dev.ps1 -SkipBuild
+```
+
+### Только бэкенд
+
+```powershell
+uv sync
+uv run uvicorn showcaselab.main:app --reload --reload-dir src --host 127.0.0.1 --reload-exclude "*.db"
+```
+
+Vanilla с `:8000` работает и без сборки. React/Vue на этом порту — после `.\scripts\dev.ps1` или сборки ниже.
 
 ### Фронты (dev)
 
@@ -50,7 +59,7 @@ npm run dev
 .\scripts\build_frontends.ps1
 ```
 
-Скрипт также собирает бандл редактора в `backend/static/photo-editor/` (нужен для Vanilla).
+Скрипт также собирает бандл редактора в `static/photo-editor/` (нужен для Vanilla).
 
 После сборки FastAPI отдаёт их с `/app/react/`, `/app/vue/` и `/app/photo-editor/`.
 
@@ -67,4 +76,6 @@ npm run dev
 
 ## Стек бэкенда
 
-FastAPI · Pydantic · SQLAlchemy · SQLite
+FastAPI · Pydantic · SQLAlchemy · SQLite · uv
+
+Пакет приложения: `src/showcaselab/` (`routers` → `bl` → `clients` / `models`). Тесты — в `tests/`.
