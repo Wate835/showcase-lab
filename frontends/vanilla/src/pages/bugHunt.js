@@ -5,7 +5,22 @@ import { escapeHtml } from "../utils/escapeHtml.js";
 import { formatTime } from "../utils/formatTime.js";
 import { showToast } from "../utils/toast.js";
 
+let huntSession = null;
+let huntGen = 0;
+
+export function stopBugHunt() {
+  huntGen += 1;
+  huntSession?.stopTick();
+  huntSession = null;
+}
+
+export function applyBugHuntLocale() {
+  huntSession?.onLocale();
+}
+
 export async function renderBugHunt(appEl) {
+  stopBugHunt();
+  const gen = huntGen;
   appEl.innerHTML = `<p class="muted">${escapeHtml(t("bugs.loading"))}</p>`;
   let challenges = [];
   let scores = [];
@@ -14,9 +29,11 @@ export async function renderBugHunt(appEl) {
     challenges = data.items;
     scores = await fetchScores();
   } catch (err) {
+    if (gen !== huntGen) return;
     appEl.innerHTML = `<p class="error">${escapeHtml(err.message)}</p>`;
     return;
   }
+  if (gen !== huntGen) return;
 
   let playing = false;
   let finished = false;
@@ -44,7 +61,7 @@ export async function renderBugHunt(appEl) {
     if (!box) return;
     box.innerHTML = `
       <table class="table">
-        <thead><tr><th>#</th><th>${escapeHtml(t("bugs.colPlayer"))}</th><th>${escapeHtml(t("bugs.colTime"))}</th><th>FW</th></tr></thead>
+        <thead><tr><th>#</th><th>${escapeHtml(t("bugs.colPlayer"))}</th><th>${escapeHtml(t("bugs.colTime"))}</th><th>${escapeHtml(t("bugs.colFw"))}</th></tr></thead>
         <tbody>
           ${scores
             .map(
@@ -96,7 +113,7 @@ export async function renderBugHunt(appEl) {
           <h2>${escapeHtml(t("bugs.allFixed"))}</h2>
           <p class="lead">${escapeHtml(t("bugs.time"))} <strong>${formatTime(elapsed)}</strong></p>
           <div class="form" style="margin-top:.75rem">
-            <label>${escapeHtml(t("bugs.nick"))} <input id="huntPlayer" maxlength="40" placeholder="anonymous" value="${escapeHtml(player)}" /></label>
+            <label>${escapeHtml(t("bugs.nick"))} <input id="huntPlayer" maxlength="40" placeholder="${escapeHtml(t("bugs.nickPlaceholder"))}" value="${escapeHtml(player)}" /></label>
             <button class="btn" id="huntSave" type="button">${escapeHtml(t("bugs.saveScore"))}</button>
           </div>
         </div>`;
@@ -205,7 +222,7 @@ export async function renderBugHunt(appEl) {
           } else {
             wrongLine = n;
             paint();
-            showToast("Не та строка");
+            showToast(t("bugs.wrongLine"));
             setTimeout(() => {
               wrongLine = null;
               const bad = document.querySelector(".vscode-line.is-wrong");
@@ -213,7 +230,7 @@ export async function renderBugHunt(appEl) {
             }, 400);
           }
         } catch (err) {
-          showToast(err.message || "Ошибка проверки");
+          showToast(err.message || t("bugs.checkError"));
         } finally {
           checking = false;
         }
@@ -228,7 +245,7 @@ export async function renderBugHunt(appEl) {
         try {
           const { ok } = await checkChallengeFix(current().id, id);
           if (!ok) {
-            showToast("Это не исправляет баг");
+            showToast(t("bugs.wrongFix"));
             return;
           }
           if (index >= challenges.length - 1) {
@@ -245,7 +262,7 @@ export async function renderBugHunt(appEl) {
           wrongLine = null;
           paint();
         } catch (err) {
-          showToast(err.message || "Ошибка проверки");
+          showToast(err.message || t("bugs.checkError"));
         } finally {
           checking = false;
         }
@@ -258,13 +275,31 @@ export async function renderBugHunt(appEl) {
       try {
         await postScore({ player_name: name, time_ms: nowMs, framework: FRAMEWORK });
         scores = await fetchScores();
-        showToast("Результат сохранён");
+        showToast(t("bugs.saved"));
         paintScores();
       } catch (err) {
-        showToast(err.message || "Ошибка сохранения");
+        showToast(err.message || t("bugs.saveError"));
       }
     });
   }
+
+  huntSession = {
+    stopTick,
+    async onLocale() {
+      const nameEl = document.getElementById("huntPlayer");
+      if (nameEl) player = nameEl.value;
+      try {
+        const data = await fetchChallenges();
+        if (gen !== huntGen) return;
+        challenges = data.items;
+        scores = await fetchScores();
+        if (gen !== huntGen) return;
+      } catch (_) {
+        if (gen !== huntGen) return;
+      }
+      paint();
+    },
+  };
 
   paint();
 }

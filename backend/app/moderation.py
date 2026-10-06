@@ -59,12 +59,12 @@ def find_profanity(text: str) -> bool:
 def is_spammy(message: str) -> str | None:
     cleaned = message.strip()
     if len(cleaned) < 2:
-        return "Сообщение слишком короткое."
+        return "too_short"
     if _REPEAT_RE.search(cleaned):
-        return "Похоже на спам: слишком много повторов."
+        return "repeats"
     urls = _URL_RE.findall(cleaned)
     if len(urls) >= 3:
-        return "Слишком много ссылок — похоже на спам."
+        return "links"
     return None
 
 
@@ -73,7 +73,7 @@ def check_rate_limit(client_key: str) -> str | None:
     bucket = [t for t in _recent_posts[client_key] if now - t < RATE_LIMIT_SECONDS]
     _recent_posts[client_key] = bucket
     if len(bucket) >= RATE_LIMIT_MAX:
-        return "Слишком часто. Подожди пару секунд."
+        return "rate"
     return None
 
 
@@ -84,7 +84,7 @@ def remember_post(client_key: str) -> None:
 def moderate_guestbook(author: str, message: str, client_key: str = "anon") -> str | None:
     """Return error message or None if ok. Profanity uses a fixed friendly phrase."""
     if find_profanity(author) or find_profanity(message):
-        return "Ругаться плохо"
+        return "profanity"
     spam = is_spammy(message)
     if spam:
         return spam

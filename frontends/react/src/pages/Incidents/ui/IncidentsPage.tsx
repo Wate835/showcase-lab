@@ -10,7 +10,7 @@ export function IncidentsPage() {
       <h1>{t("incidents.title")}</h1>
       <p className="lead">
         {t("incidents.intro")} {t("incidents.open")} <strong>{openCount}</strong>. {t("incidents.live")}{" "}
-        <strong>{liveMode}</strong>
+        <strong>{t(liveMode)}</strong>
         {updatedAt ? <> · {updatedAt}</> : null}
       </p>
       <div className="stack">

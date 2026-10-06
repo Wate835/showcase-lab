@@ -1,10 +1,12 @@
 import { useAbout } from "../useAbout";
+import { useI18n } from "../../../utils/usePrefs";
 
 export function AboutPage() {
   const { profile, error } = useAbout();
+  const { t } = useI18n();
 
   if (error) return <p className="error">{error}</p>;
-  if (!profile) return <p className="muted">Загрузка профиля…</p>;
+  if (!profile) return <p className="muted">{t("about.loading")}</p>;
 
   return (
     <section>
@@ -21,7 +23,7 @@ export function AboutPage() {
         ))}
       </div>
       <div className="card">
-        <h2>Обо мне</h2>
+        <h2>{t("about.me")}</h2>
         <p className="msg">{profile.about}</p>
         <p className="muted" style={{ marginTop: "1rem" }}>
           <a href={profile.telegram} target="_blank" rel="noreferrer">

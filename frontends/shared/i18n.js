@@ -15,34 +15,38 @@ export const messages = {
     "shell.themeAria": "Переключить тему",
     "shell.localeAria": "Переключить язык",
 
-    "nav.about": "About",
-    "nav.projects": "Projects",
-    "nav.photoEditor": "Photo Editor",
+    "nav.about": "Обо мне",
+    "nav.projects": "Проекты",
+    "nav.photoEditor": "Фоторедактор",
     "nav.bugs": "Bug Hunt",
-    "nav.incidents": "Incidents",
-    "nav.guestbook": "Guestbook",
+    "nav.incidents": "Инциденты",
+    "nav.guestbook": "Гостевая",
 
-    "projects.title": "Projects",
+    "about.loading": "Загрузка профиля…",
+    "about.me": "Обо мне",
+
+    "projects.title": "Проекты",
     "projects.lead": "Проекты и кейсы из опыта.",
     "projects.openDemo": "Открыть демо",
     "projects.loading": "Загрузка проектов…",
     "projects.loadingError": "Ошибка загрузки",
 
-    "photoEditor.title": "Photo Editor",
+    "photoEditor.title": "Фоторедактор",
     "photoEditor.lead": "Кадрирование, поворот и цветокоррекция прямо в браузере.",
 
-    "guestbook.title": "Guestbook",
+    "guestbook.title": "Гостевая",
     "guestbook.lead": "Оставь след. Сообщение пишется в SQLite.",
     "guestbook.name": "Имя",
     "guestbook.message": "Сообщение",
     "guestbook.submit": "Отправить",
     "guestbook.loading": "Загрузка guestbook…",
 
-    "incidents.title": "Incident Board",
+    "incidents.title": "Инциденты",
     "incidents.intro": "Фейковый DevOps-монитор.",
     "incidents.open": "Открыто:",
     "incidents.live": "Live:",
-    "incidents.resolve": "Resolve",
+    "incidents.wsReady": "WebSocket",
+    "incidents.resolve": "Закрыть",
     "incidents.waiting": "Ждём WebSocket…",
     "incidents.connecting": "подключение…",
     "incidents.reconnecting": "переподключение…",
@@ -69,7 +73,26 @@ export const messages = {
     "bugs.colTime": "Время",
     "bugs.loading": "Загрузка челленджей…",
 
+    "bugs.colFw": "Стек",
+    "bugs.wrongLine": "Не та строка",
+    "bugs.wrongFix": "Это не исправляет баг",
+    "bugs.checkError": "Ошибка проверки",
+    "bugs.saved": "Результат сохранён",
+    "bugs.saveError": "Ошибка сохранения",
+    "bugs.nickPlaceholder": "anonymous",
+
+    "guestbook.sendError": "Не удалось отправить",
+
+    "landing.title": "Showcase Lab — выбери стек",
+    "landing.lead": "Портфолио Антона Кудрявцева. Один FastAPI-бэкенд — три фронта. Выбери стек: у каждого своя цветовая гамма и тот же набор экранов.",
+    "landing.vanilla": "Нативный JS. Тёплая amber-палитра.",
+    "landing.react": "Vite + TypeScript. Cool cyan.",
+    "landing.vue": "Vite + TypeScript. Emerald.",
+    "landing.hint": "Выбор запоминается в cookie на 30 дней. Можно сменить через «Сменить стек».",
+    "landing.langAria": "Переключить язык",
+
     "common.error": "Ошибка:",
+    "common.loadingError": "Ошибка загрузки",
   },
   en: {
     "shell.switchStack": "Switch stack",
@@ -83,10 +106,13 @@ export const messages = {
 
     "nav.about": "About",
     "nav.projects": "Projects",
-    "nav.photoEditor": "Photo Editor",
+    "nav.photoEditor": "Photo editor",
     "nav.bugs": "Bug Hunt",
     "nav.incidents": "Incidents",
     "nav.guestbook": "Guestbook",
+
+    "about.loading": "Loading profile…",
+    "about.me": "About me",
 
     "projects.title": "Projects",
     "projects.lead": "Projects and case studies from experience.",
@@ -108,6 +134,7 @@ export const messages = {
     "incidents.intro": "A fake DevOps monitor.",
     "incidents.open": "Open:",
     "incidents.live": "Live:",
+    "incidents.wsReady": "WebSocket",
     "incidents.resolve": "Resolve",
     "incidents.waiting": "Waiting for WebSocket…",
     "incidents.connecting": "connecting…",
@@ -135,21 +162,48 @@ export const messages = {
     "bugs.colTime": "Time",
     "bugs.loading": "Loading challenges…",
 
+    "bugs.colFw": "Stack",
+    "bugs.wrongLine": "Wrong line",
+    "bugs.wrongFix": "That does not fix the bug",
+    "bugs.checkError": "Check failed",
+    "bugs.saved": "Score saved",
+    "bugs.saveError": "Failed to save",
+    "bugs.nickPlaceholder": "anonymous",
+
+    "guestbook.sendError": "Could not send",
+
+    "landing.title": "Showcase Lab — pick a stack",
+    "landing.lead": "Anton Kudryavcev's portfolio. One FastAPI backend — three frontends. Pick a stack: each has its own palette and the same screens.",
+    "landing.vanilla": "Native JS. Warm amber palette.",
+    "landing.react": "Vite + TypeScript. Cool cyan.",
+    "landing.vue": "Vite + TypeScript. Emerald.",
+    "landing.hint": "The choice is stored in a cookie for 30 days. You can change it via “Switch stack”.",
+    "landing.langAria": "Toggle language",
+
     "common.error": "Error:",
+    "common.loadingError": "Failed to load",
   },
 };
 
 /** @returns {"ru" | "en"} */
+export function detectLocale() {
+  const nav = String(
+    (typeof navigator !== "undefined" && (navigator.language || navigator.languages?.[0])) || ""
+  ).toLowerCase();
+  return nav.startsWith("en") ? "en" : "ru";
+}
+
+/** @returns {"ru" | "en"} */
 export function getLocale() {
-  const lang = document.documentElement.getAttribute("lang");
-  if (lang === "ru" || lang === "en") return lang;
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === "ru" || stored === "en") return stored;
   } catch {
     /* ignore */
   }
-  return "ru";
+  const lang = document.documentElement.getAttribute("lang");
+  if (lang === "ru" || lang === "en") return lang;
+  return detectLocale();
 }
 
 /** @param {"ru" | "en"} locale */
@@ -161,6 +215,7 @@ export function setLocale(locale) {
   } catch {
     /* ignore */
   }
+  window.dispatchEvent(new CustomEvent("showcase-locale", { detail: next }));
   listeners.forEach((fn) => fn());
 }
 

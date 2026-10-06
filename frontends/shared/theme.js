@@ -4,16 +4,24 @@ const listeners = new Set();
 export const THEMES = /** @type {const} */ (["light", "dark"]);
 
 /** @returns {"light" | "dark"} */
+export function detectTheme() {
+  if (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: light)").matches) {
+    return "light";
+  }
+  return "dark";
+}
+
+/** @returns {"light" | "dark"} */
 export function getTheme() {
-  const fromDom = document.documentElement.getAttribute("data-theme");
-  if (fromDom === "light" || fromDom === "dark") return fromDom;
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === "light" || stored === "dark") return stored;
   } catch {
     /* ignore */
   }
-  return "dark";
+  const fromDom = document.documentElement.getAttribute("data-theme");
+  if (fromDom === "light" || fromDom === "dark") return fromDom;
+  return detectTheme();
 }
 
 /** @param {"light" | "dark"} theme */

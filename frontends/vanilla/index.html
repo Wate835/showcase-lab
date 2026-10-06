@@ -8,11 +8,18 @@
       (function () {
         try {
           var theme = localStorage.getItem("showcase-theme");
-          if (theme !== "light" && theme !== "dark") theme = "dark";
+          if (theme !== "light" && theme !== "dark") {
+            theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+            localStorage.setItem("showcase-theme", theme);
+          }
           document.documentElement.setAttribute("data-theme", theme);
           document.documentElement.style.colorScheme = theme;
           var locale = localStorage.getItem("showcase-locale");
-          if (locale !== "en" && locale !== "ru") locale = "ru";
+          if (locale !== "en" && locale !== "ru") {
+            var nav = String(navigator.language || (navigator.languages && navigator.languages[0]) || "").toLowerCase();
+            locale = nav.indexOf("en") === 0 ? "en" : "ru";
+            localStorage.setItem("showcase-locale", locale);
+          }
           document.documentElement.setAttribute("lang", locale);
         } catch (e) {
           document.documentElement.setAttribute("data-theme", "dark");
@@ -29,9 +36,22 @@
         <a class="logo" href="#about">Showcase Lab</a>
         <nav class="nav" id="nav"></nav>
         <div class="topbar-controls">
-          <button type="button" class="switch" id="themeToggle" aria-label="Toggle theme">Dark</button>
+          <button type="button" class="switch switch--icon" id="themeToggle" aria-label="Toggle theme" data-tip="Toggle theme">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            </svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z" />
+            </svg>
+          </button>
           <button type="button" class="switch" id="localeToggle" aria-label="Toggle language">EN</button>
-          <a class="switch" id="switchStack" href="/?choose=1">Сменить стек</a>
+          <a class="switch switch--icon" id="switchStack" href="/?choose=1" aria-label="Switch stack" data-tip="Switch stack">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2 3 7l9 5 9-5-9-5z" />
+              <path d="M3 12l9 5 9-5M3 17l9 5 9-5" />
+            </svg>
+          </a>
         </div>
       </header>
       <main id="app" class="content"></main>

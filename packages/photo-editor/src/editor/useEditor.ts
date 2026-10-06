@@ -109,7 +109,7 @@ export function useEditor(
     if (!color.hasAdjustments.value) return;
     const url = await color.bakeToDataURL();
     if (!url) return;
-    history.addHistory("Коррекция", url);
+    history.addHistory("pe.history.correction", url);
     await canvas.loadImage(url);
     color.reset();
     dirty.value = false;
@@ -156,7 +156,7 @@ export function useEditor(
   }
 
   async function applyCrop() {
-    await changeTab(TAB.CROP, "Обрезка");
+    await changeTab(TAB.CROP, "pe.history.crop");
   }
 
   async function onSaveExport() {
@@ -172,8 +172,8 @@ export function useEditor(
 
   onMounted(async () => {
     await canvas.loadImage(props.defImg);
-    history.addHistory("Оригинал", canvas.imageObj.value?.src as string);
-    history.title.value = "Цвет";
+    history.addHistory("pe.history.original", canvas.imageObj.value?.src as string);
+    history.title.value = "pe.tab.color";
   });
 
   onMounted(() => {

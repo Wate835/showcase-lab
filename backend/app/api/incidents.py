@@ -8,7 +8,8 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db import SessionLocal, get_db
-from app.incident_hub import broadcast_snapshot, fetch_open_incidents, hub
+from app.incident_hub import broadcast_snapshot, fetch_open_incidents, hub, serialize_incident
+from app.locale import Lang, dump_i18n, get_lang, parse_lang
 from app.models import Incident
 from app.schemas import IncidentOut
 
@@ -18,46 +19,70 @@ router = APIRouter(prefix="/api", tags=["incidents"])
 
 TEMPLATES = [
     {
-        "title": "p95 latency на /api/scores",
+        "title": {"ru": "p95 latency на /api/scores", "en": "p95 latency on /api/scores"},
         "severity": "warning",
         "service": "api-gateway",
-        "description": "Ответ замедлился. Проверь холодный старт и индексы SQLite.",
+        "description": {
+            "ru": "Ответ замедлился. Проверь холодный старт и индексы SQLite.",
+            "en": "Responses slowed down. Check SQLite cold start and indexes.",
+        },
     },
     {
-        "title": "Spam в guestbook",
+        "title": {"ru": "Spam в guestbook", "en": "Spam in guestbook"},
         "severity": "info",
         "service": "moderation",
-        "description": "Похоже на бота. Нужен простой rate-limit по IP.",
+        "description": {
+            "ru": "Похоже на бота. Нужен простой rate-limit по IP.",
+            "en": "Looks like a bot. Need a simple IP rate-limit.",
+        },
     },
     {
-        "title": "React chunk 404 после деплоя",
+        "title": {
+            "ru": "React chunk 404 после деплоя",
+            "en": "React chunk 404 after deploy",
+        },
         "severity": "warning",
         "service": "frontend-react",
-        "description": "Клиенты держат старый index.html. Сбрось CDN-кэш.",
+        "description": {
+            "ru": "Клиенты держат старый index.html. Сбрось CDN-кэш.",
+            "en": "Clients keep an old index.html. Purge the CDN cache.",
+        },
     },
     {
-        "title": "Memory pressure на worker",
+        "title": {"ru": "Memory pressure на worker", "en": "Memory pressure on worker"},
         "severity": "critical",
         "service": "uvicorn",
-        "description": "RSS вырос. Похоже на утечку в демо-игре Bug Hunt.",
+        "description": {
+            "ru": "RSS вырос. Похоже на утечку в демо-игре Bug Hunt.",
+            "en": "RSS grew. Looks like a leak in the Bug Hunt demo.",
+        },
     },
     {
-        "title": "Yii2 legacy endpoint 500",
+        "title": {"ru": "Yii2 legacy endpoint 500", "en": "Yii2 legacy endpoint 500"},
         "severity": "critical",
         "service": "php-bridge",
-        "description": "Редкий путь в ERP упал. Логи указали на null в DTO.",
+        "description": {
+            "ru": "Редкий путь в ERP упал. Логи указали на null в DTO.",
+            "en": "A rare ERP path crashed. Logs pointed to null in a DTO.",
+        },
     },
     {
-        "title": "Storybook build flaky",
+        "title": {"ru": "Storybook build flaky", "en": "Storybook build flaky"},
         "severity": "info",
         "service": "ci",
-        "description": "Падает на type-check раз в 10 прогонов. Не блокер.",
+        "description": {
+            "ru": "Падает на type-check раз в 10 прогонов. Не блокер.",
+            "en": "Type-check fails ~1 in 10 runs. Not a blocker.",
+        },
     },
     {
-        "title": "Vue HMR disconnect",
+        "title": {"ru": "Vue HMR disconnect", "en": "Vue HMR disconnect"},
         "severity": "info",
         "service": "frontend-vue",
-        "description": "Dev-сервер потерял WS. Перезапусти vite.",
+        "description": {
+            "ru": "Dev-сервер потерял WS. Перезапусти vite.",
+            "en": "The dev server lost WS. Restart vite.",
+        },
     },
 ]
 
@@ -85,10 +110,15 @@ def maybe_spawn_incident(db: Session) -> bool:
     stamp = now.strftime("%H:%M:%S")
     db.add(
         Incident(
-            title=f"{template['title']} ({stamp})",
+            title=dump_i18n(
+                {
+                    "ru": f"{template['title']['ru']} ({stamp})",
+                    "en": f"{template['title']['en']} ({stamp})",
+                }
+            ),
             severity=template["severity"],
             service=template["service"],
-            description=template["description"],
+            description=dump_i18n(template["description"]),
             resolved=False,
         )
     )
@@ -118,18 +148,25 @@ async def incident_ticker() -> None:
 
 
 @router.get("/incidents", response_model=list[IncidentOut])
-def list_incidents(db: Session = Depends(get_db)) -> list[Incident]:
+def list_incidents(
+    db: Session = Depends(get_db),
+    lang: Lang = Depends(get_lang),
+) -> list[IncidentOut]:
     stmt = (
         select(Incident)
         .where(Incident.resolved.is_(False))
         .order_by(Incident.id.desc())
         .limit(20)
     )
-    return list(db.scalars(stmt).all())
+    return [serialize_incident(row, lang) for row in db.scalars(stmt).all()]
 
 
 @router.post("/incidents/{incident_id}/resolve", response_model=IncidentOut)
-async def resolve_incident(incident_id: int, db: Session = Depends(get_db)) -> Incident:
+async def resolve_incident(
+    incident_id: int,
+    db: Session = Depends(get_db),
+    lang: Lang = Depends(get_lang),
+) -> IncidentOut:
     incident = db.get(Incident, incident_id)
     if not incident:
         raise HTTPException(status_code=404, detail="Incident not found")
@@ -137,14 +174,15 @@ async def resolve_incident(incident_id: int, db: Session = Depends(get_db)) -> I
     db.commit()
     db.refresh(incident)
     await broadcast_snapshot()
-    return incident
+    return serialize_incident(incident, lang)
 
 
 @router.websocket("/ws/incidents")
 async def incidents_ws(websocket: WebSocket) -> None:
-    await hub.connect(websocket)
+    lang = parse_lang(websocket.query_params.get("lang"))
+    await hub.connect(websocket, lang)
     try:
-        items = await asyncio.to_thread(fetch_open_incidents)
+        items = await asyncio.to_thread(fetch_open_incidents, lang)
         await websocket.send_json({"type": "snapshot", "items": items})
         while True:
             # Keep connection alive; clients may send ping/text.

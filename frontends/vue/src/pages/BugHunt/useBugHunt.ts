@@ -1,4 +1,4 @@
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onUnmounted, ref, watch } from "vue";
 import {
   checkChallengeFix,
   checkChallengeLine,
@@ -9,6 +9,7 @@ import {
 import { FRAMEWORK } from "../../constants/framework";
 import type { Challenge, Score } from "../../types";
 import { showToast } from "../../utils/toast";
+import { useI18n } from "../../utils/usePrefs";
 
 export function useBugHunt() {
   const challenges = ref<Challenge[]>([]);
@@ -23,6 +24,7 @@ export function useBugHunt() {
   const elapsed = ref(0);
   const player = ref("");
   const error = ref("");
+  const { locale, t } = useI18n();
   let startedAt = 0;
   let tickId: number | undefined;
 
@@ -34,7 +36,7 @@ export function useBugHunt() {
       challenges.value = data.items;
       scores.value = await fetchScores(FRAMEWORK);
     } catch (e) {
-      error.value = e instanceof Error ? e.message : "Error";
+      error.value = e instanceof Error ? e.message : t("common.loadingError");
     }
   }
 
@@ -65,13 +67,13 @@ export function useBugHunt() {
         wrongLine.value = null;
       } else {
         wrongLine.value = n;
-        showToast("Не та строка");
+        showToast(t("bugs.wrongLine"));
         window.setTimeout(() => {
           wrongLine.value = null;
         }, 400);
       }
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Ошибка проверки");
+      showToast(e instanceof Error ? e.message : t("bugs.checkError"));
     } finally {
       checking.value = false;
     }
@@ -83,7 +85,7 @@ export function useBugHunt() {
     try {
       const { ok } = await checkChallengeFix(ch.value.id, FRAMEWORK, id);
       if (!ok) {
-        showToast("Это не исправляет баг");
+        showToast(t("bugs.wrongFix"));
         return;
       }
       if (index.value >= challenges.value.length - 1) {
@@ -98,7 +100,7 @@ export function useBugHunt() {
       foundBugLine.value = null;
       wrongLine.value = null;
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Ошибка проверки");
+      showToast(e instanceof Error ? e.message : t("bugs.checkError"));
     } finally {
       checking.value = false;
     }
@@ -108,14 +110,14 @@ export function useBugHunt() {
     const name = player.value.trim() || "anonymous";
     try {
       await postScore({ player_name: name, time_ms: elapsed.value, framework: FRAMEWORK });
-      showToast("Результат сохранён");
+      showToast(t("bugs.saved"));
       scores.value = await fetchScores(FRAMEWORK);
     } catch (e) {
-      showToast(e instanceof Error ? e.message : "Ошибка сохранения");
+      showToast(e instanceof Error ? e.message : t("bugs.saveError"));
     }
   }
 
-  onMounted(load);
+  watch(locale, load, { immediate: true });
   onUnmounted(() => window.clearInterval(tickId));
 
   return {

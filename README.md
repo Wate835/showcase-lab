@@ -24,7 +24,7 @@ cd backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-uvicorn app.main:app --reload --app-dir .
+uvicorn app.main:app --reload --app-dir . --host 127.0.0.1 --reload-exclude "*.db"
 ```
 
 Открой http://127.0.0.1:8000/ — лендинг с выбором стека.

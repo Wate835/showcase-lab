@@ -1,8 +1,9 @@
 import { fetchProfile } from "../api/index.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
+import { t } from "/app/shared/i18n.js";
 
 export async function renderAbout(appEl) {
-  appEl.innerHTML = `<p class="muted">Загрузка профиля…</p>`;
+  appEl.innerHTML = `<p class="muted">${escapeHtml(t("about.loading"))}</p>`;
   const p = await fetchProfile();
   appEl.innerHTML = `
     <section>
@@ -13,7 +14,7 @@ export async function renderAbout(appEl) {
         ${p.skills.map((s) => `<span class="chip">${escapeHtml(s)}</span>`).join("")}
       </div>
       <div class="card">
-        <h2>Обо мне</h2>
+        <h2>${escapeHtml(t("about.me"))}</h2>
         <p class="msg">${escapeHtml(p.about)}</p>
         <p class="muted" style="margin-top:1rem">
           <a href="${escapeHtml(p.telegram)}" target="_blank" rel="noreferrer">Telegram</a> ·

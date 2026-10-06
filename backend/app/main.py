@@ -71,6 +71,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.middleware("http")
+async def no_cache_app_assets(request: Request, call_next):
+    response = await call_next(request)
+    path = request.url.path
+    if path.startswith("/app/") and path.endswith((".js", ".css", ".html")):
+        response.headers["Cache-Control"] = "no-store"
+    return response
+
 app.include_router(profile.router)
 app.include_router(projects.router)
 app.include_router(scores.router)
@@ -79,7 +88,7 @@ app.include_router(incidents.router)
 app.include_router(guestbook.router)
 
 
-@app.get("/api/health")
+@app.api_route("/api/health", methods=["GET", "HEAD"])
 def health() -> dict[str, str]:
     return {"status": "ok"}
 
@@ -98,7 +107,7 @@ _mount_dir("/app/vue", STATIC_DIR / "vue", "app-vue")
 _mount_dir("/app/photo-editor", STATIC_DIR / "photo-editor", "photo-editor")
 
 
-@app.get("/", response_model=None)
+@app.api_route("/", methods=["GET", "HEAD"], response_model=None)
 def landing(request: Request):
     # ?choose=1 — явный выбор стека (кнопка «Сменить стек»)
     if request.query_params.get("choose") != "1":

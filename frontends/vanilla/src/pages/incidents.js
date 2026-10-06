@@ -61,6 +61,59 @@ function bindResolveButtons() {
   });
 }
 
+function paintIncidentsChrome(appEl) {
+  const h1 = appEl.querySelector("h1");
+  if (h1) h1.textContent = t("incidents.title");
+  const open = document.getElementById("incidentOpen")?.textContent ?? "…";
+  const mode = document.getElementById("incidentMode")?.textContent ?? t("incidents.connecting");
+  const updated = document.getElementById("incidentUpdated")?.textContent ?? "—";
+  const lead = appEl.querySelector(".lead");
+  if (lead) {
+    lead.innerHTML = `${escapeHtml(t("incidents.intro"))} ${escapeHtml(t("incidents.open"))}
+          <strong id="incidentOpen">${escapeHtml(open)}</strong>.
+          ${escapeHtml(t("incidents.live"))} <strong id="incidentMode">${escapeHtml(mode)}</strong>
+          · <span id="incidentUpdated">${escapeHtml(updated)}</span>`;
+  }
+  document.querySelectorAll("[data-resolve]").forEach((btn) => {
+    btn.textContent = t("incidents.resolve");
+  });
+}
+
+function attachIncidentsSocket(appEl, currentRoute) {
+  stopIncidentsLive();
+  const socket = new WebSocket(incidentsWsUrl());
+  incidentsSocket = socket;
+  socket.onopen = () => {
+    const modeEl = document.getElementById("incidentMode");
+    if (modeEl) modeEl.textContent = t("incidents.wsReady");
+  };
+  socket.onmessage = (ev) => {
+    try {
+      const msg = JSON.parse(ev.data);
+      if (msg.type === "snapshot") applyIncidentSnapshot(msg.items || []);
+    } catch (_) {
+      /* ignore */
+    }
+  };
+  socket.onclose = () => {
+    if (currentRoute() !== "incidents") return;
+    const modeEl = document.getElementById("incidentMode");
+    if (modeEl) modeEl.textContent = t("incidents.reconnecting");
+    setTimeout(() => {
+      if (currentRoute() === "incidents") attachIncidentsSocket(appEl, currentRoute);
+    }, 1500);
+  };
+  socket.onerror = () => {
+    const modeEl = document.getElementById("incidentMode");
+    if (modeEl) modeEl.textContent = t("incidents.wsError");
+  };
+}
+
+export function applyIncidentsLocale(appEl, currentRoute) {
+  paintIncidentsChrome(appEl);
+  attachIncidentsSocket(appEl, currentRoute);
+}
+
 function applyIncidentSnapshot(items) {
   const openItems = (items || []).filter((i) => !i.resolved);
   const list = document.getElementById("incidentList");
@@ -87,31 +140,5 @@ export async function renderIncidents(appEl, currentRoute) {
           · <span id="incidentUpdated">—</span></p>
         <div class="stack" id="incidentList"><p class="muted">${escapeHtml(t("incidents.waiting"))}</p></div>
       </section>`;
-
-  const socket = new WebSocket(incidentsWsUrl());
-  incidentsSocket = socket;
-  socket.onopen = () => {
-    const modeEl = document.getElementById("incidentMode");
-    if (modeEl) modeEl.textContent = "WebSocket";
-  };
-  socket.onmessage = (ev) => {
-    try {
-      const msg = JSON.parse(ev.data);
-      if (msg.type === "snapshot") applyIncidentSnapshot(msg.items || []);
-    } catch (_) {
-      /* ignore */
-    }
-  };
-  socket.onclose = () => {
-    if (currentRoute() !== "incidents") return;
-    const modeEl = document.getElementById("incidentMode");
-    if (modeEl) modeEl.textContent = t("incidents.reconnecting");
-    setTimeout(() => {
-      if (currentRoute() === "incidents") renderIncidents(appEl, currentRoute);
-    }, 1500);
-  };
-  socket.onerror = () => {
-    const modeEl = document.getElementById("incidentMode");
-    if (modeEl) modeEl.textContent = t("incidents.wsError");
-  };
+  attachIncidentsSocket(appEl, currentRoute);
 }

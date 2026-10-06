@@ -29,7 +29,7 @@ const PAGES: Record<RouteName, ComponentType> = {
 function AppShell() {
   const location = useLocation();
   const { t, locale, toggleLocale } = useI18n();
-  const { theme, toggleTheme } = useTheme();
+  const { toggleTheme } = useTheme();
 
   return (
     <div className={`shell ${styles.shell}`}>
@@ -52,11 +52,18 @@ function AppShell() {
         <div className="topbar-controls">
           <button
             type="button"
-            className={`switch ${styles.switch}`}
+            className={`switch switch--icon ${styles.switch}`}
             aria-label={t("shell.themeAria")}
+            data-tip={t("shell.themeAria")}
             onClick={toggleTheme}
           >
-            {theme === "dark" ? t("shell.themeToLight") : t("shell.themeToDark")}
+            <svg className="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            </svg>
+            <svg className="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z" />
+            </svg>
           </button>
           <button
             type="button"
@@ -64,10 +71,18 @@ function AppShell() {
             aria-label={t("shell.localeAria")}
             onClick={toggleLocale}
           >
-            {locale === "ru" ? t("shell.localeToEn") : t("shell.localeToRu")}
+            {locale === "en" ? t("shell.localeToEn") : t("shell.localeToRu")}
           </button>
-          <a className={`switch ${styles.switch}`} href="/?choose=1">
-            {t("shell.switchStack")}
+          <a
+            className={`switch switch--icon ${styles.switch}`}
+            href="/?choose=1"
+            aria-label={t("shell.switchStack")}
+            data-tip={t("shell.switchStack")}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 2 3 7l9 5 9-5-9-5z" />
+              <path d="M3 12l9 5 9-5M3 17l9 5 9-5" />
+            </svg>
           </a>
         </div>
       </header>

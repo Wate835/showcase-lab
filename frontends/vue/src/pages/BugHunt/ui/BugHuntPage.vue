@@ -139,7 +139,7 @@ const { t } = useI18n();
         <div class="form" style="margin-top: 0.75rem">
           <label>
             {{ t("bugs.nick") }}
-            <input v-model="player" maxlength="40" placeholder="anonymous" />
+            <input v-model="player" maxlength="40" :placeholder="t('bugs.nickPlaceholder')" />
           </label>
           <button class="btn" type="button" @click="save">{{ t("bugs.saveScore") }}</button>
         </div>
@@ -153,7 +153,7 @@ const { t } = useI18n();
               <th>#</th>
               <th>{{ t("bugs.colPlayer") }}</th>
               <th>{{ t("bugs.colTime") }}</th>
-              <th>FW</th>
+              <th>{{ t("bugs.colFw") }}</th>
             </tr>
           </thead>
           <tbody>

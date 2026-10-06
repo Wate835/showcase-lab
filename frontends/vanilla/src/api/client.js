@@ -1,9 +1,22 @@
+import { getLocale } from "/app/shared/i18n.js";
+
 const API = "/api";
 
+function withLang(path) {
+  const url = new URL(path, "http://local.invalid");
+  url.searchParams.set("lang", getLocale());
+  return `${url.pathname}${url.search}`;
+}
+
 export async function api(path, options = {}) {
-  const res = await fetch(`${API}${path}`, {
-    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
-    ...options,
+  const { headers: extraHeaders, ...rest } = options;
+  const res = await fetch(`${API}${withLang(path)}`, {
+    ...rest,
+    headers: {
+      "Content-Type": "application/json",
+      "Accept-Language": getLocale(),
+      ...(extraHeaders || {}),
+    },
   });
   if (!res.ok) {
     const text = await res.text();

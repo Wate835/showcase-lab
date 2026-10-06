@@ -147,7 +147,7 @@ export function BugHuntPage() {
               <input
                 value={player}
                 maxLength={40}
-                placeholder="anonymous"
+                placeholder={t("bugs.nickPlaceholder")}
                 onChange={(e) => setPlayer(e.target.value)}
               />
             </label>
@@ -166,7 +166,7 @@ export function BugHuntPage() {
               <th>#</th>
               <th>{t("bugs.colPlayer")}</th>
               <th>{t("bugs.colTime")}</th>
-              <th>FW</th>
+              <th>{t("bugs.colFw")}</th>
             </tr>
           </thead>
           <tbody>

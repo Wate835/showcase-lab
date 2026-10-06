@@ -1,3 +1,11 @@
+import { getLocale } from "@shared/i18n.js";
+
+function withLang(path: string) {
+  const url = new URL(path, "http://local.invalid");
+  url.searchParams.set("lang", getLocale());
+  return `${url.pathname}${url.search}`;
+}
+
 export class ApiError extends Error {
   code?: string;
   status: number;
@@ -12,10 +20,15 @@ export class ApiError extends Error {
 
 const API = "/api";
 
-export async function api<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${API}${path}`, {
-    headers: { "Content-Type": "application/json", ...(options?.headers || {}) },
-    ...options,
+export async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const { headers: extraHeaders, ...rest } = options;
+  const res = await fetch(`${API}${withLang(path)}`, {
+    ...rest,
+    headers: {
+      "Content-Type": "application/json",
+      "Accept-Language": getLocale(),
+      ...(extraHeaders || {}),
+    },
   });
   if (!res.ok) {
     const raw = await res.text();

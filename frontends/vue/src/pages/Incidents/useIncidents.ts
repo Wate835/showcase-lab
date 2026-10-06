@@ -1,12 +1,14 @@
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onUnmounted, ref, watch } from "vue";
 import { incidentsWsUrl, resolveIncident as resolveIncidentApi } from "../../api";
 import type { Incident } from "../../types";
+import { useI18n } from "../../utils/usePrefs";
 
 export function useIncidents() {
   const incidents = ref<Incident[]>([]);
   const leavingIds = ref<number[]>([]);
   const updatedAt = ref("");
-  const liveMode = ref("подключение…");
+  const liveMode = ref("incidents.connecting");
+  const { locale } = useI18n();
   let socket: WebSocket | null = null;
   let retry: number | undefined;
   let closed = false;
@@ -23,31 +25,31 @@ export function useIncidents() {
 
   function connect() {
     stop();
-    liveMode.value = "подключение…";
+    liveMode.value = "incidents.connecting";
     socket = new WebSocket(incidentsWsUrl());
     socket.onopen = () => {
-      liveMode.value = "WebSocket";
+      liveMode.value = "incidents.wsReady";
     };
     socket.onmessage = (ev) => {
       try {
         const msg = JSON.parse(ev.data);
         if (msg.type !== "snapshot") return;
         if (leavingIds.value.length) {
-          updatedAt.value = new Date().toLocaleTimeString();
+        updatedAt.value = new Date().toLocaleTimeString(locale.value === "en" ? "en-US" : "ru-RU");
           return;
         }
         incidents.value = (msg.items || []).filter((i: Incident) => !i.resolved);
-        updatedAt.value = new Date().toLocaleTimeString();
+        updatedAt.value = new Date().toLocaleTimeString(locale.value === "en" ? "en-US" : "ru-RU");
       } catch {
         /* ignore */
       }
     };
     socket.onclose = () => {
-      liveMode.value = "переподключение…";
+      liveMode.value = "incidents.reconnecting";
       if (!closed) retry = window.setTimeout(connect, 1500);
     };
     socket.onerror = () => {
-      liveMode.value = "ошибка WS";
+      liveMode.value = "incidents.wsError";
     };
   }
 
@@ -72,7 +74,7 @@ export function useIncidents() {
     () => incidents.value.filter((i) => !leavingIds.value.includes(i.id)).length
   );
 
-  onMounted(connect);
+  watch(locale, connect, { immediate: true });
   onUnmounted(() => {
     closed = true;
     stop();

@@ -4,6 +4,7 @@ import Icon from "../../components/ui/icon/Icon.vue";
 import Loader from "../../components/ui/loader/Loader.vue";
 import Slider from "../../components/ui/slider/Slider.vue";
 import type { EditorProps, SaveImagePayload } from "../../types";
+import { usePeI18n } from "../../i18n";
 import { useEditor } from "../useEditor";
 
 const props = defineProps<EditorProps>();
@@ -48,6 +49,8 @@ const {
   applyCrop,
   onSaveExport,
 } = useEditor(props, emit);
+
+const { t } = usePeI18n();
 
 const isFullscreen = ref(false);
 let prevBodyOverflow = "";
@@ -116,7 +119,7 @@ const activeTool = () => EDITOR_TABS.find((t) => t.id === activeTab.value);
             <button
               type="button"
               class="pe-icon-btn"
-              title="Отменить"
+              :title="t('pe.undo')"
               :disabled="historyImage.length <= 1 || historyIndex === 0"
               @click="navigateHistory(-1)"
             >
@@ -125,7 +128,7 @@ const activeTool = () => EDITOR_TABS.find((t) => t.id === activeTab.value);
             <button
               type="button"
               class="pe-icon-btn"
-              title="Повторить"
+              :title="t('pe.redo')"
               :disabled="historyImage.length <= 1 || historyIndex === historyImage.length - 1"
               @click="navigateHistory(1)"
             >
@@ -134,38 +137,38 @@ const activeTool = () => EDITOR_TABS.find((t) => t.id === activeTab.value);
           </div>
 
           <div class="pe-menubar__center">
-            <span class="pe-menubar__title">{{ activeTool()?.label ?? "Редактор" }}</span>
+            <span class="pe-menubar__title">{{ t(activeTool()?.label ?? "pe.editor") }}</span>
           </div>
 
           <div class="pe-menubar__right">
             <button
               type="button"
               class="pe-icon-btn"
-              :title="isFullscreen ? 'Свернуть' : 'На весь экран'"
+              :title="isFullscreen ? t('pe.collapse') : t('pe.expand')"
               :aria-pressed="isFullscreen"
               @click="toggleFullscreen"
             >
               <Icon :name="isFullscreen ? 'compress' : 'expand'" />
             </button>
-            <button type="button" class="pe-btn pe-btn--ghost" @click="emit('close')">Закрыть</button>
-            <button type="button" class="pe-btn pe-btn--primary" @click="onSaveExport">Сохранить</button>
+            <button type="button" class="pe-btn pe-btn--ghost" @click="emit('close')">{{ t("pe.close") }}</button>
+            <button type="button" class="pe-btn pe-btn--primary" @click="onSaveExport">{{ t("pe.save") }}</button>
           </div>
         </header>
 
     <div class="pe-body">
       <!-- Left tool rail -->
-      <aside class="pe-toolbox" aria-label="Инструменты">
+      <aside class="pe-toolbox" aria-label="tools">
         <button
           v-for="tab in EDITOR_TABS"
           :key="tab.id"
           type="button"
           class="pe-tool"
           :class="{ 'is-active': activeTab === tab.id }"
-          :aria-label="tab.label"
+          :aria-label="t(tab.label)"
           @click="changeTab(tab.id, tab.label)"
         >
           <Icon :name="tab.icon" />
-          <span class="pe-tooltip" role="tooltip">{{ tab.label }}</span>
+          <span class="pe-tooltip" role="tooltip">{{ t(tab.label) }}</span>
         </button>
       </aside>
 
@@ -191,27 +194,27 @@ const activeTool = () => EDITOR_TABS.find((t) => t.id === activeTab.value);
       <!-- Right panels -->
       <aside class="pe-panels">
         <section class="pe-panel-block">
-          <header class="pe-panel-head">Свойства</header>
+          <header class="pe-panel-head">{{ t("pe.properties") }}</header>
           <div class="pe-panel-body">
             <template v-if="activeTab === TAB.COLOR">
               <div class="pe-section">
-                <div class="pe-section__title">Баланс белого</div>
-                <Slider v-model="colorParams.temperature" label="Температура" />
-                <Slider v-model="colorParams.tint" label="Оттенок" />
+                <div class="pe-section__title">{{ t("pe.wb") }}</div>
+                <Slider v-model="colorParams.temperature" :label="t('pe.temperature')" />
+                <Slider v-model="colorParams.tint" :label="t('pe.tint')" />
               </div>
               <div class="pe-section">
-                <div class="pe-section__title">Тон</div>
-                <Slider v-model="colorParams.exposure" label="Экспозиция" />
-                <Slider v-model="colorParams.contrast" label="Контраст" />
-                <Slider v-model="colorParams.highlights" label="Света" />
-                <Slider v-model="colorParams.shadows" label="Тени" />
-                <Slider v-model="colorParams.whites" label="Белые" />
-                <Slider v-model="colorParams.blacks" label="Чёрные" />
+                <div class="pe-section__title">{{ t("pe.tone") }}</div>
+                <Slider v-model="colorParams.exposure" :label="t('pe.exposure')" />
+                <Slider v-model="colorParams.contrast" :label="t('pe.contrast')" />
+                <Slider v-model="colorParams.highlights" :label="t('pe.highlights')" />
+                <Slider v-model="colorParams.shadows" :label="t('pe.shadows')" />
+                <Slider v-model="colorParams.whites" :label="t('pe.whites')" />
+                <Slider v-model="colorParams.blacks" :label="t('pe.blacks')" />
               </div>
               <div class="pe-section">
-                <div class="pe-section__title">Присутствие</div>
-                <Slider v-model="colorParams.vibrance" label="Красочность" />
-                <Slider v-model="colorParams.saturation" label="Насыщенность" />
+                <div class="pe-section__title">{{ t("pe.presence") }}</div>
+                <Slider v-model="colorParams.vibrance" :label="t('pe.vibrance')" />
+                <Slider v-model="colorParams.saturation" :label="t('pe.saturation')" />
               </div>
               <div class="pe-color-actions">
                 <button
@@ -224,7 +227,7 @@ const activeTool = () => EDITOR_TABS.find((t) => t.id === activeTab.value);
                   @touchstart.prevent="setComparing(true)"
                   @touchend.prevent="setComparing(false)"
                 >
-                  До / После
+                  {{ t("pe.beforeAfter") }}
                 </button>
                 <button
                   type="button"
@@ -232,7 +235,7 @@ const activeTool = () => EDITOR_TABS.find((t) => t.id === activeTab.value);
                   :disabled="!hasAdjustments"
                   @click="resetColor"
                 >
-                  Сбросить
+                  {{ t("pe.reset") }}
                 </button>
                 <button
                   type="button"
@@ -241,7 +244,7 @@ const activeTool = () => EDITOR_TABS.find((t) => t.id === activeTab.value);
                   @click="applyColorAdjustments"
                 >
                   <Icon name="success" />
-                  Применить
+                  {{ t("pe.apply") }}
                 </button>
               </div>
             </template>
@@ -249,41 +252,41 @@ const activeTool = () => EDITOR_TABS.find((t) => t.id === activeTab.value);
             <template v-else-if="activeTab === TAB.ROTATE">
               <button type="button" class="pe-action" @click="markDirtyAndRotate(90)">
                 <Icon name="reload" />
-                Вправо 90°
+                {{ t("pe.rotateRight") }}
               </button>
               <button type="button" class="pe-action" @click="markDirtyAndRotate(-90)">
                 <Icon name="reload" style="transform: scale(-1, 1)" />
-                Влево 90°
+                {{ t("pe.rotateLeft") }}
               </button>
             </template>
 
             <template v-else-if="activeTab === TAB.CROP">
               <button type="button" class="pe-action" @click="markDirtyAndCrop">
                 <Icon name="minimize" />
-                Выделить кадр
+                {{ t("pe.selectCrop") }}
               </button>
               <button type="button" class="pe-action pe-action--accent" @click="applyCrop">
                 <Icon name="success" />
-                Применить
+                {{ t("pe.apply") }}
               </button>
-              <p class="pe-hint">Потяните углы и стороны рамки, затем нажмите «Применить».</p>
+              <p class="pe-hint">{{ t("pe.cropHint") }}</p>
             </template>
 
             <template v-else-if="activeTab === TAB.FLIP">
               <button type="button" class="pe-action" @click="markDirtyAndFlip('x')">
                 <Icon name="flip" class="rotate-90" />
-                По горизонтали
+                {{ t("pe.flipH") }}
               </button>
               <button type="button" class="pe-action" @click="markDirtyAndFlip('y')">
                 <Icon name="flip" />
-                По вертикали
+                {{ t("pe.flipV") }}
               </button>
             </template>
           </div>
         </section>
 
         <section class="pe-panel-block pe-panel-block--grow">
-          <header class="pe-panel-head">История</header>
+          <header class="pe-panel-head">{{ t("pe.history") }}</header>
           <div class="pe-panel-body pe-history">
             <button
               v-for="(item, index) in historyImage"
@@ -295,7 +298,7 @@ const activeTool = () => EDITOR_TABS.find((t) => t.id === activeTab.value);
             >
               <Icon name="clock" />
               <span class="pe-history-row__text">
-                <strong>{{ item.title }}</strong>
+                <strong>{{ t(item.title) }}</strong>
                 <small>{{ formatHistoryTime(item.date) }}</small>
               </span>
             </button>
@@ -305,8 +308,8 @@ const activeTool = () => EDITOR_TABS.find((t) => t.id === activeTab.value);
     </div>
 
     <footer class="pe-statusbar">
-      <span>{{ historyImage.length }} шаг(ов)</span>
-      <span v-if="selected">режим кадрирования</span>
+      <span>{{ t("pe.steps", { n: historyImage.length }) }}</span>
+      <span v-if="selected">{{ t("pe.cropMode") }}</span>
     </footer>
       </div>
     </div>

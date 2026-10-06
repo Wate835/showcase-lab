@@ -1,14 +1,14 @@
 import { bootPrefs } from "/app/shared/boot.js";
 import { getLocale, subscribeLocale, t, toggleLocale } from "/app/shared/i18n.js";
-import { getTheme, subscribeTheme, toggleTheme } from "/app/shared/theme.js";
+import { subscribeTheme, toggleTheme } from "/app/shared/theme.js";
 import { ROUTES } from "./constants.js";
 import { escapeHtml } from "./utils/escapeHtml.js";
 import { renderAbout } from "./pages/about.js";
 import { renderProjects } from "./pages/projects.js";
-import { renderBugHunt } from "./pages/bugHunt.js";
-import { renderIncidents, stopIncidentsLive } from "./pages/incidents.js";
-import { renderGuestbook } from "./pages/guestbook.js";
-import { renderPhotoEditor, stopPhotoEditor } from "./pages/photoEditor.js";
+import { renderBugHunt, applyBugHuntLocale, stopBugHunt } from "./pages/bugHunt.js";
+import { renderIncidents, stopIncidentsLive, applyIncidentsLocale } from "./pages/incidents.js";
+import { renderGuestbook, applyGuestbookLocale } from "./pages/guestbook.js";
+import { renderPhotoEditor, stopPhotoEditor, applyPhotoEditorLocale } from "./pages/photoEditor.js";
 
 bootPrefs();
 
@@ -27,16 +27,18 @@ function currentRoute() {
 
 function paintChrome() {
   if (themeToggle) {
-    themeToggle.textContent =
-      getTheme() === "dark" ? t("shell.themeToLight") : t("shell.themeToDark");
     themeToggle.setAttribute("aria-label", t("shell.themeAria"));
+    themeToggle.setAttribute("data-tip", t("shell.themeAria"));
   }
   if (localeToggle) {
     localeToggle.textContent =
-      getLocale() === "ru" ? t("shell.localeToEn") : t("shell.localeToRu");
+      getLocale() === "en" ? t("shell.localeToEn") : t("shell.localeToRu");
     localeToggle.setAttribute("aria-label", t("shell.localeAria"));
   }
-  if (switchStack) switchStack.textContent = t("shell.switchStack");
+  if (switchStack) {
+    switchStack.setAttribute("aria-label", t("shell.switchStack"));
+    switchStack.setAttribute("data-tip", t("shell.switchStack"));
+  }
   if (footerApi) footerApi.textContent = t("shell.footerApi");
   renderNav();
 }
@@ -70,6 +72,7 @@ async function swapPage(renderFn) {
 async function render() {
   if (currentRoute() !== "incidents") stopIncidentsLive();
   if (currentRoute() !== "photoEditor") stopPhotoEditor();
+  if (currentRoute() !== "bugs") stopBugHunt();
   paintChrome();
   const route = currentRoute();
   try {
@@ -100,7 +103,13 @@ subscribeTheme(() => {
 });
 subscribeLocale(() => {
   paintChrome();
-  render();
+  const route = currentRoute();
+  if (route === "photoEditor") applyPhotoEditorLocale();
+  else if (route === "bugs") applyBugHuntLocale();
+  else if (route === "guestbook") applyGuestbookLocale(appEl);
+  else if (route === "incidents") applyIncidentsLocale(appEl, currentRoute);
+  else if (route === "about") renderAbout(appEl);
+  else if (route === "projects") renderProjects(appEl);
 });
 
 window.addEventListener("hashchange", render);

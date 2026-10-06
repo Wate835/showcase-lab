@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.challenges_data import (
     CHALLENGES,
@@ -6,6 +6,7 @@ from app.challenges_data import (
     check_bug_line,
     public_challenge,
 )
+from app.locale import Lang, get_lang
 from app.schemas import (
     ChallengeOut,
     ChallengesResponse,
@@ -19,14 +20,17 @@ router = APIRouter(prefix="/api", tags=["challenges"])
 
 
 @router.get("/challenges", response_model=ChallengesResponse)
-def list_challenges(framework: Framework = Query(...)) -> ChallengesResponse:
+def list_challenges(
+    framework: Framework = Query(...),
+    lang: Lang = Depends(get_lang),
+) -> ChallengesResponse:
     items = CHALLENGES.get(framework)
     if not items:
         raise HTTPException(status_code=404, detail="Unknown framework")
     return ChallengesResponse(
         framework=framework,
         total=len(items),
-        items=[ChallengeOut.model_validate(public_challenge(ch)) for ch in items],
+        items=[ChallengeOut.model_validate(public_challenge(ch, lang)) for ch in items],
     )
 
 

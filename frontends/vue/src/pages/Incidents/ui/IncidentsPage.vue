@@ -12,7 +12,7 @@ const { t } = useI18n();
     <p class="lead">
       {{ t("incidents.intro") }} {{ t("incidents.open") }} <strong>{{ openCount }}</strong>.
       {{ t("incidents.live") }}
-      <strong>{{ liveMode }}</strong> · {{ updatedAt }}
+      <strong>{{ t(liveMode) }}</strong> · {{ updatedAt }}
     </p>
     <div class="stack">
       <article

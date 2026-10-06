@@ -1,40 +1,43 @@
 import { useEffect, useRef, useState } from "react";
 import { incidentsWsUrl, resolveIncident } from "../../api";
 import type { Incident } from "../../types";
+import { useI18n } from "../../utils/usePrefs";
 
 export function useIncidents() {
   const [items, setItems] = useState<Incident[]>([]);
   const [leavingIds, setLeavingIds] = useState<number[]>([]);
   const [updatedAt, setUpdatedAt] = useState("");
-  const [liveMode, setLiveMode] = useState("подключение…");
+  const [liveMode, setLiveMode] = useState("incidents.connecting");
   const leavingRef = useRef(leavingIds);
   leavingRef.current = leavingIds;
+  const { locale } = useI18n();
 
   useEffect(() => {
     let closed = false;
     let socket: WebSocket | null = null;
     let retry: number | undefined;
+    const dateLocale = locale === "en" ? "en-US" : "ru-RU";
 
     const connect = () => {
-      setLiveMode("подключение…");
+      setLiveMode("incidents.connecting");
       socket = new WebSocket(incidentsWsUrl());
-      socket.onopen = () => setLiveMode("WebSocket");
+      socket.onopen = () => setLiveMode("incidents.wsReady");
       socket.onmessage = (ev) => {
         try {
           const msg = JSON.parse(ev.data);
           if (msg.type !== "snapshot") return;
           const open = (msg.items || []).filter((i: Incident) => !i.resolved);
           setItems((prev) => (leavingRef.current.length ? prev : open));
-          setUpdatedAt(new Date().toLocaleTimeString());
+          setUpdatedAt(new Date().toLocaleTimeString(dateLocale));
         } catch {
           /* ignore */
         }
       };
       socket.onclose = () => {
-        setLiveMode("переподключение…");
+        setLiveMode("incidents.reconnecting");
         if (!closed) retry = window.setTimeout(connect, 1500);
       };
-      socket.onerror = () => setLiveMode("ошибка WS");
+      socket.onerror = () => setLiveMode("incidents.wsError");
     };
 
     connect();
@@ -46,7 +49,7 @@ export function useIncidents() {
         socket.close();
       }
     };
-  }, []);
+  }, [locale]);
 
   async function resolveItem(id: number) {
     setLeavingIds((prev) => [...prev, id]);
