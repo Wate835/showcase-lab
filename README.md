@@ -79,3 +79,10 @@ npm run dev
 FastAPI · Pydantic · SQLAlchemy · SQLite · uv
 
 Пакет приложения: `src/showcaselab/` (`routers` → `bl` → `clients` / `models`). Тесты — в `tests/`.
+
+```powershell
+uv sync --group dev
+uv run pytest
+```
+
+Тесты поднимают временную SQLite и отключают фоновый incident feed (`INCIDENT_FEED_ENABLED=false`).
