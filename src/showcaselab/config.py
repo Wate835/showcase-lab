@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     app_name: str = "Showcase Lab"
     database_url: str = f"sqlite:///{_REPO_ROOT / 'showcase.db'}"
     cors_origins: list[str] = ["*"]
+    incident_feed_enabled: bool = True
 
 
 settings = Settings()

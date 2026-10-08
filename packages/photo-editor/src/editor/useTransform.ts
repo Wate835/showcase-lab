@@ -8,7 +8,6 @@ type Bounds = { x: number; y: number; width: number; height: number };
 
 type TransformDeps = {
   imageNode: Ref<any>;
-  imageObj: Ref<HTMLImageElement | null>;
   imageConfig: Ref<{
     width: number;
     height: number;
@@ -81,7 +80,6 @@ function clampDragPosition(
 export function useTransform(deps: TransformDeps) {
   const {
     imageNode,
-    imageObj,
     imageConfig,
     stageRef,
     dimLayer,

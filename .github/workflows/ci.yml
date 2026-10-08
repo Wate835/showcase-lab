@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Ruff
+        run: uv run ruff check .
+
+      - name: Pytest
+        run: uv run pytest
+
+  frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [react, vue]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            packages/photo-editor/package-lock.json
+            frontends/${{ matrix.app }}/package-lock.json
+
+      - name: Install photo-editor
+        working-directory: packages/photo-editor
+        run: npm ci
+
+      - name: Install ${{ matrix.app }}
+        working-directory: frontends/${{ matrix.app }}
+        run: npm ci
+
+      - name: Typecheck
+        working-directory: frontends/${{ matrix.app }}
+        run: npm run typecheck
+
+      - name: Build
+        working-directory: frontends/${{ matrix.app }}
+        run: npm run build

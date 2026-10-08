@@ -8,7 +8,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from showcaselab.bl.errors import NotFoundError
-from showcaselab.clients.db.client import SessionLocal
+from showcaselab.clients.db import client as db_client
 from showcaselab.clients.db.models import Incident
 from showcaselab.locale import dump_i18n, loc
 from showcaselab.models.common import Lang
@@ -107,7 +107,7 @@ def fetch_open_incidents(db: Session, lang: Lang) -> list[IncidentResponse]:
 
 
 def fetch_open_incidents_dump(lang: Lang = "ru") -> list[dict[str, Any]]:
-    db = SessionLocal()
+    db = db_client.SessionLocal()
     try:
         return [item.model_dump(mode="json") for item in fetch_open_incidents(db, lang)]
     finally:
@@ -117,7 +117,7 @@ def fetch_open_incidents_dump(lang: Lang = "ru") -> list[dict[str, Any]]:
 def snapshots_for_langs(langs: set[Lang]) -> dict[Lang, list[dict[str, Any]]]:
     if not langs:
         return {}
-    db = SessionLocal()
+    db = db_client.SessionLocal()
     try:
         stmt = (
             select(Incident)
@@ -174,7 +174,7 @@ def maybe_spawn_incident(db: Session) -> bool:
 
 
 def spawn_open_incident() -> bool:
-    db = SessionLocal()
+    db = db_client.SessionLocal()
     try:
         return maybe_spawn_incident(db)
     finally:

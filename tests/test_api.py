@@ -1,27 +1,22 @@
 from fastapi.testclient import TestClient
 
-from showcaselab.main import app
 
-
-def test_health() -> None:
-    with TestClient(app) as client:
-        response = client.get("/api/health")
+def test_health(client: TestClient) -> None:
+    response = client.get("/api/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
 
-def test_profile() -> None:
-    with TestClient(app) as client:
-        response = client.get("/api/profile", params={"lang": "en"})
+def test_profile(client: TestClient) -> None:
+    response = client.get("/api/profile", params={"lang": "en"})
     assert response.status_code == 200
     body = response.json()
     assert "name" in body
     assert "skills" in body
 
 
-def test_projects() -> None:
-    with TestClient(app) as client:
-        response = client.get("/api/projects", params={"lang": "ru"})
+def test_projects(client: TestClient) -> None:
+    response = client.get("/api/projects", params={"lang": "ru"})
     assert response.status_code == 200
     items = response.json()
     assert isinstance(items, list)
@@ -29,27 +24,175 @@ def test_projects() -> None:
     assert "title" in items[0]
 
 
-def test_challenges() -> None:
-    with TestClient(app) as client:
-        response = client.get("/api/challenges", params={"framework": "vanilla", "lang": "ru"})
+def test_challenges_hides_bug_line(client: TestClient) -> None:
+    response = client.get("/api/challenges", params={"framework": "vanilla", "lang": "ru"})
     assert response.status_code == 200
     body = response.json()
     assert body["framework"] == "vanilla"
     assert body["total"] > 0
     assert "bug_line" not in body["items"][0]
+    assert "correct" not in body["items"][0]["fixes"][0]
 
 
-def test_guestbook_rejects_short_message() -> None:
-    with TestClient(app) as client:
-        response = client.post(
-            "/api/guestbook",
-            json={"author": "Anton", "message": "x", "framework": "vanilla"},
-        )
+def test_challenges_unknown_framework(client: TestClient) -> None:
+    response = client.get("/api/challenges", params={"framework": "angular", "lang": "en"})
+    assert response.status_code == 422
+
+
+def test_check_line_true_and_false(client: TestClient) -> None:
+    ok = client.post(
+        "/api/challenges/v01/check-line",
+        json={"framework": "vanilla", "line": 3},
+    )
+    assert ok.status_code == 200
+    assert ok.json() == {"ok": True}
+
+    bad = client.post(
+        "/api/challenges/v01/check-line",
+        json={"framework": "vanilla", "line": 1},
+    )
+    assert bad.status_code == 200
+    assert bad.json() == {"ok": False}
+
+
+def test_check_line_unknown_challenge(client: TestClient) -> None:
+    response = client.post(
+        "/api/challenges/missing/check-line",
+        json={"framework": "vanilla", "line": 1},
+    )
+    assert response.status_code == 404
+
+
+def test_check_fix_true_and_false(client: TestClient) -> None:
+    ok = client.post(
+        "/api/challenges/v01/check-fix",
+        json={"framework": "vanilla", "fix_id": "a"},
+    )
+    assert ok.status_code == 200
+    assert ok.json() == {"ok": True}
+
+    bad = client.post(
+        "/api/challenges/v01/check-fix",
+        json={"framework": "vanilla", "fix_id": "b"},
+    )
+    assert bad.status_code == 200
+    assert bad.json() == {"ok": False}
+
+
+def test_check_fix_unknown(client: TestClient) -> None:
+    response = client.post(
+        "/api/challenges/v01/check-fix",
+        json={"framework": "vanilla", "fix_id": "zzz"},
+    )
+    assert response.status_code == 404
+
+
+def test_guestbook_rejects_short_message(client: TestClient) -> None:
+    response = client.post(
+        "/api/guestbook",
+        json={"author": "Anton", "message": "x", "framework": "vanilla"},
+        params={"lang": "en"},
+    )
     assert response.status_code == 400
-    assert response.json()["detail"]["code"] == "too_short"
+    detail = response.json()["detail"]
+    assert detail["code"] == "too_short"
+    assert "short" in detail["message"].lower()
 
 
-def test_landing() -> None:
-    with TestClient(app) as client:
-        response = client.get("/?choose=1")
+def test_guestbook_happy_path(client: TestClient) -> None:
+    created = client.post(
+        "/api/guestbook",
+        json={"author": "Anton", "message": "Nice lab demo", "framework": "react"},
+        params={"lang": "en"},
+    )
+    assert created.status_code == 201
+    body = created.json()
+    assert body["author"] == "Anton"
+    assert body["message"] == "Nice lab demo"
+    assert body["framework"] == "react"
+    assert "id" in body
+
+    listed = client.get("/api/guestbook", params={"lang": "en"})
+    assert listed.status_code == 200
+    assert any(item["id"] == body["id"] for item in listed.json())
+
+
+def test_guestbook_profanity_i18n(client: TestClient) -> None:
+    ru = client.post(
+        "/api/guestbook",
+        json={"author": "Anton", "message": "fuck this", "framework": "vanilla"},
+        params={"lang": "ru"},
+    )
+    assert ru.status_code == 400
+    assert ru.json()["detail"]["code"] == "profanity"
+    assert "Ругаться" in ru.json()["detail"]["message"]
+
+    en = client.post(
+        "/api/guestbook",
+        json={"author": "Anton", "message": "shit happens", "framework": "vanilla"},
+        params={"lang": "en"},
+    )
+    assert en.status_code == 400
+    assert en.json()["detail"]["code"] == "profanity"
+    assert "civil" in en.json()["detail"]["message"].lower()
+
+
+def test_guestbook_rate_limit(client: TestClient) -> None:
+    payload = {"author": "Anton", "message": "rate limit probe", "framework": "vue"}
+    assert client.post("/api/guestbook", json=payload).status_code == 201
+    assert client.post("/api/guestbook", json={**payload, "message": "second probe"}).status_code == 201
+    third = client.post("/api/guestbook", json={**payload, "message": "third probe"})
+    assert third.status_code == 400
+    assert third.json()["detail"]["code"] == "rate"
+
+
+def test_scores_post_get_and_filter(client: TestClient) -> None:
+    created = client.post(
+        "/api/scores",
+        json={"player_name": "Tester", "time_ms": 1234, "framework": "vue"},
+    )
+    assert created.status_code == 201
+    body = created.json()
+    assert body["player_name"] == "Tester"
+    assert body["time_ms"] == 1234
+    assert body["framework"] == "vue"
+
+    client.post(
+        "/api/scores",
+        json={"player_name": "Other", "time_ms": 9999, "framework": "react"},
+    )
+
+    filtered = client.get("/api/scores", params={"framework": "vue"})
+    assert filtered.status_code == 200
+    items = filtered.json()
+    assert items
+    assert all(item["framework"] == "vue" for item in items)
+    assert any(item["id"] == body["id"] for item in items)
+
+
+def test_incidents_list_and_resolve(client: TestClient) -> None:
+    listed = client.get("/api/incidents", params={"lang": "en"})
+    assert listed.status_code == 200
+    items = listed.json()
+    assert items
+    incident_id = items[0]["id"]
+
+    resolved = client.post(f"/api/incidents/{incident_id}/resolve", params={"lang": "en"})
+    assert resolved.status_code == 200
+    assert resolved.json()["id"] == incident_id
+    assert resolved.json()["resolved"] is True
+
+    missing = client.post("/api/incidents/999999/resolve", params={"lang": "en"})
+    assert missing.status_code == 404
+
+
+def test_incidents_ws_snapshot(client: TestClient) -> None:
+    with client.websocket_connect("/api/ws/incidents?lang=en") as ws:
+        payload = ws.receive_json()
+    assert payload["type"] == "snapshot"
+    assert isinstance(payload["items"], list)
+
+
+def test_landing(client: TestClient) -> None:
+    response = client.get("/?choose=1")
     assert response.status_code == 200

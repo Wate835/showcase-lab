@@ -22,15 +22,20 @@ KNOWN_FRAMEWORKS = frozenset({"vanilla", "react", "vue"})
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     init_database()
-    ticker = asyncio.create_task(incident_feed_loop())
+    ticker = (
+        asyncio.create_task(incident_feed_loop())
+        if settings.incident_feed_enabled
+        else None
+    )
     try:
         yield
     finally:
-        ticker.cancel()
-        try:
-            await ticker
-        except asyncio.CancelledError:
-            pass
+        if ticker is not None:
+            ticker.cancel()
+            try:
+                await ticker
+            except asyncio.CancelledError:
+                pass
 
 
 app = FastAPI(title=settings.app_name, lifespan=lifespan)
