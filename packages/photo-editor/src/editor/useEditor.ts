@@ -30,7 +30,6 @@ export function useEditor(
 
   const transform = useTransform({
     imageNode: canvas.imageNode,
-    imageObj: canvas.imageObj,
     imageConfig: canvas.imageConfig,
     stageRef: canvas.stageRef,
     dimLayer: canvas.dimLayer,

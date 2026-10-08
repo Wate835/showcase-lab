@@ -105,10 +105,11 @@ npm run dev
 
 Собирает React, Vue и бандл `packages/photo-editor` → `static/photo-editor/` (нужен Vanilla).
 
-## Тесты
+## Тесты и CI
 
 ```powershell
 uv sync --group dev
+uv run ruff check .
 uv run pytest
 ```
 
@@ -120,6 +121,8 @@ Typecheck фронтов (после `npm install` в соответствующ
 cd frontends\react; npm run typecheck
 cd frontends\vue; npm run typecheck
 ```
+
+GitHub Actions (`.github/workflows/ci.yml`): на push/PR в `dev` и `main` гоняются ruff, pytest, typecheck и build React/Vue.
 
 ## API (кратко)
 
