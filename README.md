@@ -1,5 +1,7 @@
 # Showcase Lab
 
+> **Сайт:** [anton-kudryavcev.ru](https://anton-kudryavcev.ru)
+
 Портфолио: один FastAPI API и три одинаковых по экранам фронта.
 
 | Стек | Палитра | URL |
