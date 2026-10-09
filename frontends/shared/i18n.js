@@ -14,6 +14,8 @@ export const messages = {
     "shell.footerApi": "API: FastAPI + SQLAlchemy",
     "shell.themeAria": "Переключить тему",
     "shell.localeAria": "Переключить язык",
+    "shell.menuOpen": "Открыть меню",
+    "shell.menuClose": "Закрыть меню",
 
     "nav.about": "Обо мне",
     "nav.projects": "Проекты",
@@ -103,6 +105,8 @@ export const messages = {
     "shell.footerApi": "API: FastAPI + SQLAlchemy",
     "shell.themeAria": "Toggle theme",
     "shell.localeAria": "Toggle language",
+    "shell.menuOpen": "Open menu",
+    "shell.menuClose": "Close menu",
 
     "nav.about": "About",
     "nav.projects": "Projects",

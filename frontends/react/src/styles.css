@@ -56,70 +56,243 @@ a { color: var(--accent-soft); }
 .shell {
   max-width: 980px;
   margin: 0 auto;
-  padding: 1rem 1.1rem 2rem;
+  padding: 0.75rem 0.9rem 1.75rem;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 .topbar {
+  position: relative;
+  z-index: 50;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem 1rem;
+  flex-wrap: nowrap;
+  gap: 0.55rem 0.65rem;
   align-items: center;
-  padding: 0.75rem 0 1.25rem;
+  padding: 0.55rem 0 0.9rem;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.15rem;
 }
 .logo {
+  position: relative;
+  z-index: 51;
   font-weight: 800;
   letter-spacing: -0.03em;
   text-decoration: none;
   color: var(--text);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   background: none;
   border: none;
   cursor: pointer;
   font-family: inherit;
 }
+.nav-toggle {
+  position: relative;
+  z-index: 51;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  margin-left: auto;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  color: var(--muted);
+  cursor: pointer;
+  font-family: inherit;
+}
+.nav-toggle:hover,
+.nav-toggle:focus-visible {
+  color: var(--accent-soft);
+  border-color: var(--accent);
+  outline: none;
+}
+.nav-toggle-bars {
+  position: relative;
+  display: block;
+  width: 1rem;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: background-color 0.2s ease;
+}
+.nav-toggle-bars::before,
+.nav-toggle-bars::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 1rem;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: transform 0.2s ease;
+}
+.nav-toggle-bars::before { transform: translateY(-5px); }
+.nav-toggle-bars::after { transform: translateY(5px); }
+.topbar.is-nav-open .nav-toggle-bars { background: transparent; }
+.topbar.is-nav-open .nav-toggle-bars::before { transform: translateY(0) rotate(45deg); }
+.topbar.is-nav-open .nav-toggle-bars::after { transform: translateY(0) rotate(-45deg); }
+.topbar.is-nav-open { border-bottom-color: transparent; }
+.menu-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding:
+    calc(4.75rem + env(safe-area-inset-top, 0px))
+    0.9rem
+    calc(0.9rem + env(safe-area-inset-bottom, 0px));
+  border: none;
+  border-radius: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 0% 0%, var(--glow-a), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 20%, var(--glow-b), transparent 50%),
+    var(--bg);
+  box-shadow: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease;
+}
+.topbar.is-nav-open .menu-panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+}
 .nav {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  flex: 1;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1 1 auto;
   min-width: 0;
+  min-height: 0;
+  overflow: auto;
 }
 .nav a {
   text-decoration: none;
   color: var(--muted);
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.92rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 10px;
+  font-size: 1rem;
 }
 .nav a.active, .nav a:hover {
   color: var(--on-accent);
   background: var(--accent);
 }
 .topbar-controls {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  gap: 0.5rem;
   align-items: center;
-  margin-left: auto;
+  justify-content: center;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
 }
+.topbar-controls .switch--icon[data-tip]::after { display: none; }
 .switch {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 2.6rem;
   line-height: 1.2;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--muted);
   text-decoration: none;
   border: 1px solid var(--border);
-  padding: 0.4rem 0.75rem;
+  padding: 0.45rem 0.85rem;
   border-radius: 999px;
   background: transparent;
   cursor: pointer;
   font-family: inherit;
+}
+html.is-nav-open { overflow: hidden; }
+@media (min-width: 860px) {
+  .shell { padding: 1rem 1.1rem 2rem; }
+  .topbar {
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    padding: 0.75rem 0 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .logo { font-size: 1.15rem; }
+  .nav-toggle { display: none; }
+  .menu-panel {
+    position: static;
+    inset: auto;
+    top: auto;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    width: auto;
+    height: auto;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition: none;
+  }
+  .nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1;
+    overflow: visible;
+    gap: 0.35rem;
+  }
+  .nav a {
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.92rem;
+  }
+  .topbar-controls {
+    width: auto;
+    margin-top: 0;
+    margin-left: auto;
+    padding-top: 0;
+    border-top: none;
+    justify-content: flex-start;
+    gap: 0.4rem;
+  }
+  .topbar-controls .switch--icon[data-tip]::after { display: block; }
+  .switch {
+    min-height: 0;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  .switch--icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    min-height: 0;
+  }
+  html.is-nav-open { overflow: auto; }
 }
 .switch:hover {
   color: var(--accent-soft);
@@ -128,8 +301,9 @@ a { color: var(--accent-soft); }
 
 .switch--icon {
   position: relative;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  min-height: 2.4rem;
   padding: 0;
 }
 
@@ -595,6 +769,17 @@ label {
   to { opacity: 0; transform: translateY(-8px); }
 }
 
+@media (max-width: 859px) {
+  .page,
+  .page.is-leaving {
+    animation: none !important;
+  }
+  .page-enter-active,
+  .page-leave-active {
+    transition: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page,
   .page.is-leaving {
@@ -602,6 +787,9 @@ label {
   }
   .page-enter-active,
   .page-leave-active {
+    transition: none !important;
+  }
+  .menu-panel {
     transition: none !important;
   }
 }
