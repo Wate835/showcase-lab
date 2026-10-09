@@ -6,11 +6,9 @@ import { BugHuntPage } from "../pages/BugHunt";
 import { GuestbookPage } from "../pages/Guestbook";
 import { IncidentsPage } from "../pages/Incidents";
 import { PhotoEditorPage } from "../pages/PhotoEditor";
-import { ProjectsPage } from "../pages/Projects";
 
 const PAGES: Record<RouteName, Component> = {
   about: AboutPage,
-  projects: ProjectsPage,
   photoEditor: PhotoEditorPage,
   bugs: BugHuntPage,
   incidents: IncidentsPage,

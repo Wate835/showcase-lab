@@ -10,7 +10,7 @@
 | React | cyan | `/app/react/` |
 | Vue 3 | emerald | `/app/vue/` |
 
-Экраны: About, Projects, Photo Editor, Bug Hunt, Incident Board, Guestbook.
+Экраны: About (с блоком кейсов), Photo Editor, Bug Hunt, Incident Board, Guestbook.
 
 Тема и локаль (`ru` / `en`) общие для всех фронтов. На `/` выбирается стек (cookie `fw`).
 

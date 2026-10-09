@@ -22,6 +22,14 @@ def test_projects(client: TestClient) -> None:
     assert isinstance(items, list)
     assert items
     assert "title" in items[0]
+    urls = {item.get("url") for item in items}
+    assert "/photo-editor" in urls
+    assert "https://arbat.life/" in urls
+    assert "https://www.k-gorod.ru/" in urls
+    assert not any(
+        isinstance(item.get("url"), str) and "github.io/photo-editor" in item["url"]
+        for item in items
+    )
 
 
 def test_challenges_hides_bug_line(client: TestClient) -> None:

@@ -1,10 +1,27 @@
-import { fetchProfile } from "../api/index.js";
+import { fetchProfile, fetchProjects } from "../api/index.js";
+import { INTERNAL_DEMO_HASH } from "../constants.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
 import { t } from "/app/shared/i18n.js";
 
+function isInternalDemo(url) {
+  return Boolean(url && url.startsWith("/") && !url.startsWith("//"));
+}
+
+function caseTitle(title, url) {
+  const safeTitle = escapeHtml(title);
+  if (isInternalDemo(url)) {
+    const href = INTERNAL_DEMO_HASH[url] || `#${url.replace(/^\//, "")}`;
+    return `<a href="${escapeHtml(href)}">${safeTitle}</a>`;
+  }
+  if (url) {
+    return `<a href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${safeTitle}</a>`;
+  }
+  return safeTitle;
+}
+
 export async function renderAbout(appEl) {
   appEl.innerHTML = `<p class="muted">${escapeHtml(t("about.loading"))}</p>`;
-  const p = await fetchProfile();
+  const [p, cases] = await Promise.all([fetchProfile(), fetchProjects()]);
   appEl.innerHTML = `
     <section>
       <h1>${escapeHtml(p.name)}</h1>
@@ -36,5 +53,25 @@ export async function renderAbout(appEl) {
           )
           .join("")}
       </div>
+      ${
+        cases.length
+          ? `
+      <div class="cases">
+        <h2>${escapeHtml(t("about.cases"))}</h2>
+        <p class="lead">${escapeHtml(t("about.casesLead"))}</p>
+        <div class="stack">
+        ${cases
+          .map(
+            (item) => `
+          <article class="card">
+            <h2>${caseTitle(item.title, item.url)}</h2>
+            <p class="muted">${escapeHtml(item.year)}</p>
+          </article>`
+          )
+          .join("")}
+        </div>
+      </div>`
+          : ""
+      }
     </section>`;
 }

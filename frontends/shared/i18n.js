@@ -18,7 +18,6 @@ export const messages = {
     "shell.menuClose": "Закрыть меню",
 
     "nav.about": "Обо мне",
-    "nav.projects": "Проекты",
     "nav.photoEditor": "Фоторедактор",
     "nav.bugs": "Bug Hunt",
     "nav.incidents": "Инциденты",
@@ -26,12 +25,8 @@ export const messages = {
 
     "about.loading": "Загрузка профиля…",
     "about.me": "Обо мне",
-
-    "projects.title": "Проекты",
-    "projects.lead": "Проекты и кейсы из опыта.",
-    "projects.openDemo": "Открыть демо",
-    "projects.loading": "Загрузка проектов…",
-    "projects.loadingError": "Ошибка загрузки",
+    "about.cases": "Кейсы",
+    "about.casesLead": "ERP и CRM — закрытые продукты, поэтому ссылки ведут на открытые внешние сайты компаний, которые я тоже разрабатывал.",
 
     "photoEditor.title": "Фоторедактор",
     "photoEditor.lead": "Кадрирование, поворот и цветокоррекция прямо в браузере.",
@@ -109,7 +104,6 @@ export const messages = {
     "shell.menuClose": "Close menu",
 
     "nav.about": "About",
-    "nav.projects": "Projects",
     "nav.photoEditor": "Photo editor",
     "nav.bugs": "Bug Hunt",
     "nav.incidents": "Incidents",
@@ -117,12 +111,8 @@ export const messages = {
 
     "about.loading": "Loading profile…",
     "about.me": "About me",
-
-    "projects.title": "Projects",
-    "projects.lead": "Projects and case studies from experience.",
-    "projects.openDemo": "Open demo",
-    "projects.loading": "Loading projects…",
-    "projects.loadingError": "Failed to load",
+    "about.cases": "Cases",
+    "about.casesLead": "ERP and CRM are private products, so the links go to the companies’ public sites that I also developed.",
 
     "photoEditor.title": "Photo Editor",
     "photoEditor.lead": "Crop, rotate, and color-correct right in the browser.",

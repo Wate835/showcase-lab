@@ -14,12 +14,10 @@ import { BugHuntPage } from "./pages/BugHunt";
 import { GuestbookPage } from "./pages/Guestbook";
 import { IncidentsPage } from "./pages/Incidents";
 import { PhotoEditorPage } from "./pages/PhotoEditor";
-import { ProjectsPage } from "./pages/Projects";
 import { useI18n, useTheme } from "./utils/usePrefs";
 
 const PAGES: Record<RouteName, ComponentType> = {
   about: AboutPage,
-  projects: ProjectsPage,
   photoEditor: PhotoEditorPage,
   bugs: BugHuntPage,
   incidents: IncidentsPage,

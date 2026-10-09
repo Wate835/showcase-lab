@@ -4,7 +4,6 @@ import { subscribeTheme, toggleTheme } from "/app/shared/theme.js";
 import { ROUTES } from "./constants.js";
 import { escapeHtml } from "./utils/escapeHtml.js";
 import { renderAbout } from "./pages/about.js";
-import { renderProjects } from "./pages/projects.js";
 import { renderBugHunt, applyBugHuntLocale, stopBugHunt } from "./pages/bugHunt.js";
 import { renderIncidents, stopIncidentsLive, applyIncidentsLocale } from "./pages/incidents.js";
 import { renderGuestbook, applyGuestbookLocale } from "./pages/guestbook.js";
@@ -110,7 +109,6 @@ async function render() {
   try {
     await swapPage(async () => {
       if (route === "about") await renderAbout(appEl);
-      else if (route === "projects") await renderProjects(appEl);
       else if (route === "bugs") await renderBugHunt(appEl);
       else if (route === "incidents") await renderIncidents(appEl, currentRoute);
       else if (route === "guestbook") await renderGuestbook(appEl);
@@ -164,7 +162,6 @@ subscribeLocale(() => {
   else if (route === "guestbook") applyGuestbookLocale(appEl);
   else if (route === "incidents") applyIncidentsLocale(appEl, currentRoute);
   else if (route === "about") renderAbout(appEl);
-  else if (route === "projects") renderProjects(appEl);
 });
 
 window.addEventListener("hashchange", async () => {
