@@ -24,7 +24,7 @@
     "vue-konva": "^3.2.0"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.39.1",
     "@vitejs/plugin-vue": "^5.2.1",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.39.5",
