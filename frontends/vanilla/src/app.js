@@ -13,16 +13,39 @@ import { renderPhotoEditor, stopPhotoEditor, applyPhotoEditorLocale } from "./pa
 bootPrefs();
 
 const appEl = document.getElementById("app");
+const topbarEl = document.getElementById("topbar");
 const navEl = document.getElementById("nav");
+const navToggle = document.getElementById("navToggle");
 const themeToggle = document.getElementById("themeToggle");
 const localeToggle = document.getElementById("localeToggle");
 const switchStack = document.getElementById("switchStack");
 const footerApi = document.getElementById("footerApi");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const desktopNavMq = window.matchMedia("(min-width: 860px)");
 
 function currentRoute() {
   const hash = location.hash.replace("#", "");
   return ROUTES.some((r) => r.id === hash) ? hash : "about";
+}
+
+function isCompactNav() {
+  return !desktopNavMq.matches;
+}
+
+function shouldAnimatePage() {
+  return !reduceMotion && !isCompactNav();
+}
+
+function isNavOpen() {
+  return Boolean(topbarEl?.classList.contains("is-nav-open"));
+}
+
+function setNavOpen(open) {
+  if (!topbarEl || !navToggle) return;
+  topbarEl.classList.toggle("is-nav-open", open);
+  document.documentElement.classList.toggle("is-nav-open", open);
+  navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  navToggle.setAttribute("aria-label", open ? t("shell.menuClose") : t("shell.menuOpen"));
 }
 
 function paintChrome() {
@@ -38,6 +61,12 @@ function paintChrome() {
   if (switchStack) {
     switchStack.setAttribute("aria-label", t("shell.switchStack"));
     switchStack.setAttribute("data-tip", t("shell.switchStack"));
+  }
+  if (navToggle) {
+    navToggle.setAttribute(
+      "aria-label",
+      isNavOpen() ? t("shell.menuClose") : t("shell.menuOpen")
+    );
   }
   if (footerApi) footerApi.textContent = t("shell.footerApi");
   renderNav();
@@ -56,15 +85,18 @@ function wait(ms) {
 }
 
 async function swapPage(renderFn) {
-  if (!reduceMotion) {
+  if (shouldAnimatePage()) {
     appEl.classList.remove("page");
     appEl.classList.add("page", "is-leaving");
     await wait(160);
   }
   await renderFn();
-  if (!reduceMotion) {
+  if (shouldAnimatePage()) {
     appEl.classList.remove("page", "is-leaving");
     void appEl.offsetWidth;
+    appEl.classList.add("page");
+  } else {
+    appEl.classList.remove("is-leaving");
     appEl.classList.add("page");
   }
 }
@@ -97,6 +129,29 @@ themeToggle?.addEventListener("click", () => {
 localeToggle?.addEventListener("click", () => {
   toggleLocale();
 });
+navToggle?.addEventListener("click", () => {
+  setNavOpen(!isNavOpen());
+});
+navEl?.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLAnchorElement)) return;
+  const id = (target.getAttribute("href") || "").replace("#", "");
+  if (id && id === currentRoute()) setNavOpen(false);
+});
+document.querySelector(".logo")?.addEventListener("click", () => {
+  if (currentRoute() === "about") setNavOpen(false);
+});
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") setNavOpen(false);
+});
+const onDesktopNavChange = () => {
+  if (desktopNavMq.matches) setNavOpen(false);
+};
+if (typeof desktopNavMq.addEventListener === "function") {
+  desktopNavMq.addEventListener("change", onDesktopNavChange);
+} else if (typeof desktopNavMq.addListener === "function") {
+  desktopNavMq.addListener(onDesktopNavChange);
+}
 
 subscribeTheme(() => {
   paintChrome();
@@ -112,6 +167,9 @@ subscribeLocale(() => {
   else if (route === "projects") renderProjects(appEl);
 });
 
-window.addEventListener("hashchange", render);
+window.addEventListener("hashchange", async () => {
+  await render();
+  setNavOpen(false);
+});
 paintChrome();
 render();

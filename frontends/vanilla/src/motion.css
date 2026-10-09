@@ -25,11 +25,13 @@
   box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
-.shell.is-motion .switch {
+.shell.is-motion .switch,
+.shell.is-motion .nav-toggle {
   transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
-.shell.is-motion .switch:hover {
+.shell.is-motion .switch:hover,
+.shell.is-motion .nav-toggle:hover {
   color: var(--accent-soft);
   border-color: var(--accent);
   transform: translateY(-1px);
@@ -76,6 +78,13 @@
   }
 }
 
+@media (max-width: 859px) {
+  #app.page,
+  #app.page.is-leaving {
+    animation: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .shell.is-motion,
   #app.page,
@@ -85,13 +94,18 @@
 
   .shell.is-motion .logo,
   .shell.is-motion .nav a,
-  .shell.is-motion .switch {
+  .shell.is-motion .switch,
+  .shell.is-motion .nav-toggle,
+  .shell.is-motion .nav-toggle-bars,
+  .shell.is-motion .nav-toggle-bars::before,
+  .shell.is-motion .nav-toggle-bars::after {
     transition: none !important;
   }
 
   .shell.is-motion .logo:hover,
   .shell.is-motion .nav a:hover,
-  .shell.is-motion .switch:hover {
+  .shell.is-motion .switch:hover,
+  .shell.is-motion .nav-toggle:hover {
     transform: none !important;
   }
 }
