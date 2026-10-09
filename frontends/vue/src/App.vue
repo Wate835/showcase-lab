@@ -4,6 +4,7 @@ import { RouterLink, RouterView, useRoute } from "vue-router";
 import styles from "./app.module.css";
 import { ROUTES } from "./constants/routes";
 import { useI18n, useTheme } from "./utils/usePrefs";
+import { CONTACTS } from "@shared/site.js";
 
 const route = useRoute();
 const { t, locale, toggleLocale } = useI18n();
@@ -172,6 +173,11 @@ onUnmounted(() => {
 
     <footer class="footer">
       <span class="badge">Vue 3 · emerald</span>
+      <nav class="footer-contacts" :aria-label="t('landing.contactsAria')">
+        <a :href="CONTACTS.telegram" target="_blank" rel="noreferrer">Telegram</a>
+        <a :href="`mailto:${CONTACTS.email}`">{{ CONTACTS.email }}</a>
+        <a :href="CONTACTS.github" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
       <span>{{ t("shell.footerApi") }}</span>
     </footer>
   </div>

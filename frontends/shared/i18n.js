@@ -81,12 +81,15 @@ export const messages = {
     "guestbook.sendError": "Не удалось отправить",
 
     "landing.title": "Showcase Lab — выбери стек",
+    "landing.description": "Портфолио Антона Кудрявцева: fullstack, Vue/React/TypeScript и FastAPI. Один API — три фронта на выбор.",
+    "landing.ogTitle": "Showcase Lab — Антон Кудрявцев",
     "landing.lead": "Портфолио Антона Кудрявцева. Один FastAPI-бэкенд — три фронта. Выбери стек: у каждого своя цветовая гамма и тот же набор экранов.",
     "landing.vanilla": "Нативный JS. Тёплая amber-палитра.",
     "landing.react": "Vite + TypeScript. Cool cyan.",
     "landing.vue": "Vite + TypeScript. Emerald.",
     "landing.hint": "Выбор запоминается в cookie на 30 дней. Можно сменить через «Сменить стек».",
     "landing.langAria": "Переключить язык",
+    "landing.contactsAria": "Контакты",
 
     "common.error": "Ошибка:",
     "common.loadingError": "Ошибка загрузки",
@@ -167,12 +170,15 @@ export const messages = {
     "guestbook.sendError": "Could not send",
 
     "landing.title": "Showcase Lab — pick a stack",
+    "landing.description": "Anton Kudryavcev's portfolio: fullstack, Vue/React/TypeScript and FastAPI. One API — three frontends to choose from.",
+    "landing.ogTitle": "Showcase Lab — Anton Kudryavcev",
     "landing.lead": "Anton Kudryavcev's portfolio. One FastAPI backend — three frontends. Pick a stack: each has its own palette and the same screens.",
     "landing.vanilla": "Native JS. Warm amber palette.",
     "landing.react": "Vite + TypeScript. Cool cyan.",
     "landing.vue": "Vite + TypeScript. Emerald.",
     "landing.hint": "The choice is stored in a cookie for 30 days. You can change it via “Switch stack”.",
     "landing.langAria": "Toggle language",
+    "landing.contactsAria": "Contacts",
 
     "common.error": "Error:",
     "common.loadingError": "Failed to load",

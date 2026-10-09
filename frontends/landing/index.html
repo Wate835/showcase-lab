@@ -3,9 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Showcase Lab — выбери стек</title>
+    <meta
+      name="description"
+      id="metaDescription"
+      content="Портфолио Антона Кудрявцева: fullstack, Vue/React/TypeScript и FastAPI. Один API — три фронта на выбор."
+    />
+    <link rel="canonical" href="https://anton-kudryavcev.ru/" />
+    <meta name="theme-color" content="#101014" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" id="ogLocale" />
+    <meta property="og:locale:alternate" content="en_US" id="ogLocaleAlt" />
+    <meta property="og:site_name" content="Showcase Lab" />
+    <meta property="og:url" content="https://anton-kudryavcev.ru/" />
+    <meta property="og:title" id="ogTitle" content="Showcase Lab — Антон Кудрявцев" />
+    <meta
+      property="og:description"
+      id="ogDescription"
+      content="Портфолио Антона Кудрявцева: fullstack, Vue/React/TypeScript и FastAPI. Один API — три фронта на выбор."
+    />
+    <meta property="og:image" content="https://anton-kudryavcev.ru/og-image.svg" />
+    <meta property="og:image:alt" content="Showcase Lab — Anton Kudryavcev" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" id="twitterTitle" content="Showcase Lab — Антон Кудрявцев" />
+    <meta
+      name="twitter:description"
+      id="twitterDescription"
+      content="Портфолио Антона Кудрявцева: fullstack, Vue/React/TypeScript и FastAPI. Один API — три фронта на выбор."
+    />
+    <meta name="twitter:image" content="https://anton-kudryavcev.ru/og-image.svg" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
-    <title>Showcase Lab — выбери стек</title>
     <script>
       (function () {
         try {
@@ -35,6 +63,8 @@
         position: relative;
         margin: 0;
         min-height: 100vh;
+        display: flex;
+        flex-direction: column;
         font-family: "Segoe UI", "Trebuchet MS", sans-serif;
         color: var(--text);
         background:
@@ -44,9 +74,11 @@
           var(--bg);
       }
       main {
+        flex: 1;
         max-width: 960px;
+        width: 100%;
         margin: 0 auto;
-        padding: 4rem 1.25rem 3rem;
+        padding: 4rem 1.25rem 2rem;
       }
       .brand {
         font-size: clamp(2.5rem, 6vw, 4rem);
@@ -116,6 +148,30 @@
         font-size: 0.9rem;
         animation: rise-in 0.5s ease 0.36s both;
       }
+      .footer {
+        max-width: 960px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 1.25rem 1.25rem 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        animation: rise-in 0.5s ease 0.4s both;
+      }
+      .contacts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem 1.25rem;
+      }
+      .contacts a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.95rem;
+        border-bottom: 1px solid transparent;
+        transition: color 0.2s ease, border-color 0.2s ease;
+      }
+      .contacts a:hover {
+        color: var(--text);
+        border-bottom-color: rgba(255, 255, 255, 0.25);
+      }
       .lang {
         position: absolute;
         top: 1.2rem;
@@ -133,7 +189,7 @@
         to { opacity: 1; transform: none; }
       }
       @media (prefers-reduced-motion: reduce) {
-        .brand, .lead, a.card, .hint { animation: none !important; }
+        .brand, .lead, a.card, .hint, .footer { animation: none !important; }
         a.card { transition: none !important; }
         a.card:hover, a.card:active { transform: none !important; }
       }
@@ -166,6 +222,13 @@
       </div>
       <p class="hint" id="landingHint">Выбор запоминается в cookie на 30 дней. Можно сменить через «Сменить стек».</p>
     </main>
+    <footer class="footer">
+      <nav class="contacts" id="landingContacts" aria-label="Контакты">
+        <a id="contactTelegram" href="https://t.me/Antonygoood" target="_blank" rel="noreferrer">Telegram</a>
+        <a id="contactEmail" href="mailto:santahoe@mail.ru">santahoe@mail.ru</a>
+        <a id="contactGithub" href="https://github.com/Wate835" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+    </footer>
     <script>
       document.querySelectorAll("[data-fw]").forEach((el) => {
         el.addEventListener("click", () => {
@@ -176,24 +239,54 @@
     </script>
     <script type="module">
       import { initLocale, t, getLocale, toggleLocale, subscribeLocale } from "/app/shared/i18n.js";
+      import { CONTACTS } from "/app/shared/site.js";
       initLocale();
+
+      function setMeta(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.setAttribute("content", value);
+      }
+
       function paint() {
+        const locale = getLocale();
+        const description = t("landing.description");
+        const ogTitle = t("landing.ogTitle");
         document.title = t("landing.title");
+        setMeta("metaDescription", description);
+        setMeta("ogTitle", ogTitle);
+        setMeta("ogDescription", description);
+        setMeta("twitterTitle", ogTitle);
+        setMeta("twitterDescription", description);
+        setMeta("ogLocale", locale === "en" ? "en_US" : "ru_RU");
+        setMeta("ogLocaleAlt", locale === "en" ? "ru_RU" : "en_US");
+
         const lead = document.getElementById("landingLead");
         const vanilla = document.getElementById("cardVanilla");
         const react = document.getElementById("cardReact");
         const vue = document.getElementById("cardVue");
         const hint = document.getElementById("landingHint");
         const btn = document.getElementById("langToggle");
+        const contacts = document.getElementById("landingContacts");
+        const telegram = document.getElementById("contactTelegram");
+        const email = document.getElementById("contactEmail");
+        const github = document.getElementById("contactGithub");
+
         if (lead) lead.textContent = t("landing.lead");
         if (vanilla) vanilla.textContent = t("landing.vanilla");
         if (react) react.textContent = t("landing.react");
         if (vue) vue.textContent = t("landing.vue");
         if (hint) hint.textContent = t("landing.hint");
         if (btn) {
-          btn.textContent = getLocale() === "en" ? t("shell.localeToEn") : t("shell.localeToRu");
+          btn.textContent = locale === "en" ? t("shell.localeToEn") : t("shell.localeToRu");
           btn.setAttribute("aria-label", t("landing.langAria"));
         }
+        if (contacts) contacts.setAttribute("aria-label", t("landing.contactsAria"));
+        if (telegram) telegram.href = CONTACTS.telegram;
+        if (email) {
+          email.href = `mailto:${CONTACTS.email}`;
+          email.textContent = CONTACTS.email;
+        }
+        if (github) github.href = CONTACTS.github;
       }
       document.getElementById("langToggle")?.addEventListener("click", () => toggleLocale());
       subscribeLocale(paint);

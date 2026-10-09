@@ -1,5 +1,6 @@
 import { bootPrefs } from "/app/shared/boot.js";
 import { getLocale, subscribeLocale, t, toggleLocale } from "/app/shared/i18n.js";
+import { CONTACTS } from "/app/shared/site.js";
 import { subscribeTheme, toggleTheme } from "/app/shared/theme.js";
 import { ROUTES } from "./constants.js";
 import { escapeHtml } from "./utils/escapeHtml.js";
@@ -19,6 +20,10 @@ const themeToggle = document.getElementById("themeToggle");
 const localeToggle = document.getElementById("localeToggle");
 const switchStack = document.getElementById("switchStack");
 const footerApi = document.getElementById("footerApi");
+const footerContacts = document.getElementById("footerContacts");
+const footerTelegram = document.getElementById("footerTelegram");
+const footerEmail = document.getElementById("footerEmail");
+const footerGithub = document.getElementById("footerGithub");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const desktopNavMq = window.matchMedia("(min-width: 860px)");
 
@@ -68,6 +73,13 @@ function paintChrome() {
     );
   }
   if (footerApi) footerApi.textContent = t("shell.footerApi");
+  if (footerContacts) footerContacts.setAttribute("aria-label", t("landing.contactsAria"));
+  if (footerTelegram) footerTelegram.href = CONTACTS.telegram;
+  if (footerEmail) {
+    footerEmail.href = `mailto:${CONTACTS.email}`;
+    footerEmail.textContent = CONTACTS.email;
+  }
+  if (footerGithub) footerGithub.href = CONTACTS.github;
   renderNav();
 }
 

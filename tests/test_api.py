@@ -204,3 +204,32 @@ def test_incidents_ws_snapshot(client: TestClient) -> None:
 def test_landing(client: TestClient) -> None:
     response = client.get("/?choose=1")
     assert response.status_code == 200
+    html = response.text
+    assert 'property="og:image"' in html
+    assert "Telegram" in html
+    assert "santahoe@mail.ru" in html
+
+
+def test_robots_txt(client: TestClient) -> None:
+    response = client.get("/robots.txt")
+    assert response.status_code == 200
+    assert "User-agent: *" in response.text
+    assert "Sitemap:" in response.text
+    assert "sitemap.xml" in response.text
+
+
+def test_sitemap_xml(client: TestClient) -> None:
+    response = client.get("/sitemap.xml")
+    assert response.status_code == 200
+    assert "application/xml" in response.headers["content-type"]
+    body = response.text
+    assert "<urlset" in body
+    assert "/app/vanilla/" in body
+    assert "/app/react/" in body
+    assert "/app/vue/" in body
+
+
+def test_og_image(client: TestClient) -> None:
+    response = client.get("/og-image.svg")
+    assert response.status_code == 200
+    assert "image/svg" in response.headers["content-type"]

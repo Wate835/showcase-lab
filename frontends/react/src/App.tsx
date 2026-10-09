@@ -15,6 +15,7 @@ import { GuestbookPage } from "./pages/Guestbook";
 import { IncidentsPage } from "./pages/Incidents";
 import { PhotoEditorPage } from "./pages/PhotoEditor";
 import { useI18n, useTheme } from "./utils/usePrefs";
+import { CONTACTS } from "@shared/site.js";
 
 const PAGES: Record<RouteName, ComponentType> = {
   about: AboutPage,
@@ -158,6 +159,15 @@ function AppShell() {
       </main>
       <footer className="footer">
         <span className="badge">React · cyan</span>
+        <nav className="footer-contacts" aria-label={t("landing.contactsAria")}>
+          <a href={CONTACTS.telegram} target="_blank" rel="noreferrer">
+            Telegram
+          </a>
+          <a href={`mailto:${CONTACTS.email}`}>{CONTACTS.email}</a>
+          <a href={CONTACTS.github} target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+        </nav>
         <span>{t("shell.footerApi")}</span>
       </footer>
     </div>
