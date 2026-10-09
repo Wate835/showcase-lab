@@ -3,21 +3,22 @@ import { useThrottleFn } from "@vueuse/core";
 import Konva from "konva";
 
 import type { FlipPlane } from "../types";
+import type { KonvaNodeRef } from "./konvaRefs";
 
 type Bounds = { x: number; y: number; width: number; height: number };
 
 type TransformDeps = {
-  imageNode: Ref<any>;
+  imageNode: Ref<KonvaNodeRef<Konva.Image>>;
   imageConfig: Ref<{
     width: number;
     height: number;
     rotation: number;
     [key: string]: unknown;
   }>;
-  stageRef: Ref<any>;
-  dimLayer: Ref<any>;
-  rectRef: Ref<any>;
-  tranRef: Ref<any>;
+  stageRef: Ref<KonvaNodeRef<Konva.Stage>>;
+  dimLayer: Ref<KonvaNodeRef<Konva.Layer>>;
+  rectRef: Ref<KonvaNodeRef<Konva.Rect>>;
+  tranRef: Ref<KonvaNodeRef<Konva.Transformer>>;
   scale: () => void;
   getImageBounds: () => Bounds | null;
 };
@@ -29,7 +30,8 @@ const ANCHOR_HIT = 22;
 type Box = { x: number; y: number; width: number; height: number; rotation: number };
 
 function clampBox(box: Box, bounds: Bounds): Box | null {
-  let { x, y, width, height, rotation } = box;
+  let { x, y, width, height } = box;
+  const { rotation } = box;
 
   if (width < 0) {
     x += width;
@@ -111,8 +113,8 @@ export function useTransform(deps: TransformDeps) {
     listening: false,
     perfectDrawEnabled: false,
     sceneFunc: (ctx: Konva.Context) => {
-      const stage = stageRef.value?.getNode() as Konva.Stage | undefined;
-      const rect = rectRef.value?.getNode() as Konva.Rect | undefined;
+      const stage = stageRef.value?.getNode();
+      const rect = rectRef.value?.getNode();
       if (!stage || !rect) return;
 
       const holeW = Math.max(1, rect.width() * rect.scaleX());
@@ -180,8 +182,8 @@ export function useTransform(deps: TransformDeps) {
   }
 
   function normalizeRectScale() {
-    const rect = rectRef.value?.getNode() as Konva.Rect | undefined;
-    const transformer = tranRef.value?.getNode() as Konva.Transformer | undefined;
+    const rect = rectRef.value?.getNode();
+    const transformer = tranRef.value?.getNode();
     const bounds = getImageBounds();
     if (!rect || !bounds) return;
 
@@ -214,9 +216,9 @@ export function useTransform(deps: TransformDeps) {
     await nextTick();
     await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 
-    const rect = rectRef.value?.getNode() as Konva.Rect | undefined;
-    const transformer = tranRef.value?.getNode() as Konva.Transformer | undefined;
-    const dim = dimLayer.value?.getNode() as Konva.Layer | undefined;
+    const rect = rectRef.value?.getNode();
+    const transformer = tranRef.value?.getNode();
+    const dim = dimLayer.value?.getNode();
     if (!rect || !transformer) return;
 
     dim?.clipFunc(undefined as unknown as undefined);
@@ -254,14 +256,14 @@ export function useTransform(deps: TransformDeps) {
   }
 
   function unbindTransformer() {
-    const rect = rectRef.value?.getNode() as Konva.Rect | undefined;
+    const rect = rectRef.value?.getNode();
     if (rect && transformBound) {
       rect.off("transform");
       rect.off("transformend");
       rect.off("dragmove");
     }
     transformBound = false;
-    const transformer = tranRef.value?.getNode() as Konva.Transformer | undefined;
+    const transformer = tranRef.value?.getNode();
     transformer?.nodes([]);
   }
 
@@ -295,7 +297,7 @@ export function useTransform(deps: TransformDeps) {
     const next = (((imageConfig.value.rotation + num) % 360) + 360) % 360;
     imageConfig.value.rotation = next;
     // Also push onto Konva node immediately (vue-konva config may lag one frame)
-    const node = imageNode.value?.getNode() as Konva.Image | undefined;
+    const node = imageNode.value?.getNode();
     if (node) {
       node.rotation(next);
     }

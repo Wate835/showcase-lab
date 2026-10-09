@@ -4,6 +4,7 @@ import { RouterLink, RouterView, useRoute } from "vue-router";
 import styles from "./app.module.css";
 import { ROUTES } from "./constants/routes";
 import { useI18n, useTheme } from "./utils/usePrefs";
+import { CONTACTS } from "@shared/site.js";
 
 const route = useRoute();
 const { t, locale, toggleLocale } = useI18n();
@@ -70,6 +71,15 @@ watch(
   }
 );
 
+watch(
+  () => [route.name, locale.value] as const,
+  () => {
+    const name = typeof route.name === "string" ? route.name : "about";
+    document.title = t("shell.docTitle", { page: t(`nav.${name}`) });
+  },
+  { immediate: true }
+);
+
 onMounted(() => {
   syncNavOpenClass(navOpen.value);
   pageMotion.value = desktopNavMq?.matches ?? true;
@@ -96,6 +106,7 @@ onUnmounted(() => {
 
 <template>
   <div :class="['shell', styles.shell]">
+    <a class="skip-link" href="#main-content">{{ t("shell.skipToContent") }}</a>
     <header :class="['topbar', { 'is-nav-open': navOpen }]">
       <RouterLink :class="['logo', styles.logo]" :to="{ name: 'about' }" @click="onLogoClick">
         Showcase Lab
@@ -141,7 +152,7 @@ onUnmounted(() => {
           <button
             type="button"
             :class="['switch', styles.switch]"
-            :aria-label="t('shell.localeAria')"
+            :aria-label="`${localeLabel} — ${t('shell.localeAria')}`"
             @click="toggleLocale"
           >
             {{ localeLabel }}
@@ -161,7 +172,7 @@ onUnmounted(() => {
       </div>
     </header>
 
-    <main class="content">
+    <main id="main-content" class="content" tabindex="-1">
       <RouterView v-slot="{ Component, route: r }">
         <Transition v-if="pageMotion" name="page" mode="out-in">
           <component :is="Component" :key="r.path" />
@@ -172,6 +183,11 @@ onUnmounted(() => {
 
     <footer class="footer">
       <span class="badge">Vue 3 · emerald</span>
+      <nav class="footer-contacts" :aria-label="t('landing.contactsAria')">
+        <a :href="CONTACTS.telegram" target="_blank" rel="noreferrer">Telegram</a>
+        <a :href="`mailto:${CONTACTS.email}`">{{ CONTACTS.email }}</a>
+        <a :href="CONTACTS.github" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
       <span>{{ t("shell.footerApi") }}</span>
     </footer>
   </div>

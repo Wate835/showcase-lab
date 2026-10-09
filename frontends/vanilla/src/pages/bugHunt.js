@@ -132,7 +132,7 @@ export async function renderBugHunt(appEl) {
               ]
                 .filter(Boolean)
                 .join(" ");
-              return `<div class="${cls}" data-line="${n}"><span class="vscode-gutter">${n}</span><span class="vscode-code">${escapeHtml(line)}</span></div>`;
+              return `<button type="button" class="${cls}" data-line="${n}"><span class="vscode-gutter">${n}</span><span class="vscode-code">${escapeHtml(line)}</span></button>`;
             })
             .join("")
         : "";

@@ -26,7 +26,12 @@ export function BugHuntPage() {
   } = useBugHunt();
   const { t } = useI18n();
 
-  if (error) return <p className="error">{error}</p>;
+  if (error)
+    return (
+      <p className="error" role="alert" aria-live="polite">
+        {error}
+      </p>
+    );
   if (!challenges.length) return <p className="muted">{t("bugs.loading")}</p>;
 
   return (
@@ -92,8 +97,9 @@ export function BugHuntPage() {
                 ch?.lines.map((line, i) => {
                   const n = i + 1;
                   return (
-                    <div
+                    <button
                       key={n}
+                      type="button"
                       className={[
                         "vscode-line",
                         foundLine && n === foundBugLine ? "is-found is-bug" : "",
@@ -105,7 +111,7 @@ export function BugHuntPage() {
                     >
                       <span className="vscode-gutter">{n}</span>
                       <span className="vscode-code">{line}</span>
-                    </div>
+                    </button>
                   );
                 })
               )}

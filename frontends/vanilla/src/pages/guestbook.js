@@ -63,11 +63,17 @@ export async function applyGuestbookLocale(appEl) {
   try {
     await paintGuestbook(appEl, draft);
   } catch (err) {
-    showToast(err.message || t("common.error"));
+    const msg = err instanceof Error && err.message ? err.message : t("common.loadingError");
+    appEl.innerHTML = `<p class="error" role="alert" aria-live="polite">${escapeHtml(msg)}</p>`;
   }
 }
 
 export async function renderGuestbook(appEl) {
   appEl.innerHTML = `<p class="muted">${escapeHtml(t("guestbook.loading"))}</p>`;
-  await paintGuestbook(appEl);
+  try {
+    await paintGuestbook(appEl);
+  } catch (err) {
+    const msg = err instanceof Error && err.message ? err.message : t("common.loadingError");
+    appEl.innerHTML = `<p class="error" role="alert" aria-live="polite">${escapeHtml(msg)}</p>`;
+  }
 }

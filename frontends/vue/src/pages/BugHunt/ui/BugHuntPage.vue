@@ -29,7 +29,7 @@ const { t } = useI18n();
 
 <template>
   <section>
-    <p v-if="error" class="error">{{ error }}</p>
+    <p v-if="error" class="error" role="alert" aria-live="polite">{{ error }}</p>
     <p v-else-if="!challenges.length" class="muted">{{ t("bugs.loading") }}</p>
     <template v-else>
       <h1>{{ t("bugs.title") }}</h1>
@@ -88,10 +88,11 @@ const { t } = useI18n();
               <p v-if="!playing && !finished" class="muted" style="padding: 1rem">
                 {{ t("bugs.pressStart") }}
               </p>
-              <div
+              <button
                 v-for="(line, i) in ch?.lines || []"
                 v-else
                 :key="i"
+                type="button"
                 class="vscode-line"
                 :class="{
                   'is-found': foundLine && i + 1 === foundBugLine,
@@ -102,7 +103,7 @@ const { t } = useI18n();
               >
                 <span class="vscode-gutter">{{ i + 1 }}</span>
                 <span class="vscode-code">{{ line }}</span>
-              </div>
+              </button>
             </div>
             <div v-if="playing && foundLine && ch && foundBugLine != null" class="fix-panel">
               <h3>{{ t("bugs.fixPrompt", { line: foundBugLine }) }}</h3>

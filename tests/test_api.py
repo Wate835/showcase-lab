@@ -22,6 +22,14 @@ def test_projects(client: TestClient) -> None:
     assert isinstance(items, list)
     assert items
     assert "title" in items[0]
+    urls = {item.get("url") for item in items}
+    assert "/photo-editor" in urls
+    assert "https://arbat.life/" in urls
+    assert "https://www.k-gorod.ru/" in urls
+    assert not any(
+        isinstance(item.get("url"), str) and "github.io/photo-editor" in item["url"]
+        for item in items
+    )
 
 
 def test_challenges_hides_bug_line(client: TestClient) -> None:
@@ -196,3 +204,58 @@ def test_incidents_ws_snapshot(client: TestClient) -> None:
 def test_landing(client: TestClient) -> None:
     response = client.get("/?choose=1")
     assert response.status_code == 200
+    html = response.text
+    assert 'property="og:image"' in html
+    assert "Telegram" in html
+    assert "santahoe@mail.ru" in html
+    assert 'id="themeToggle"' in html
+    assert 'data-theme=' in html
+
+
+def test_robots_txt(client: TestClient) -> None:
+    response = client.get("/robots.txt")
+    assert response.status_code == 200
+    assert "User-agent: *" in response.text
+    assert "Sitemap:" in response.text
+    assert "sitemap.xml" in response.text
+
+
+def test_sitemap_xml(client: TestClient) -> None:
+    response = client.get("/sitemap.xml")
+    assert response.status_code == 200
+    assert "application/xml" in response.headers["content-type"]
+    body = response.text
+    assert "<urlset" in body
+    assert "/app/vanilla/" in body
+    assert "/app/react/" in body
+    assert "/app/vue/" in body
+
+
+def test_og_image(client: TestClient) -> None:
+    response = client.get("/og-image.svg")
+    assert response.status_code == 200
+    assert "image/svg" in response.headers["content-type"]
+
+
+def test_html_404_page(client: TestClient) -> None:
+    response = client.get("/no-such-page", headers={"Accept": "text/html"})
+    assert response.status_code == 404
+    assert "text/html" in response.headers["content-type"]
+    assert "Showcase Lab" in response.text
+    assert "404" in response.text
+    assert "На сайт" in response.text
+    assert "лендинг" not in response.text.lower()
+
+
+def test_api_404_stays_json(client: TestClient) -> None:
+    response = client.get("/api/no-such-endpoint", headers={"Accept": "text/html"})
+    assert response.status_code == 404
+    assert response.headers["content-type"].startswith("application/json")
+
+
+def test_security_headers(client: TestClient) -> None:
+    response = client.get("/api/health")
+    assert response.status_code == 200
+    assert response.headers["X-Content-Type-Options"] == "nosniff"
+    assert response.headers["Referrer-Policy"] == "strict-origin-when-cross-origin"
+    assert response.headers["X-Frame-Options"] == "SAMEORIGIN"

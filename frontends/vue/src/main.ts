@@ -3,7 +3,8 @@ import VueKonva from "vue-konva";
 import { bootPrefs } from "@shared/boot.js";
 import App from "./App.vue";
 import { router } from "./router";
-import "./styles.css";
+import "./theme.css";
+import "@shared/styles.css";
 
 bootPrefs();
 

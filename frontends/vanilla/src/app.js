@@ -1,10 +1,10 @@
 import { bootPrefs } from "/app/shared/boot.js";
 import { getLocale, subscribeLocale, t, toggleLocale } from "/app/shared/i18n.js";
+import { CONTACTS } from "/app/shared/site.js";
 import { subscribeTheme, toggleTheme } from "/app/shared/theme.js";
 import { ROUTES } from "./constants.js";
 import { escapeHtml } from "./utils/escapeHtml.js";
 import { renderAbout } from "./pages/about.js";
-import { renderProjects } from "./pages/projects.js";
 import { renderBugHunt, applyBugHuntLocale, stopBugHunt } from "./pages/bugHunt.js";
 import { renderIncidents, stopIncidentsLive, applyIncidentsLocale } from "./pages/incidents.js";
 import { renderGuestbook, applyGuestbookLocale } from "./pages/guestbook.js";
@@ -20,6 +20,10 @@ const themeToggle = document.getElementById("themeToggle");
 const localeToggle = document.getElementById("localeToggle");
 const switchStack = document.getElementById("switchStack");
 const footerApi = document.getElementById("footerApi");
+const footerContacts = document.getElementById("footerContacts");
+const footerTelegram = document.getElementById("footerTelegram");
+const footerEmail = document.getElementById("footerEmail");
+const footerGithub = document.getElementById("footerGithub");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const desktopNavMq = window.matchMedia("(min-width: 860px)");
 
@@ -54,9 +58,10 @@ function paintChrome() {
     themeToggle.setAttribute("data-tip", t("shell.themeAria"));
   }
   if (localeToggle) {
-    localeToggle.textContent =
+    const localeLabel =
       getLocale() === "en" ? t("shell.localeToEn") : t("shell.localeToRu");
-    localeToggle.setAttribute("aria-label", t("shell.localeAria"));
+    localeToggle.textContent = localeLabel;
+    localeToggle.setAttribute("aria-label", `${localeLabel} — ${t("shell.localeAria")}`);
   }
   if (switchStack) {
     switchStack.setAttribute("aria-label", t("shell.switchStack"));
@@ -69,6 +74,16 @@ function paintChrome() {
     );
   }
   if (footerApi) footerApi.textContent = t("shell.footerApi");
+  const skipLink = document.getElementById("skipLink");
+  if (skipLink) skipLink.textContent = t("shell.skipToContent");
+  if (footerContacts) footerContacts.setAttribute("aria-label", t("landing.contactsAria"));
+  if (footerTelegram) footerTelegram.href = CONTACTS.telegram;
+  if (footerEmail) {
+    footerEmail.href = `mailto:${CONTACTS.email}`;
+    footerEmail.textContent = CONTACTS.email;
+  }
+  if (footerGithub) footerGithub.href = CONTACTS.github;
+  document.title = t("shell.docTitle", { page: t(`nav.${currentRoute()}`) });
   renderNav();
 }
 
@@ -110,7 +125,6 @@ async function render() {
   try {
     await swapPage(async () => {
       if (route === "about") await renderAbout(appEl);
-      else if (route === "projects") await renderProjects(appEl);
       else if (route === "bugs") await renderBugHunt(appEl);
       else if (route === "incidents") await renderIncidents(appEl, currentRoute);
       else if (route === "guestbook") await renderGuestbook(appEl);
@@ -164,7 +178,6 @@ subscribeLocale(() => {
   else if (route === "guestbook") applyGuestbookLocale(appEl);
   else if (route === "incidents") applyIncidentsLocale(appEl, currentRoute);
   else if (route === "about") renderAbout(appEl);
-  else if (route === "projects") renderProjects(appEl);
 });
 
 window.addEventListener("hashchange", async () => {

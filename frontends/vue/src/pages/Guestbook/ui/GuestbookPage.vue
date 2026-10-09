@@ -2,7 +2,7 @@
 import { useGuestbook } from "../useGuestbook";
 import { useI18n } from "../../../utils/usePrefs";
 
-const { entries, author, message, onSubmit } = useGuestbook();
+const { entries, author, message, onSubmit, error, loading } = useGuestbook();
 const { t, locale } = useI18n();
 </script>
 
@@ -10,6 +10,8 @@ const { t, locale } = useI18n();
   <section>
     <h1>{{ t("guestbook.title") }}</h1>
     <p class="lead">{{ t("guestbook.lead") }}</p>
+    <p v-if="error" class="error" role="alert" aria-live="polite">{{ error }}</p>
+    <p v-else-if="loading" class="muted">{{ t("guestbook.loading") }}</p>
     <form class="form card" @submit.prevent="onSubmit">
       <label>
         {{ t("guestbook.name") }}
