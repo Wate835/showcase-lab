@@ -71,6 +71,15 @@ watch(
   }
 );
 
+watch(
+  () => [route.name, locale.value] as const,
+  () => {
+    const name = typeof route.name === "string" ? route.name : "about";
+    document.title = t("shell.docTitle", { page: t(`nav.${name}`) });
+  },
+  { immediate: true }
+);
+
 onMounted(() => {
   syncNavOpenClass(navOpen.value);
   pageMotion.value = desktopNavMq?.matches ?? true;

@@ -36,6 +36,12 @@ function AppShell() {
   }, [location.pathname]);
 
   useEffect(() => {
+    const current =
+      ROUTES.find((r) => r.path === location.pathname) ?? ROUTES[0];
+    document.title = t("shell.docTitle", { page: t(`nav.${current.name}`) });
+  }, [location.pathname, locale, t]);
+
+  useEffect(() => {
     document.documentElement.classList.toggle("is-nav-open", navOpen);
     return () => {
       document.documentElement.classList.remove("is-nav-open");

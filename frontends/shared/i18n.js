@@ -16,6 +16,7 @@ export const messages = {
     "shell.localeAria": "Переключить язык",
     "shell.menuOpen": "Открыть меню",
     "shell.menuClose": "Закрыть меню",
+    "shell.docTitle": "Showcase Lab — {page}",
 
     "nav.about": "Обо мне",
     "nav.photoEditor": "Фоторедактор",
@@ -91,6 +92,12 @@ export const messages = {
     "landing.langAria": "Переключить язык",
     "landing.contactsAria": "Контакты",
 
+    "notFound.title": "Страница не найдена",
+    "notFound.lead": "Такого адреса нет. Вернись на сайт и выбери стек.",
+    "notFound.home": "На сайт",
+    "notFound.choose": "Выбрать стек",
+    "notFound.code": "404",
+
     "common.error": "Ошибка:",
     "common.loadingError": "Ошибка загрузки",
   },
@@ -105,6 +112,7 @@ export const messages = {
     "shell.localeAria": "Toggle language",
     "shell.menuOpen": "Open menu",
     "shell.menuClose": "Close menu",
+    "shell.docTitle": "Showcase Lab — {page}",
 
     "nav.about": "About",
     "nav.photoEditor": "Photo editor",
@@ -179,6 +187,12 @@ export const messages = {
     "landing.hint": "The choice is stored in a cookie for 30 days. You can change it via “Switch stack”.",
     "landing.langAria": "Toggle language",
     "landing.contactsAria": "Contacts",
+
+    "notFound.title": "Page not found",
+    "notFound.lead": "This address doesn’t exist. Go back to the site and pick a stack.",
+    "notFound.home": "To the site",
+    "notFound.choose": "Choose stack",
+    "notFound.code": "404",
 
     "common.error": "Error:",
     "common.loadingError": "Failed to load",

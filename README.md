@@ -131,6 +131,7 @@ GitHub Actions (`.github/workflows/ci.yml`): на push/PR в `dev` и `main` г�
 | Метод | Путь |
 |-------|------|
 | GET / HEAD | `/api/health`, `/robots.txt`, `/sitemap.xml`, `/og-image.svg` |
+| HTML 404 | неизвестные пути (не `/api/*`) — `frontends/shared/404.html` |
 | GET | `/api/profile`, `/api/projects`, `/api/scores`, `/api/challenges`, `/api/incidents`, `/api/guestbook` |
 | POST | `/api/scores`, `/api/guestbook`, `/api/challenges/{id}/check-line`, `.../check-fix`, `/api/incidents/{id}/resolve` |
 | WS | `/api/ws/incidents` |

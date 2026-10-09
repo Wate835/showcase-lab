@@ -6,6 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from showcaselab.bl.app_init import init_database
 from showcaselab.bl.errors import NotFoundError, RejectedError
@@ -18,6 +19,7 @@ STATIC_DIR = REPO_ROOT / "static"
 FRONTENDS_DIR = REPO_ROOT / "frontends"
 KNOWN_FRAMEWORKS = frozenset({"vanilla", "react", "vue"})
 SITE_URL = settings.site_url.rstrip("/")
+NOT_FOUND_PAGE = FRONTENDS_DIR / "shared" / "404.html"
 
 
 @asynccontextmanager
@@ -61,6 +63,23 @@ async def rejected_handler(_: Request, exc: RejectedError) -> JSONResponse:
         {"detail": {"code": exc.code, "message": exc.message}},
         status_code=400,
     )
+
+
+def _wants_html(request: Request) -> bool:
+    accept = request.headers.get("accept", "")
+    return "text/html" in accept
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    if exc.status_code != 404:
+        return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
+    path = request.url.path
+    if path == "/api" or path.startswith("/api/") or not _wants_html(request):
+        return JSONResponse({"detail": exc.detail or "Not Found"}, status_code=404)
+    if NOT_FOUND_PAGE.exists():
+        return FileResponse(NOT_FOUND_PAGE, status_code=404, media_type="text/html")
+    return JSONResponse({"detail": "Not Found"}, status_code=404)
 
 
 @app.middleware("http")

@@ -208,6 +208,8 @@ def test_landing(client: TestClient) -> None:
     assert 'property="og:image"' in html
     assert "Telegram" in html
     assert "santahoe@mail.ru" in html
+    assert 'id="themeToggle"' in html
+    assert 'data-theme=' in html
 
 
 def test_robots_txt(client: TestClient) -> None:
@@ -233,3 +235,19 @@ def test_og_image(client: TestClient) -> None:
     response = client.get("/og-image.svg")
     assert response.status_code == 200
     assert "image/svg" in response.headers["content-type"]
+
+
+def test_html_404_page(client: TestClient) -> None:
+    response = client.get("/no-such-page", headers={"Accept": "text/html"})
+    assert response.status_code == 404
+    assert "text/html" in response.headers["content-type"]
+    assert "Showcase Lab" in response.text
+    assert "404" in response.text
+    assert "На сайт" in response.text
+    assert "лендинг" not in response.text.lower()
+
+
+def test_api_404_stays_json(client: TestClient) -> None:
+    response = client.get("/api/no-such-endpoint", headers={"Accept": "text/html"})
+    assert response.status_code == 404
+    assert response.headers["content-type"].startswith("application/json")

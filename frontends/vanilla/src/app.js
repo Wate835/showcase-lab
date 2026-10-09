@@ -80,6 +80,7 @@ function paintChrome() {
     footerEmail.textContent = CONTACTS.email;
   }
   if (footerGithub) footerGithub.href = CONTACTS.github;
+  document.title = t("shell.docTitle", { page: t(`nav.${currentRoute()}`) });
   renderNav();
 }
 

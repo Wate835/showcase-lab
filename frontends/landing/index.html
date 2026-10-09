@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,7 +10,7 @@
       content="Портфолио Антона Кудрявцева: fullstack, Vue/React/TypeScript и FastAPI. Один API — три фронта на выбор."
     />
     <link rel="canonical" href="https://anton-kudryavcev.ru/" />
-    <meta name="theme-color" content="#101014" />
+    <meta name="theme-color" id="themeColor" content="#101014" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ru_RU" id="ogLocale" />
     <meta property="og:locale:alternate" content="en_US" id="ogLocaleAlt" />
@@ -37,6 +37,13 @@
     <script>
       (function () {
         try {
+          var theme = localStorage.getItem("showcase-theme");
+          if (theme !== "light" && theme !== "dark") {
+            theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+            localStorage.setItem("showcase-theme", theme);
+          }
+          document.documentElement.setAttribute("data-theme", theme);
+          document.documentElement.style.colorScheme = theme;
           var locale = localStorage.getItem("showcase-locale");
           if (locale !== "en" && locale !== "ru") {
             var nav = String(navigator.language || (navigator.languages && navigator.languages[0]) || "").toLowerCase();
@@ -45,18 +52,35 @@
           }
           document.documentElement.setAttribute("lang", locale);
         } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
           document.documentElement.setAttribute("lang", "ru");
         }
       })();
     </script>
     <style>
-      :root {
+      :root,
+      [data-theme="dark"] {
         --bg: #101014;
         --text: #f2f2f5;
         --muted: #9a9aa8;
+        --surface: rgba(255, 255, 255, 0.03);
+        --border: rgba(255, 255, 255, 0.12);
+        --footer-border: rgba(255, 255, 255, 0.08);
+        --hover-line: rgba(255, 255, 255, 0.25);
+        --theme-color: #101014;
         --vanilla: #f5a623;
         --react: #61dafb;
         --vue: #42b883;
+      }
+      [data-theme="light"] {
+        --bg: #f7f6f3;
+        --text: #1a1a1f;
+        --muted: #5c5c6a;
+        --surface: rgba(0, 0, 0, 0.03);
+        --border: rgba(0, 0, 0, 0.12);
+        --footer-border: rgba(0, 0, 0, 0.08);
+        --hover-line: rgba(0, 0, 0, 0.28);
+        --theme-color: #f7f6f3;
       }
       * { box-sizing: border-box; }
       body {
@@ -71,6 +95,13 @@
           radial-gradient(ellipse 80% 50% at 20% 0%, rgba(245, 166, 35, 0.12), transparent),
           radial-gradient(ellipse 70% 45% at 80% 10%, rgba(97, 218, 251, 0.1), transparent),
           radial-gradient(ellipse 60% 40% at 50% 100%, rgba(66, 184, 131, 0.1), transparent),
+          var(--bg);
+      }
+      [data-theme="light"] body {
+        background:
+          radial-gradient(ellipse 80% 50% at 20% 0%, rgba(245, 166, 35, 0.14), transparent),
+          radial-gradient(ellipse 70% 45% at 80% 10%, rgba(97, 218, 251, 0.12), transparent),
+          radial-gradient(ellipse 60% 40% at 50% 100%, rgba(66, 184, 131, 0.12), transparent),
           var(--bg);
       }
       main {
@@ -107,7 +138,7 @@
         border-radius: 16px;
         padding: 1.4rem 1.3rem;
         border: 1px solid transparent;
-        background: rgba(255, 255, 255, 0.03);
+        background: var(--surface);
         transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
         animation: rise-in 0.5s ease both;
       }
@@ -153,7 +184,7 @@
         width: 100%;
         margin: 0 auto;
         padding: 1.25rem 1.25rem 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-top: 1px solid var(--footer-border);
         animation: rise-in 0.5s ease 0.4s both;
       }
       .contacts {
@@ -170,20 +201,41 @@
       }
       .contacts a:hover {
         color: var(--text);
-        border-bottom-color: rgba(255, 255, 255, 0.25);
+        border-bottom-color: var(--hover-line);
       }
-      .lang {
+      .top-controls {
         position: absolute;
         top: 1.2rem;
         right: 1.2rem;
+        display: flex;
+        gap: 0.5rem;
+        z-index: 2;
+      }
+      .chip-btn {
         color: var(--muted);
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.12);
+        background: var(--surface);
+        border: 1px solid var(--border);
         border-radius: 999px;
         padding: 0.4rem 0.75rem;
         cursor: pointer;
         font: inherit;
+        line-height: 1;
+        min-height: 2.4rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
       }
+      .chip-btn--icon {
+        width: 2.4rem;
+        padding: 0;
+      }
+      .chip-btn svg {
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+      .chip-btn .icon-sun { display: none; }
+      [data-theme="light"] .chip-btn .icon-moon { display: none; }
+      [data-theme="light"] .chip-btn .icon-sun { display: block; }
       @keyframes rise-in {
         from { opacity: 0; transform: translateY(14px); }
         to { opacity: 1; transform: none; }
@@ -196,7 +248,18 @@
     </style>
   </head>
   <body>
-    <button type="button" class="lang" id="langToggle" aria-label="Language">EN</button>
+    <div class="top-controls">
+      <button type="button" class="chip-btn chip-btn--icon" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z" />
+        </svg>
+      </button>
+      <button type="button" class="chip-btn" id="langToggle" aria-label="Language">EN</button>
+    </div>
     <main>
       <h1 class="brand">Showcase Lab</h1>
       <p class="lead" id="landingLead">
@@ -239,12 +302,21 @@
     </script>
     <script type="module">
       import { initLocale, t, getLocale, toggleLocale, subscribeLocale } from "/app/shared/i18n.js";
+      import { initTheme, toggleTheme, getTheme, subscribeTheme } from "/app/shared/theme.js";
       import { CONTACTS } from "/app/shared/site.js";
+      initTheme();
       initLocale();
 
       function setMeta(id, value) {
         const el = document.getElementById(id);
         if (el) el.setAttribute("content", value);
+      }
+
+      function paintTheme() {
+        const theme = getTheme();
+        setMeta("themeColor", theme === "light" ? "#f7f6f3" : "#101014");
+        const themeBtn = document.getElementById("themeToggle");
+        if (themeBtn) themeBtn.setAttribute("aria-label", t("shell.themeAria"));
       }
 
       function paint() {
@@ -287,9 +359,12 @@
           email.textContent = CONTACTS.email;
         }
         if (github) github.href = CONTACTS.github;
+        paintTheme();
       }
       document.getElementById("langToggle")?.addEventListener("click", () => toggleLocale());
+      document.getElementById("themeToggle")?.addEventListener("click", () => toggleTheme());
       subscribeLocale(paint);
+      subscribeTheme(paintTheme);
       paint();
     </script>
   </body>
