@@ -83,6 +83,15 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+FAVICON = FRONTENDS_DIR / "shared" / "favicon.svg"
+
+
+@app.api_route("/favicon.svg", methods=["GET", "HEAD"])
+@app.api_route("/favicon.ico", methods=["GET", "HEAD"])
+def favicon() -> FileResponse:
+    return FileResponse(FAVICON, media_type="image/svg+xml")
+
+
 def _mount_dir(url_path: str, directory: Path, name: str) -> None:
     """Mount static dir; create path so reload still serves files added later."""
     directory.mkdir(parents=True, exist_ok=True)

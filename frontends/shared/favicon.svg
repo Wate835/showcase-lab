@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Anton Kudryavcev">
+  <defs>
+    <linearGradient id="g" x1="5" y1="8" x2="27" y2="24" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="50%" stop-color="#61dafb"/>
+      <stop offset="100%" stop-color="#42b883"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="#101014"/>
+  <g
+    fill="none"
+    stroke="url(#g)"
+    stroke-width="2.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <!-- A -->
+    <path d="M6 23.5 L11 8.5 L16 23.5"/>
+    <path d="M8.2 17.8 H13.8"/>
+    <!-- K -->
+    <path d="M19.2 8.5 V23.5"/>
+    <path d="M19.2 16 L26.5 8.5"/>
+    <path d="M19.2 16 L26.5 23.5"/>
+  </g>
+</svg>
