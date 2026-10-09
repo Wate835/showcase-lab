@@ -97,6 +97,20 @@
           radial-gradient(ellipse 60% 40% at 50% 100%, rgba(66, 184, 131, 0.1), transparent),
           var(--bg);
       }
+      .skip-link {
+        position: absolute;
+        left: 0.75rem;
+        top: 0.75rem;
+        z-index: 100;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+        text-decoration: none;
+        transform: translateY(-200%);
+      }
+      .skip-link:focus { transform: translateY(0); }
       [data-theme="light"] body {
         background:
           radial-gradient(ellipse 80% 50% at 20% 0%, rgba(245, 166, 35, 0.14), transparent),
@@ -248,6 +262,7 @@
     </style>
   </head>
   <body>
+    <a class="skip-link" href="#main-content" id="skipLink">К содержимому</a>
     <div class="top-controls">
       <button type="button" class="chip-btn chip-btn--icon" id="themeToggle" aria-label="Toggle theme">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -260,7 +275,7 @@
       </button>
       <button type="button" class="chip-btn" id="langToggle" aria-label="Language">EN</button>
     </div>
-    <main>
+    <main id="main-content" tabindex="-1">
       <h1 class="brand">Showcase Lab</h1>
       <p class="lead" id="landingLead">
         Портфолио Антона Кудрявцева. Один FastAPI-бэкенд — три фронта.
@@ -349,10 +364,13 @@
         if (vue) vue.textContent = t("landing.vue");
         if (hint) hint.textContent = t("landing.hint");
         if (btn) {
-          btn.textContent = locale === "en" ? t("shell.localeToEn") : t("shell.localeToRu");
-          btn.setAttribute("aria-label", t("landing.langAria"));
+          const label = locale === "en" ? t("shell.localeToEn") : t("shell.localeToRu");
+          btn.textContent = label;
+          btn.setAttribute("aria-label", `${label} — ${t("landing.langAria")}`);
         }
         if (contacts) contacts.setAttribute("aria-label", t("landing.contactsAria"));
+        const skip = document.getElementById("skipLink");
+        if (skip) skip.textContent = t("shell.skipToContent");
         if (telegram) telegram.href = CONTACTS.telegram;
         if (email) {
           email.href = `mailto:${CONTACTS.email}`;

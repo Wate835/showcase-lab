@@ -24,7 +24,12 @@ export function AboutPage() {
   const { profile, cases, error } = useAbout();
   const { t } = useI18n();
 
-  if (error) return <p className="error">{error}</p>;
+  if (error)
+    return (
+      <p className="error" role="alert" aria-live="polite">
+        {error}
+      </p>
+    );
   if (!profile) return <p className="muted">{t("about.loading")}</p>;
 
   return (

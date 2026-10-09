@@ -2,13 +2,20 @@ import { useGuestbook } from "../useGuestbook";
 import { useI18n } from "../../../utils/usePrefs";
 
 export function GuestbookPage() {
-  const { entries, author, setAuthor, message, setMessage, onSubmit } = useGuestbook();
+  const { entries, author, setAuthor, message, setMessage, onSubmit, error, loading } =
+    useGuestbook();
   const { t, locale } = useI18n();
 
   return (
     <section>
       <h1>{t("guestbook.title")}</h1>
       <p className="lead">{t("guestbook.lead")}</p>
+      {error ? (
+        <p className="error" role="alert" aria-live="polite">
+          {error}
+        </p>
+      ) : null}
+      {loading && !error ? <p className="muted">{t("guestbook.loading")}</p> : null}
       <form className="form card" onSubmit={onSubmit}>
         <label>
           {t("guestbook.name")}

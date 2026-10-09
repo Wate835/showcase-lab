@@ -83,8 +83,11 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
 
 
 @app.middleware("http")
-async def no_cache_app_assets(request: Request, call_next):
+async def security_headers(request: Request, call_next):
     response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
     path = request.url.path
     if path.startswith("/app/") and path.endswith((".js", ".css", ".html")):
         response.headers["Cache-Control"] = "no-store"

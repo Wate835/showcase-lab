@@ -58,9 +58,10 @@ function paintChrome() {
     themeToggle.setAttribute("data-tip", t("shell.themeAria"));
   }
   if (localeToggle) {
-    localeToggle.textContent =
+    const localeLabel =
       getLocale() === "en" ? t("shell.localeToEn") : t("shell.localeToRu");
-    localeToggle.setAttribute("aria-label", t("shell.localeAria"));
+    localeToggle.textContent = localeLabel;
+    localeToggle.setAttribute("aria-label", `${localeLabel} — ${t("shell.localeAria")}`);
   }
   if (switchStack) {
     switchStack.setAttribute("aria-label", t("shell.switchStack"));
@@ -73,6 +74,8 @@ function paintChrome() {
     );
   }
   if (footerApi) footerApi.textContent = t("shell.footerApi");
+  const skipLink = document.getElementById("skipLink");
+  if (skipLink) skipLink.textContent = t("shell.skipToContent");
   if (footerContacts) footerContacts.setAttribute("aria-label", t("landing.contactsAria"));
   if (footerTelegram) footerTelegram.href = CONTACTS.telegram;
   if (footerEmail) {

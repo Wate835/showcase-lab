@@ -1,7 +1,8 @@
-import { nextTick, ref, type Ref } from "vue";
+import { nextTick, ref } from "vue";
 import Konva from "konva";
 
 import { loadImageElement } from "../utils/loadImageElement";
+import type { KonvaNodeRef } from "./konvaRefs";
 
 /** Space around the image so crop anchors stay inside the stage hit-area */
 export const STAGE_PAD = 28;
@@ -9,12 +10,12 @@ export const STAGE_PAD = 28;
 export function useCanvas() {
   const isLoading = ref(true);
   const imageObj = ref<HTMLImageElement | null>(null);
-  const stageRef = ref();
-  const layerRef = ref();
-  const dimLayer = ref();
-  const imageNode = ref();
-  const tranRef = ref();
-  const rectRef = ref();
+  const stageRef = ref<KonvaNodeRef<Konva.Stage>>(null);
+  const layerRef = ref<KonvaNodeRef<Konva.Layer>>(null);
+  const dimLayer = ref<KonvaNodeRef<Konva.Layer>>(null);
+  const imageNode = ref<KonvaNodeRef<Konva.Image>>(null);
+  const tranRef = ref<KonvaNodeRef<Konva.Transformer>>(null);
+  const rectRef = ref<KonvaNodeRef<Konva.Rect>>(null);
   const stageWrapper = ref<HTMLDivElement>();
 
   const configStage = ref({ width: 400, height: 400 });
@@ -81,7 +82,7 @@ export function useCanvas() {
   function layout() {
     setParams();
     scale();
-    const node = imageNode.value?.getNode() as Konva.Image | undefined;
+    const node = imageNode.value?.getNode();
     node?.getLayer()?.batchDraw();
   }
 
@@ -89,7 +90,7 @@ export function useCanvas() {
     if (!imageObj.value || !stageWrapper.value || !imageNode.value) return;
 
     const img = imageObj.value;
-    const node = imageNode.value.getNode() as Konva.Image;
+    const node = imageNode.value.getNode();
     const baseW = img.naturalWidth || img.width;
     const baseH = img.naturalHeight || img.height;
 
@@ -119,7 +120,7 @@ export function useCanvas() {
 
   /** Axis-aligned image bounds on the stage (after scale/position). */
   function getImageBounds(): { x: number; y: number; width: number; height: number } | null {
-    const node = imageNode.value?.getNode() as Konva.Image | undefined;
+    const node = imageNode.value?.getNode();
     if (!node) return null;
     const rect = node.getClientRect({ skipShadow: true, skipStroke: true });
     return {
@@ -174,4 +175,4 @@ export function useCanvas() {
 }
 
 export type CanvasApi = ReturnType<typeof useCanvas>;
-export type MaybeRefNode = Ref<any>;
+export type MaybeRefNode = KonvaNodeRef;

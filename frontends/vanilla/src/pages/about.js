@@ -21,7 +21,15 @@ function caseTitle(title, url) {
 
 export async function renderAbout(appEl) {
   appEl.innerHTML = `<p class="muted">${escapeHtml(t("about.loading"))}</p>`;
-  const [p, cases] = await Promise.all([fetchProfile(), fetchProjects()]);
+  let p;
+  let cases;
+  try {
+    [p, cases] = await Promise.all([fetchProfile(), fetchProjects()]);
+  } catch (err) {
+    const msg = err instanceof Error && err.message ? err.message : t("common.loadingError");
+    appEl.innerHTML = `<p class="error" role="alert" aria-live="polite">${escapeHtml(msg)}</p>`;
+    return;
+  }
   appEl.innerHTML = `
     <section>
       <h1>${escapeHtml(p.name)}</h1>

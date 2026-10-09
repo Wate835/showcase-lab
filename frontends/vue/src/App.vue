@@ -106,6 +106,7 @@ onUnmounted(() => {
 
 <template>
   <div :class="['shell', styles.shell]">
+    <a class="skip-link" href="#main-content">{{ t("shell.skipToContent") }}</a>
     <header :class="['topbar', { 'is-nav-open': navOpen }]">
       <RouterLink :class="['logo', styles.logo]" :to="{ name: 'about' }" @click="onLogoClick">
         Showcase Lab
@@ -151,7 +152,7 @@ onUnmounted(() => {
           <button
             type="button"
             :class="['switch', styles.switch]"
-            :aria-label="t('shell.localeAria')"
+            :aria-label="`${localeLabel} — ${t('shell.localeAria')}`"
             @click="toggleLocale"
           >
             {{ localeLabel }}
@@ -171,7 +172,7 @@ onUnmounted(() => {
       </div>
     </header>
 
-    <main class="content">
+    <main id="main-content" class="content" tabindex="-1">
       <RouterView v-slot="{ Component, route: r }">
         <Transition v-if="pageMotion" name="page" mode="out-in">
           <component :is="Component" :key="r.path" />

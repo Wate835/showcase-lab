@@ -12,7 +12,7 @@ function isInternalDemo(url: string | null | undefined): url is string {
 </script>
 
 <template>
-  <p v-if="error" class="error">{{ error }}</p>
+  <p v-if="error" class="error" role="alert" aria-live="polite">{{ error }}</p>
   <p v-else-if="!profile" class="muted">{{ t("about.loading") }}</p>
   <section v-else>
     <h1>{{ profile.name }}</h1>

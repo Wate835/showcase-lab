@@ -17,6 +17,7 @@ export const messages = {
     "shell.menuOpen": "Открыть меню",
     "shell.menuClose": "Закрыть меню",
     "shell.docTitle": "Showcase Lab — {page}",
+    "shell.skipToContent": "К содержимому",
 
     "nav.about": "Обо мне",
     "nav.photoEditor": "Фоторедактор",
@@ -113,6 +114,7 @@ export const messages = {
     "shell.menuOpen": "Open menu",
     "shell.menuClose": "Close menu",
     "shell.docTitle": "Showcase Lab — {page}",
+    "shell.skipToContent": "Skip to content",
 
     "nav.about": "About",
     "nav.photoEditor": "Photo editor",

@@ -12326,7 +12326,7 @@ function Bl(t) {
 }
 const ga = 28;
 function rf() {
-  const t = /* @__PURE__ */ vt(!0), e = /* @__PURE__ */ vt(null), i = /* @__PURE__ */ vt(), r = /* @__PURE__ */ vt(), n = /* @__PURE__ */ vt(), s = /* @__PURE__ */ vt(), a = /* @__PURE__ */ vt(), o = /* @__PURE__ */ vt(), l = /* @__PURE__ */ vt(), u = /* @__PURE__ */ vt({ width: 400, height: 400 }), h = /* @__PURE__ */ vt({
+  const t = /* @__PURE__ */ vt(!0), e = /* @__PURE__ */ vt(null), i = /* @__PURE__ */ vt(null), r = /* @__PURE__ */ vt(null), n = /* @__PURE__ */ vt(null), s = /* @__PURE__ */ vt(null), a = /* @__PURE__ */ vt(null), o = /* @__PURE__ */ vt(null), l = /* @__PURE__ */ vt(), u = /* @__PURE__ */ vt({ width: 400, height: 400 }), h = /* @__PURE__ */ vt({
     x: 0,
     y: 0,
     image: new Image(),
@@ -12518,7 +12518,7 @@ function uf(t, e, i) {
   const r = Math.max(t, e, i), n = Math.min(t, e, i), s = (r + n) / 2;
   if (r === n) return { h: 0, s: 0, l: s };
   const a = r - n, o = s > 0.5 ? a / (2 - r - n) : a / (r + n);
-  let l = 0;
+  let l;
   switch (r) {
     case t:
       l = ((e - i) / a + (e < i ? 6 : 0)) / 6;
@@ -12693,7 +12693,8 @@ function mf() {
 }
 const ei = 24, _a = 16, _f = 22;
 function ya(t, e) {
-  let { x: i, y: r, width: n, height: s, rotation: a } = t;
+  let { x: i, y: r, width: n, height: s } = t;
+  const { rotation: a } = t;
   n < 0 && (i += n, n = Math.abs(n)), s < 0 && (r += s, s = Math.abs(s));
   const o = e.x + e.width, l = e.y + e.height;
   return n = Math.min(Math.max(n, ei), e.width), s = Math.min(Math.max(s, ei), e.height), i = Math.max(e.x, Math.min(i, o - n)), r = Math.max(e.y, Math.min(r, l - s)), Math.abs(i - e.x) < 1 && (i = e.x), Math.abs(r - e.y) < 1 && (r = e.y), Math.abs(i + n - o) < 1 && (n = o - i), Math.abs(r + s - l) < 1 && (s = l - r), n < ei || s < ei ? null : { x: i, y: r, width: n, height: s, rotation: a };

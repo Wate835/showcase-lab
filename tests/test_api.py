@@ -251,3 +251,11 @@ def test_api_404_stays_json(client: TestClient) -> None:
     response = client.get("/api/no-such-endpoint", headers={"Accept": "text/html"})
     assert response.status_code == 404
     assert response.headers["content-type"].startswith("application/json")
+
+
+def test_security_headers(client: TestClient) -> None:
+    response = client.get("/api/health")
+    assert response.status_code == 200
+    assert response.headers["X-Content-Type-Options"] == "nosniff"
+    assert response.headers["Referrer-Policy"] == "strict-origin-when-cross-origin"
+    assert response.headers["X-Frame-Options"] == "SAMEORIGIN"

@@ -28,7 +28,34 @@ jobs:
       - name: Pytest
         run: uv run pytest
 
+  photo-editor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/photo-editor/package-lock.json
+
+      - name: Install
+        working-directory: packages/photo-editor
+        run: npm ci
+
+      - name: Lint
+        working-directory: packages/photo-editor
+        run: npm run lint
+
+      - name: Build lib
+        working-directory: packages/photo-editor
+        run: npm run build:lib
+
+      - name: Check artifact
+        run: test -f static/photo-editor/mount.js
+
   frontend:
+    needs: [photo-editor]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -52,6 +79,10 @@ jobs:
       - name: Install ${{ matrix.app }}
         working-directory: frontends/${{ matrix.app }}
         run: npm ci
+
+      - name: Lint
+        working-directory: frontends/${{ matrix.app }}
+        run: npm run lint
 
       - name: Typecheck
         working-directory: frontends/${{ matrix.app }}

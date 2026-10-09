@@ -58,7 +58,7 @@ function rgbToHsl(r: number, g: number, b: number) {
   if (max === min) return { h: 0, s: 0, l };
   const d = max - min;
   const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-  let h = 0;
+  let h: number;
   switch (max) {
     case r:
       h = ((g - b) / d + (g < b ? 6 : 0)) / 6;

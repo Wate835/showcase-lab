@@ -104,7 +104,7 @@ export function translatePe(
   lang: HostLocale = getLocale(),
 ) {
   const dict = MESSAGES[lang] || MESSAGES.ru;
-  let str = dict[key] ?? MESSAGES.ru[key] ?? key;
+  const str = dict[key] ?? MESSAGES.ru[key] ?? key;
   return str.replace(/\{(\w+)\}/g, (_, name) =>
     vars[name] !== undefined && vars[name] !== null ? String(vars[name]) : `{${name}}`,
   );

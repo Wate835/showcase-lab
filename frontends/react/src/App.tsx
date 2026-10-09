@@ -87,6 +87,9 @@ function AppShell() {
 
   return (
     <div className={`shell ${styles.shell}`}>
+      <a className="skip-link" href="#main-content">
+        {t("shell.skipToContent")}
+      </a>
       <header className={`topbar${navOpen ? " is-nav-open" : ""}`}>
         <NavLink className={`logo ${styles.logo}`} to="/" end onClick={onLogoClick}>
           Showcase Lab
@@ -134,7 +137,7 @@ function AppShell() {
             <button
               type="button"
               className={`switch ${styles.switch}`}
-              aria-label={t("shell.localeAria")}
+              aria-label={`${locale === "en" ? t("shell.localeToEn") : t("shell.localeToRu")} — ${t("shell.localeAria")}`}
               onClick={toggleLocale}
             >
               {locale === "en" ? t("shell.localeToEn") : t("shell.localeToRu")}
@@ -153,7 +156,7 @@ function AppShell() {
           </div>
         </div>
       </header>
-      <main className="content">
+      <main id="main-content" className="content" tabIndex={-1}>
         <div key={location.pathname} className="page">
           <Routes location={location}>
             {ROUTES.map((r) => (
