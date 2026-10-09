@@ -1,11 +1,35 @@
+import { Link } from "react-router-dom";
 import { useAbout } from "../useAbout";
 import { useI18n } from "../../../utils/usePrefs";
 
+function isInternalDemo(url: string | null | undefined): url is string {
+  return Boolean(url && url.startsWith("/") && !url.startsWith("//"));
+}
+
+function CaseTitle({ title, url }: { title: string; url?: string | null }) {
+  if (isInternalDemo(url)) {
+    return <Link to={url}>{title}</Link>;
+  }
+  if (url) {
+    return (
+      <a href={url} target="_blank" rel="noreferrer">
+        {title}
+      </a>
+    );
+  }
+  return <>{title}</>;
+}
+
 export function AboutPage() {
-  const { profile, error } = useAbout();
+  const { profile, cases, error } = useAbout();
   const { t } = useI18n();
 
-  if (error) return <p className="error">{error}</p>;
+  if (error)
+    return (
+      <p className="error" role="alert" aria-live="polite">
+        {error}
+      </p>
+    );
   if (!profile) return <p className="muted">{t("about.loading")}</p>;
 
   return (
@@ -50,6 +74,22 @@ export function AboutPage() {
           </article>
         ))}
       </div>
+      {cases.length > 0 && (
+        <div className="cases">
+          <h2>{t("about.cases")}</h2>
+          <p className="lead">{t("about.casesLead")}</p>
+          <div className="stack">
+            {cases.map((item) => (
+              <article className="card" key={item.id}>
+                <h2>
+                  <CaseTitle title={item.title} url={item.url} />
+                </h2>
+                <p className="muted">{item.year}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Showcase Lab — 404</title>
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" id="themeColor" content="#101014" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("showcase-theme");
+          if (theme !== "light" && theme !== "dark") {
+            theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+            localStorage.setItem("showcase-theme", theme);
+          }
+          document.documentElement.setAttribute("data-theme", theme);
+          document.documentElement.style.colorScheme = theme;
+          var locale = localStorage.getItem("showcase-locale");
+          if (locale !== "en" && locale !== "ru") {
+            var nav = String(navigator.language || (navigator.languages && navigator.languages[0]) || "").toLowerCase();
+            locale = nav.indexOf("en") === 0 ? "en" : "ru";
+            localStorage.setItem("showcase-locale", locale);
+          }
+          document.documentElement.setAttribute("lang", locale);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+          document.documentElement.setAttribute("lang", "ru");
+        }
+      })();
+    </script>
+    <style>
+      :root,
+      [data-theme="dark"] {
+        --bg: #101014;
+        --text: #f2f2f5;
+        --muted: #9a9aa8;
+        --surface: rgba(255, 255, 255, 0.04);
+        --border: rgba(255, 255, 255, 0.12);
+        --theme-color: #101014;
+        --vanilla: #f5a623;
+        --react: #61dafb;
+        --vue: #42b883;
+      }
+      [data-theme="light"] {
+        --bg: #f7f6f3;
+        --text: #1a1a1f;
+        --muted: #5c5c6a;
+        --surface: rgba(0, 0, 0, 0.03);
+        --border: rgba(0, 0, 0, 0.12);
+        --theme-color: #f7f6f3;
+      }
+      * { box-sizing: border-box; }
+      body {
+        position: relative;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(ellipse 80% 50% at 20% 0%, rgba(245, 166, 35, 0.12), transparent),
+          radial-gradient(ellipse 70% 45% at 80% 10%, rgba(97, 218, 251, 0.1), transparent),
+          radial-gradient(ellipse 60% 40% at 50% 100%, rgba(66, 184, 131, 0.1), transparent),
+          var(--bg);
+      }
+      [data-theme="light"] body {
+        background:
+          radial-gradient(ellipse 80% 50% at 20% 0%, rgba(245, 166, 35, 0.14), transparent),
+          radial-gradient(ellipse 70% 45% at 80% 10%, rgba(97, 218, 251, 0.12), transparent),
+          radial-gradient(ellipse 60% 40% at 50% 100%, rgba(66, 184, 131, 0.12), transparent),
+          var(--bg);
+      }
+      .top-controls {
+        position: absolute;
+        top: 1.2rem;
+        right: 1.2rem;
+        display: flex;
+        gap: 0.5rem;
+        z-index: 2;
+      }
+      .chip-btn {
+        color: var(--muted);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 0.4rem 0.75rem;
+        cursor: pointer;
+        font: inherit;
+        line-height: 1;
+        min-height: 2.4rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chip-btn--icon {
+        width: 2.4rem;
+        padding: 0;
+      }
+      .chip-btn svg {
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+      .chip-btn .icon-sun { display: none; }
+      [data-theme="light"] .chip-btn .icon-moon { display: none; }
+      [data-theme="light"] .chip-btn .icon-sun { display: block; }
+      main {
+        flex: 1;
+        max-width: 640px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 5rem 1.25rem 3rem;
+      }
+      .code {
+        margin: 0 0 0.75rem;
+        font-size: clamp(3.5rem, 10vw, 5.5rem);
+        font-weight: 800;
+        letter-spacing: -0.06em;
+        line-height: 1;
+        background: linear-gradient(90deg, var(--vanilla), var(--react), var(--vue));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      h1 {
+        margin: 0 0 0.75rem;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        letter-spacing: -0.03em;
+      }
+      .lead {
+        margin: 0 0 2rem;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.5;
+        max-width: 32rem;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+      .actions a {
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+        color: var(--text);
+        border: 1px solid var(--border);
+        background: var(--surface);
+        border-radius: 999px;
+        padding: 0.65rem 1.1rem;
+        font-size: 0.95rem;
+        transition: border-color 0.2s ease, transform 0.2s ease;
+      }
+      .actions a:hover {
+        border-color: color-mix(in srgb, var(--text) 35%, transparent);
+        transform: translateY(-1px);
+      }
+      .actions a.primary {
+        border-color: rgba(97, 218, 251, 0.45);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .actions a { transition: none; }
+        .actions a:hover { transform: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-controls">
+      <button type="button" class="chip-btn chip-btn--icon" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z" />
+        </svg>
+      </button>
+      <button type="button" class="chip-btn" id="langToggle" aria-label="Language">EN</button>
+    </div>
+    <main>
+      <p class="code" id="notFoundCode">404</p>
+      <h1 id="notFoundTitle">Страница не найдена</h1>
+      <p class="lead" id="notFoundLead">
+        Такого адреса нет. Вернись на сайт и выбери стек.
+      </p>
+      <div class="actions">
+        <a class="primary" id="notFoundHome" href="/">На сайт</a>
+        <a id="notFoundChoose" href="/?choose=1">Выбрать стек</a>
+      </div>
+    </main>
+    <script type="module">
+      import { initLocale, t, getLocale, toggleLocale, subscribeLocale } from "/app/shared/i18n.js";
+      import { initTheme, toggleTheme, getTheme, subscribeTheme } from "/app/shared/theme.js";
+      initTheme();
+      initLocale();
+
+      function paintTheme() {
+        const themeColor = document.getElementById("themeColor");
+        if (themeColor) {
+          themeColor.setAttribute("content", getTheme() === "light" ? "#f7f6f3" : "#101014");
+        }
+        const themeBtn = document.getElementById("themeToggle");
+        if (themeBtn) themeBtn.setAttribute("aria-label", t("shell.themeAria"));
+      }
+
+      function paint() {
+        document.title = t("shell.docTitle", { page: t("notFound.code") });
+        const code = document.getElementById("notFoundCode");
+        const title = document.getElementById("notFoundTitle");
+        const lead = document.getElementById("notFoundLead");
+        const home = document.getElementById("notFoundHome");
+        const choose = document.getElementById("notFoundChoose");
+        const btn = document.getElementById("langToggle");
+        if (code) code.textContent = t("notFound.code");
+        if (title) title.textContent = t("notFound.title");
+        if (lead) lead.textContent = t("notFound.lead");
+        if (home) home.textContent = t("notFound.home");
+        if (choose) choose.textContent = t("notFound.choose");
+        if (btn) {
+          btn.textContent = getLocale() === "en" ? t("shell.localeToEn") : t("shell.localeToRu");
+          btn.setAttribute("aria-label", t("landing.langAria"));
+        }
+        paintTheme();
+      }
+      document.getElementById("langToggle")?.addEventListener("click", () => toggleLocale());
+      document.getElementById("themeToggle")?.addEventListener("click", () => toggleTheme());
+      subscribeLocale(paint);
+      subscribeTheme(paintTheme);
+      paint();
+    </script>
+  </body>
+</html>

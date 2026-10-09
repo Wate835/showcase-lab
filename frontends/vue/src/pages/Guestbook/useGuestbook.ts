@@ -9,13 +9,19 @@ export function useGuestbook() {
   const entries = ref<GuestbookEntry[]>([]);
   const author = ref("");
   const message = ref("");
+  const error = ref("");
+  const loading = ref(true);
   const { locale, t } = useI18n();
 
   async function load() {
+    loading.value = true;
+    error.value = "";
     try {
       entries.value = await fetchGuestbook();
-    } catch {
-      /* ignore */
+    } catch (e) {
+      error.value = e instanceof Error ? e.message : t("common.loadingError");
+    } finally {
+      loading.value = false;
     }
   }
 
@@ -36,5 +42,5 @@ export function useGuestbook() {
   }
 
   watch(locale, load, { immediate: true });
-  return { entries, author, message, onSubmit };
+  return { entries, author, message, onSubmit, error, loading };
 }

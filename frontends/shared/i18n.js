@@ -16,9 +16,10 @@ export const messages = {
     "shell.localeAria": "Переключить язык",
     "shell.menuOpen": "Открыть меню",
     "shell.menuClose": "Закрыть меню",
+    "shell.docTitle": "Showcase Lab — {page}",
+    "shell.skipToContent": "К содержимому",
 
     "nav.about": "Обо мне",
-    "nav.projects": "Проекты",
     "nav.photoEditor": "Фоторедактор",
     "nav.bugs": "Bug Hunt",
     "nav.incidents": "Инциденты",
@@ -26,12 +27,8 @@ export const messages = {
 
     "about.loading": "Загрузка профиля…",
     "about.me": "Обо мне",
-
-    "projects.title": "Проекты",
-    "projects.lead": "Проекты и кейсы из опыта.",
-    "projects.openDemo": "Открыть демо",
-    "projects.loading": "Загрузка проектов…",
-    "projects.loadingError": "Ошибка загрузки",
+    "about.cases": "Кейсы",
+    "about.casesLead": "ERP и CRM — закрытые продукты, поэтому ссылки ведут на открытые внешние сайты компаний, которые я тоже разрабатывал.",
 
     "photoEditor.title": "Фоторедактор",
     "photoEditor.lead": "Кадрирование, поворот и цветокоррекция прямо в браузере.",
@@ -86,12 +83,21 @@ export const messages = {
     "guestbook.sendError": "Не удалось отправить",
 
     "landing.title": "Showcase Lab — выбери стек",
+    "landing.description": "Портфолио Антона Кудрявцева: fullstack, Vue/React/TypeScript и FastAPI. Один API — три фронта на выбор.",
+    "landing.ogTitle": "Showcase Lab — Антон Кудрявцев",
     "landing.lead": "Портфолио Антона Кудрявцева. Один FastAPI-бэкенд — три фронта. Выбери стек: у каждого своя цветовая гамма и тот же набор экранов.",
     "landing.vanilla": "Нативный JS. Тёплая amber-палитра.",
     "landing.react": "Vite + TypeScript. Cool cyan.",
     "landing.vue": "Vite + TypeScript. Emerald.",
     "landing.hint": "Выбор запоминается в cookie на 30 дней. Можно сменить через «Сменить стек».",
     "landing.langAria": "Переключить язык",
+    "landing.contactsAria": "Контакты",
+
+    "notFound.title": "Страница не найдена",
+    "notFound.lead": "Такого адреса нет. Вернись на сайт и выбери стек.",
+    "notFound.home": "На сайт",
+    "notFound.choose": "Выбрать стек",
+    "notFound.code": "404",
 
     "common.error": "Ошибка:",
     "common.loadingError": "Ошибка загрузки",
@@ -107,9 +113,10 @@ export const messages = {
     "shell.localeAria": "Toggle language",
     "shell.menuOpen": "Open menu",
     "shell.menuClose": "Close menu",
+    "shell.docTitle": "Showcase Lab — {page}",
+    "shell.skipToContent": "Skip to content",
 
     "nav.about": "About",
-    "nav.projects": "Projects",
     "nav.photoEditor": "Photo editor",
     "nav.bugs": "Bug Hunt",
     "nav.incidents": "Incidents",
@@ -117,12 +124,8 @@ export const messages = {
 
     "about.loading": "Loading profile…",
     "about.me": "About me",
-
-    "projects.title": "Projects",
-    "projects.lead": "Projects and case studies from experience.",
-    "projects.openDemo": "Open demo",
-    "projects.loading": "Loading projects…",
-    "projects.loadingError": "Failed to load",
+    "about.cases": "Cases",
+    "about.casesLead": "ERP and CRM are private products, so the links go to the companies’ public sites that I also developed.",
 
     "photoEditor.title": "Photo Editor",
     "photoEditor.lead": "Crop, rotate, and color-correct right in the browser.",
@@ -177,12 +180,21 @@ export const messages = {
     "guestbook.sendError": "Could not send",
 
     "landing.title": "Showcase Lab — pick a stack",
+    "landing.description": "Anton Kudryavcev's portfolio: fullstack, Vue/React/TypeScript and FastAPI. One API — three frontends to choose from.",
+    "landing.ogTitle": "Showcase Lab — Anton Kudryavcev",
     "landing.lead": "Anton Kudryavcev's portfolio. One FastAPI backend — three frontends. Pick a stack: each has its own palette and the same screens.",
     "landing.vanilla": "Native JS. Warm amber palette.",
     "landing.react": "Vite + TypeScript. Cool cyan.",
     "landing.vue": "Vite + TypeScript. Emerald.",
     "landing.hint": "The choice is stored in a cookie for 30 days. You can change it via “Switch stack”.",
     "landing.langAria": "Toggle language",
+    "landing.contactsAria": "Contacts",
+
+    "notFound.title": "Page not found",
+    "notFound.lead": "This address doesn’t exist. Go back to the site and pick a stack.",
+    "notFound.home": "To the site",
+    "notFound.choose": "Choose stack",
+    "notFound.code": "404",
 
     "common.error": "Error:",
     "common.loadingError": "Failed to load",

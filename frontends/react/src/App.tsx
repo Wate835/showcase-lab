@@ -14,12 +14,11 @@ import { BugHuntPage } from "./pages/BugHunt";
 import { GuestbookPage } from "./pages/Guestbook";
 import { IncidentsPage } from "./pages/Incidents";
 import { PhotoEditorPage } from "./pages/PhotoEditor";
-import { ProjectsPage } from "./pages/Projects";
 import { useI18n, useTheme } from "./utils/usePrefs";
+import { CONTACTS } from "@shared/site.js";
 
 const PAGES: Record<RouteName, ComponentType> = {
   about: AboutPage,
-  projects: ProjectsPage,
   photoEditor: PhotoEditorPage,
   bugs: BugHuntPage,
   incidents: IncidentsPage,
@@ -35,6 +34,12 @@ function AppShell() {
   useEffect(() => {
     setNavOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const current =
+      ROUTES.find((r) => r.path === location.pathname) ?? ROUTES[0];
+    document.title = t("shell.docTitle", { page: t(`nav.${current.name}`) });
+  }, [location.pathname, locale, t]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("is-nav-open", navOpen);
@@ -82,6 +87,9 @@ function AppShell() {
 
   return (
     <div className={`shell ${styles.shell}`}>
+      <a className="skip-link" href="#main-content">
+        {t("shell.skipToContent")}
+      </a>
       <header className={`topbar${navOpen ? " is-nav-open" : ""}`}>
         <NavLink className={`logo ${styles.logo}`} to="/" end onClick={onLogoClick}>
           Showcase Lab
@@ -129,7 +137,7 @@ function AppShell() {
             <button
               type="button"
               className={`switch ${styles.switch}`}
-              aria-label={t("shell.localeAria")}
+              aria-label={`${locale === "en" ? t("shell.localeToEn") : t("shell.localeToRu")} — ${t("shell.localeAria")}`}
               onClick={toggleLocale}
             >
               {locale === "en" ? t("shell.localeToEn") : t("shell.localeToRu")}
@@ -148,7 +156,7 @@ function AppShell() {
           </div>
         </div>
       </header>
-      <main className="content">
+      <main id="main-content" className="content" tabIndex={-1}>
         <div key={location.pathname} className="page">
           <Routes location={location}>
             {ROUTES.map((r) => (
@@ -160,6 +168,15 @@ function AppShell() {
       </main>
       <footer className="footer">
         <span className="badge">React · cyan</span>
+        <nav className="footer-contacts" aria-label={t("landing.contactsAria")}>
+          <a href={CONTACTS.telegram} target="_blank" rel="noreferrer">
+            Telegram
+          </a>
+          <a href={`mailto:${CONTACTS.email}`}>{CONTACTS.email}</a>
+          <a href={CONTACTS.github} target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+        </nav>
         <span>{t("shell.footerApi")}</span>
       </footer>
     </div>

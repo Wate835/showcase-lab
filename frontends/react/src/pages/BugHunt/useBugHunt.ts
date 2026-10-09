@@ -28,8 +28,10 @@ export function useBugHunt() {
   const { locale, t } = useI18n();
 
   const loadScores = useCallback(() => {
-    fetchScores(FRAMEWORK).then(setScores).catch(() => undefined);
-  }, []);
+    fetchScores(FRAMEWORK)
+      .then(setScores)
+      .catch((e: Error) => setError(e.message || t("common.loadingError")));
+  }, [t]);
 
   useEffect(() => {
     fetchChallenges(FRAMEWORK)

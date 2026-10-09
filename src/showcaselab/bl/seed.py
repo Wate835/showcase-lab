@@ -116,144 +116,43 @@ PROFILE = {
     ],
 }
 
+# Compact product cases for About. Internal demos: path starting with "/" (e.g. /photo-editor).
 PROJECTS = [
     {
         "title": {"ru": "Showcase Lab (этот сайт)", "en": "Showcase Lab (this site)"},
-        "description": {
-            "ru": (
-                "Портфолио-лаборатория: FastAPI + SQLAlchemy API и три фронта "
-                "(Vanilla / React / Vue 3) с разными палитрами и общими игрушками."
-            ),
-            "en": (
-                "A portfolio lab: FastAPI + SQLAlchemy API and three frontends "
-                "(Vanilla / React / Vue 3) with different palettes and the same toys."
-            ),
-        },
-        "tags": [
-            "FastAPI",
-            "Pydantic",
-            "SQLAlchemy",
-            "SQLite",
-            "WebSocket",
-            "React",
-            "Vue 3",
-            "TypeScript",
-            "Vanilla JS",
-            "Vite",
-            "REST API",
-        ],
+        "description": {"ru": "", "en": ""},
+        "tags": [],
         "year": {"ru": "2026", "en": "2026"},
         "sort_order": 1,
     },
     {
-        "title": {"ru": "ERP-платформа", "en": "ERP platform"},
-        "description": {
-            "ru": (
-                "End-to-end разработка ERP: фронт на Vue 2/3 (+ legacy React), "
-                "бэкенд на Python, CI/CD и эксплуатация. Внутри — UI-kit, Storybook, "
-                "модули форм/таблиц и поставка фич вместе с бэком и PM."
-            ),
-            "en": (
-                "End-to-end ERP: Vue 2/3 frontend (+ legacy React), Python backend, "
-                "CI/CD and operations. Inside: UI kit, Storybook, form/table modules, "
-                "and shipping features with the backend and PM."
-            ),
-        },
-        "tags": [
-            "Vue 2",
-            "Vue 3",
-            "React",
-            "TypeScript",
-            "Pinia",
-            "Vite",
-            "Python",
-            "REST API",
-            "UI Kit",
-            "Storybook",
-            "CI/CD",
-            "ESLint",
-            "PHP",
-            "Yii2",
-        ],
+        "title": {"ru": "ERP · Красивый город", "en": "ERP · Krasiviy Gorod"},
+        "description": {"ru": "", "en": ""},
+        "tags": [],
         "year": {"ru": "2025 — настоящее время", "en": "2025 — present"},
+        "url": "https://www.k-gorod.ru/",
         "sort_order": 2,
     },
     {
-        "title": {"ru": "CRM-система", "en": "CRM system"},
-        "description": {
-            "ru": (
-                "Разработка CRM на Vue: модули UI, навигация, Vuex, работа с REST. "
-                "В продукт входил и браузерный фоторедактор (см. отдельный кейс)."
-            ),
-            "en": (
-                "Vue CRM: UI modules, navigation, Vuex, REST. "
-                "The product also included a browser photo editor (see a separate case)."
-            ),
-        },
-        "tags": [
-            "Vue",
-            "Vue Router",
-            "Vuex",
-            "JavaScript",
-            "REST API",
-            "SPA",
-            "CRM",
-            "Axios",
-        ],
+        "title": {"ru": "CRM · Арбат", "en": "CRM · Arbat"},
+        "description": {"ru": "", "en": ""},
+        "tags": [],
         "year": {"ru": "2023–2025", "en": "2023–2025"},
-        "url": None,
+        "url": "https://arbat.life/",
         "sort_order": 3,
     },
     {
         "title": {"ru": "Веб-фоторедактор", "en": "Web photo editor"},
-        "description": {
-            "ru": (
-                "Браузерный редактор изображений на Vue 3 + Konva: цвет (яркость, "
-                "контраст, насыщенность), поворот, кадрирование, отражение, undo/redo. "
-                "Сделан как продуктовая фича в CRM; есть публичное демо."
-            ),
-            "en": (
-                "Browser image editor on Vue 3 + Konva: color (brightness, contrast, "
-                "saturation), rotate, crop, flip, undo/redo. "
-                "Shipped as a CRM product feature; public demo available."
-            ),
-        },
-        "tags": [
-            "Vue 3",
-            "TypeScript",
-            "Konva",
-            "vue-konva",
-            "Canvas",
-            "Vite",
-            "Tailwind",
-            "PWA",
-            "VueUse",
-        ],
+        "description": {"ru": "", "en": ""},
+        "tags": [],
         "year": {"ru": "2023–2024", "en": "2023–2024"},
-        "url": "https://wate835.github.io/photo-editor/",
+        "url": "/photo-editor",
         "sort_order": 4,
     },
     {
         "title": {"ru": "CMS Landing Factory", "en": "CMS Landing Factory"},
-        "description": {
-            "ru": "Серия адаптивных лендингов и вёрстка по макетам с интеграцией в WordPress/Joomla.",
-            "en": "A series of responsive landings and layout-from-mockups, integrated into WordPress/Joomla.",
-        },
-        "tags": [
-            "HTML5",
-            "CSS3",
-            "JavaScript",
-            "Sass",
-            "Less",
-            "Bootstrap",
-            "БЭМ",
-            "Адаптив",
-            "Кроссбраузерность",
-            "WordPress",
-            "Joomla",
-            "SEO",
-            "Figma",
-        ],
+        "description": {"ru": "", "en": ""},
+        "tags": [],
         "year": {"ru": "2019–2020", "en": "2019–2020"},
         "url": None,
         "sort_order": 5,

@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import { RouterLink } from "vue-router";
 import { useAbout } from "../useAbout";
 import { useI18n } from "../../../utils/usePrefs";
 
-const { profile, error } = useAbout();
+const { profile, cases, error } = useAbout();
 const { t } = useI18n();
+
+function isInternalDemo(url: string | null | undefined): url is string {
+  return Boolean(url && url.startsWith("/") && !url.startsWith("//"));
+}
 </script>
 
 <template>
-  <p v-if="error" class="error">{{ error }}</p>
+  <p v-if="error" class="error" role="alert" aria-live="polite">{{ error }}</p>
   <p v-else-if="!profile" class="muted">{{ t("about.loading") }}</p>
   <section v-else>
     <h1>{{ profile.name }}</h1>
@@ -33,6 +38,25 @@ const { t } = useI18n();
           <li v-for="h in job.highlights" :key="h">{{ h }}</li>
         </ul>
       </article>
+    </div>
+    <div v-if="cases.length" class="cases">
+      <h2>{{ t("about.cases") }}</h2>
+      <p class="lead">{{ t("about.casesLead") }}</p>
+      <div class="stack">
+        <article v-for="item in cases" :key="item.id" class="card">
+          <h2>
+            <RouterLink v-if="isInternalDemo(item.url)" :to="item.url">{{ item.title }}</RouterLink>
+            <a
+              v-else-if="item.url"
+              :href="item.url"
+              target="_blank"
+              rel="noreferrer"
+            >{{ item.title }}</a>
+            <template v-else>{{ item.title }}</template>
+          </h2>
+          <p class="muted">{{ item.year }}</p>
+        </article>
+      </div>
     </div>
   </section>
 </template>

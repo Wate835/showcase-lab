@@ -4,8 +4,9 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from showcaselab.bl.app_init import init_database
 from showcaselab.bl.errors import NotFoundError, RejectedError
@@ -17,6 +18,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 STATIC_DIR = REPO_ROOT / "static"
 FRONTENDS_DIR = REPO_ROOT / "frontends"
 KNOWN_FRAMEWORKS = frozenset({"vanilla", "react", "vue"})
+SITE_URL = settings.site_url.rstrip("/")
+NOT_FOUND_PAGE = FRONTENDS_DIR / "shared" / "404.html"
 
 
 @asynccontextmanager
@@ -62,9 +65,29 @@ async def rejected_handler(_: Request, exc: RejectedError) -> JSONResponse:
     )
 
 
+def _wants_html(request: Request) -> bool:
+    accept = request.headers.get("accept", "")
+    return "text/html" in accept
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    if exc.status_code != 404:
+        return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
+    path = request.url.path
+    if path == "/api" or path.startswith("/api/") or not _wants_html(request):
+        return JSONResponse({"detail": exc.detail or "Not Found"}, status_code=404)
+    if NOT_FOUND_PAGE.exists():
+        return FileResponse(NOT_FOUND_PAGE, status_code=404, media_type="text/html")
+    return JSONResponse({"detail": "Not Found"}, status_code=404)
+
+
 @app.middleware("http")
-async def no_cache_app_assets(request: Request, call_next):
+async def security_headers(request: Request, call_next):
     response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
     path = request.url.path
     if path.startswith("/app/") and path.endswith((".js", ".css", ".html")):
         response.headers["Cache-Control"] = "no-store"
@@ -84,12 +107,52 @@ def health() -> dict[str, str]:
 
 
 FAVICON = FRONTENDS_DIR / "shared" / "favicon.svg"
+OG_IMAGE = FRONTENDS_DIR / "shared" / "og-image.svg"
 
 
 @app.api_route("/favicon.svg", methods=["GET", "HEAD"])
 @app.api_route("/favicon.ico", methods=["GET", "HEAD"])
 def favicon() -> FileResponse:
     return FileResponse(FAVICON, media_type="image/svg+xml")
+
+
+@app.api_route("/og-image.svg", methods=["GET", "HEAD"])
+def og_image() -> FileResponse:
+    return FileResponse(OG_IMAGE, media_type="image/svg+xml")
+
+
+@app.api_route("/robots.txt", methods=["GET", "HEAD"])
+def robots_txt() -> PlainTextResponse:
+    body = "\n".join(
+        [
+            "User-agent: *",
+            "Allow: /",
+            f"Sitemap: {SITE_URL}/sitemap.xml",
+            "",
+        ]
+    )
+    return PlainTextResponse(body, media_type="text/plain; charset=utf-8")
+
+
+@app.api_route("/sitemap.xml", methods=["GET", "HEAD"])
+def sitemap_xml() -> PlainTextResponse:
+    urls = [
+        f"{SITE_URL}/",
+        f"{SITE_URL}/app/vanilla/",
+        f"{SITE_URL}/app/react/",
+        f"{SITE_URL}/app/vue/",
+        f"{SITE_URL}/?choose=1",
+    ]
+    items = "\n".join(
+        f"  <url><loc>{url}</loc><changefreq>weekly</changefreq></url>" for url in urls
+    )
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{items}\n"
+        "</urlset>\n"
+    )
+    return PlainTextResponse(body, media_type="application/xml; charset=utf-8")
 
 
 def _mount_dir(url_path: str, directory: Path, name: str) -> None:

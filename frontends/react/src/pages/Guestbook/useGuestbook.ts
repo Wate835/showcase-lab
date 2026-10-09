@@ -9,11 +9,18 @@ export function useGuestbook() {
   const [entries, setEntries] = useState<GuestbookEntry[]>([]);
   const [author, setAuthor] = useState("");
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const { locale, t } = useI18n();
 
   const load = useCallback(() => {
-    fetchGuestbook().then(setEntries).catch(() => undefined);
-  }, []);
+    setLoading(true);
+    setError("");
+    fetchGuestbook()
+      .then(setEntries)
+      .catch((e: Error) => setError(e.message || t("common.loadingError")))
+      .finally(() => setLoading(false));
+  }, [t]);
 
   useEffect(() => {
     load();
@@ -32,5 +39,5 @@ export function useGuestbook() {
     }
   }
 
-  return { entries, author, setAuthor, message, setMessage, onSubmit };
+  return { entries, author, setAuthor, message, setMessage, onSubmit, error, loading };
 }
