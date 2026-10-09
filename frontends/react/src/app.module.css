@@ -33,6 +33,14 @@
   transform: translateY(-1px);
 }
 
+:global(.nav-toggle) {
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+:global(.nav-toggle:hover) {
+  transform: translateY(-1px);
+}
+
 @keyframes shellIn {
   from {
     opacity: 0;
@@ -51,13 +59,18 @@
 
   .logo,
   .nav a,
-  .switch {
+  .switch,
+  :global(.nav-toggle),
+  :global(.nav-toggle-bars),
+  :global(.nav-toggle-bars::before),
+  :global(.nav-toggle-bars::after) {
     transition: none !important;
   }
 
   .logo:hover,
   .nav a:hover,
-  .switch:hover {
+  .switch:hover,
+  :global(.nav-toggle:hover) {
     transform: none !important;
   }
 }
